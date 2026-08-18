@@ -33,23 +33,10 @@ static class Program
         var idx = Array.IndexOf(args, "--provider");
         if (idx >= 0 && idx + 1 < args.Length) _providerName = args[idx + 1];
         if (Array.IndexOf(args, "--selftest") >= 0) return RunSelfTest();
+        if (Array.IndexOf(args, "--utests") >= 0) return RunUTests();
         EnsureProvider();
 
-        Log.IsEnabled = true;
-        _workspace = Path.Combine(Path.GetTempPath(), "OfficeSupportTool.Tests-workspace");
-        try
-        {
-            if (Directory.Exists(_workspace)) Directory.Delete(_workspace, recursive: true);
-        }
-        catch (Exception)
-        {
-        }
-        Directory.CreateDirectory(_workspace);
-        Setup.SkipIndexingOnStartup = true;
-        Setup.DocumentsPath = _workspace;
-        Setup.ProviderConfig = ProviderConfigs.Get(_providerName);
-        StageIcons();
-        StageImages();
+        InitWorkspace();
 
         File.WriteAllText(ResultsFile, $"RUN {DateTime.Now:HH:mm:ss} provider={_providerName}\n");
         WriteResult("STARTED");
@@ -242,6 +229,28 @@ static class Program
     static void Fail(string id, string problem) { _failures++; Console.WriteLine($"  ✗ {id} FAIL: {problem}"); WriteResult($"{id} FAIL: {problem}"); }
     static void WriteResult(string line) => File.AppendAllText(ResultsFile, line + Environment.NewLine);
 
+    /// <summary>Fresh %TEMP% workspace + staging (icons, images) for a test run. The repo sits
+    /// under OneDrive: test files must never be written under the repo (cloud-synced on every
+    /// write — historical slow runs).</summary>
+    static void InitWorkspace()
+    {
+        Log.IsEnabled = true;
+        _workspace = Path.Combine(Path.GetTempPath(), "OfficeSupportTool.Tests-workspace");
+        try
+        {
+            if (Directory.Exists(_workspace)) Directory.Delete(_workspace, recursive: true);
+        }
+        catch (Exception)
+        {
+        }
+        Directory.CreateDirectory(_workspace);
+        Setup.SkipIndexingOnStartup = true;
+        Setup.DocumentsPath = _workspace;
+        Setup.ProviderConfig = ProviderConfigs.Get(_providerName);
+        StageIcons();
+        StageImages();
+    }
+
     /// <summary>Extracts the plain text of a DOCX (paragraphs + table cells) to verify the conversion.</summary>
     static bool DocxTextContains(string path, string expected)
     {
@@ -274,6 +283,24 @@ static class Program
                 calls.Add($"#{e.Iteration}:{e.MethodName}");
         };
         var result = orch.ExecuteAction(prompt, new[] { "OfficeSupportTool" }, maxIterations: maxIterations);
+        return (result, calls);
+    }
+
+    /// <summary>Multi-turn variant: each element is a separate user request on the SAME
+    /// conversation (history shared), mirroring how a user asks a follow-up in one chat. The trace
+    /// accumulates the tool calls of every turn.</summary>
+    static (AgentResult Result, List<string> Trace) RunAgentConversation(string[] turns, int maxIterations = 40)
+    {
+        using var orch = new AgentHarness(_providerName);
+        var calls = new List<string>();
+        orch.AgentProgress += (_, e) =>
+        {
+            if (e.State == AgentHarness.AgentState.Iteration && !string.IsNullOrWhiteSpace(e.MethodName))
+                calls.Add($"#{e.Iteration}:{e.MethodName}");
+        };
+        AgentResult result = null!;
+        foreach (var turn in turns)
+            result = orch.ExecuteAction(turn, new[] { "OfficeSupportTool" }, maxIterations: maxIterations);
         return (result, calls);
     }
 
@@ -497,7 +524,7 @@ static class Program
             finally { Setup.DocumentsPath = saved; try { Directory.Delete(dir, true); } catch { } }
         });
 
-        failures += Test("restore: no-arg picks the newest backup in the workspace", () =>
+        failures += Test("restore: no-arg works only with a single workspace backup (ambiguous set rejected)", () =>
         {
             var dir = Path.Combine(Path.GetTempPath(), "ost-restore-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(Path.Combine(dir, "sub"));
@@ -505,18 +532,23 @@ static class Program
             Setup.DocumentsPath = dir;
             try
             {
-                var fa = Path.Combine(dir, "a.docx");
-                File.WriteAllBytes(fa, OfficeSupportTool.ConvertToDocx("<html><body><p>A1</p></body></html>"));
-                File.Copy(fa, Path.Combine(dir, "a.001.bak"));
-                File.SetLastWriteTimeUtc(Path.Combine(dir, "a.001.bak"), new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc));
-                var fb = Path.Combine(dir, "sub", "b.docx");
-                File.WriteAllBytes(fb, OfficeSupportTool.ConvertToDocx("<html><body><p>B1</p></body></html>"));
-                File.Copy(fb, Path.Combine(dir, "sub", "b.001.bak"));
-                File.SetLastWriteTimeUtc(Path.Combine(dir, "sub", "b.001.bak"), new DateTime(2026, 1, 2, 0, 0, 0, DateTimeKind.Utc));
-                File.WriteAllBytes(fb, OfficeSupportTool.ConvertToDocx("<html><body><p>B2</p></body></html>"));
-                var r = new OfficeSupportTool().Restore();
-                if (!r.Contains("b.001.bak")) return $"expected b.001.bak, got: {r}";
-                if (!DocxTextContains(fb, "B1")) return "b.docx not restored to B1";
+                // single backup → no-arg restores it
+                var f1 = Path.Combine(dir, "a.docx");
+                File.WriteAllBytes(f1, OfficeSupportTool.ConvertToDocx("<html><body><p>A1</p></body></html>"));
+                File.Copy(f1, Path.Combine(dir, "a.001.bak"));
+                File.WriteAllBytes(f1, OfficeSupportTool.ConvertToDocx("<html><body><p>A2</p></body></html>"));
+                var r1 = new OfficeSupportTool().Restore();
+                if (!r1.Contains("a.001.bak")) return $"single-backup no-arg: {r1}";
+                if (!DocxTextContains(f1, "A1")) return "a.docx not restored";
+                // second backup in a subfolder → no-arg now ambiguous → must name the backup
+                var f2 = Path.Combine(dir, "sub", "b.docx");
+                File.WriteAllBytes(f2, OfficeSupportTool.ConvertToDocx("<html><body><p>B1</p></body></html>"));
+                File.Copy(f2, Path.Combine(dir, "sub", "b.001.bak"));
+                var r2 = new OfficeSupportTool().Restore();
+                if (!r2.StartsWith("Error: several backups found")) return $"ambiguous no-arg: {r2}";
+                var r3 = new OfficeSupportTool().Restore("sub/b.001.bak");
+                if (!r3.Contains("b.001.bak")) return $"named restore: {r3}";
+                if (!DocxTextContains(f2, "B1")) return "b.docx not restored";
                 return null;
             }
             finally { Setup.DocumentsPath = saved; try { Directory.Delete(dir, true); } catch { } }
@@ -561,6 +593,199 @@ static class Program
         catch (Exception ex)
         {
             Console.WriteLine($"  ✗ {id} CRASH: {ex.GetType().Name}: {ex.Message}");
+            return 1;
+        }
+    }
+
+    // ---------- untested-flows campaign (--utests) ----------
+
+    /// <summary>Behavioral tests for usage sequences never covered by the T-series: a template that
+    /// expects images (product catalog) compiled with real images, update with images, rollback of a
+    /// SPECIFIC document among several with backups, create from a context file, template reuse
+    /// across calls, chained updates + restore to the first backup, and deterministic error paths.
+    /// Each agent-level test records the tool-call trace (what the agent actually did).</summary>
+    static int RunUTests()
+    {
+        EnsureProvider();
+        InitWorkspace();
+        File.WriteAllText(ResultsFile, $"RUN-UTEST {DateTime.Now:HH:mm:ss} provider={_providerName}\n");
+        WriteResult("STARTED");
+
+        Console.WriteLine("══════════ OfficeSupportTool untested-flows test ══════════");
+        Console.WriteLine($"provider: {_providerName}");
+        Log.LogStep($"=== OfficeSupportTool untested-flows (provider {_providerName}) ===");
+
+        var tool = new OfficeSupportTool();
+        try
+        {
+            // U1 — a template that expects images (product catalog) compiled with product photos
+            Console.WriteLine("  U1 product catalog + images (agent-level)...");
+            var (r1, t1) = RunAgent(
+                "Create a product catalog for 'Fiori Coffee S.r.l.' (via Roma 12, 20121 Milano, Italy, VAT IT01234567890, email info@fioricoffee.it) with 3 products " +
+                "in one category 'Coffee': 'Espresso Blend' (FB-01, 250g, EUR 12.50), 'Arabica Single Origin' (FB-02, 250g, EUR 15.00), 'Decaf' (FB-03, 250g, EUR 13.00). " +
+                "The catalog must include the product photo of each product: coffee.png, beans.png and cup.png (they are in /images/, pass them as imageFiles, e.g. '/images/coffee.png', and place each photo in its product row). " +
+                "Additional material: company tagline 'Specialty coffee since 1998'; subtitle 'Autumn collection 2026'; introduction 'A selection of our finest single-origin and blended coffees'; " +
+                "per-product description and specifications; ordering info 'orders@fioricoffee.it, 2-week lead time, minimum order 10 units'; payment terms '30 days net'; sales contact 'Anna Verdi, Sales Manager'; catalog version 1.0. " +
+                "If any template field is still missing from the material, set the draft parameter and generate a sensible value. Save as /catalog.docx.",
+                maxIterations: 40);
+            WriteResult("U1 trace: " + string.Join(" | ", t1));
+            Console.WriteLine($"  U1 tool calls: {string.Join(" → ", t1)}");
+            if (r1.Error != null) { Fail("U1-catalog-images", $"agent error: {r1.Error}"); return 1; }
+            var host1 = Path.Combine(_workspace, "catalog.docx");
+            var html1 = File.Exists(host1) ? OfficeSupportTool.ReadStoredHtml(host1) : null;
+            if (html1 == null) { Fail("U1-catalog-images", "catalog.docx not created"); return 1; }
+            var pngCount1 = Regex.Matches(html1, "src=\"data:image/png;base64,").Count;
+            if (pngCount1 != 3) { Fail("U1-catalog-images", $"expected 3 embedded product images, found {pngCount1}"); return 1; }
+            if (DocxImageCount(host1) < 3) { Fail("U1-catalog-images", "converted DOCX has fewer than 3 image parts"); return 1; }
+            if (!DocxTextContains(host1, "Espresso Blend")) { Fail("U1-catalog-images", "catalog content missing"); return 1; }
+            Pass("U1-catalog-images");
+
+            // U2 — update WITH images: the user asks, in a follow-up turn, to add the logo to the
+            // document created in the previous turn (realistic multi-turn usage)
+            Console.WriteLine("  U2 update + images (agent-level, multi-turn)...");
+            var (r2, t2) = RunAgentConversation(new[]
+            {
+                "Create a business letter from 'Fiori Coffee S.r.l.' to 'Nova S.p.A.' thanking them for the partnership, save as /update-img.docx. " +
+                "Supporting material to pass as contextText: Fiori Coffee S.r.l. — via Roma 12, 20121 Milano, Italy, VAT IT01234567890, email info@fioricoffee.it, website www.fioricoffee.it. " +
+                "Letter date 18 August 2026, reference FI-2026-077. Recipient: Maria Conti, Procurement Director, Nova S.p.A., via Torino 45, 10122 Torino, Italy. " +
+                "Subject 'Partnership renewal', salutation 'Dear Ms. Conti'. Body: Nova S.p.A. has been a partner since 2019; we thank you for the partnership. " +
+                "Closing 'Best regards', sender Luca Bianchi (CEO), enclosures: product catalogue 2026.",
+                "The user now asks: add the company logo (logo.png, in /images/) at the top of the letter — the document is /update-img.docx, modify it (pass the image via imageFiles)."
+            });
+            WriteResult("U2 trace: " + string.Join(" | ", t2));
+            Console.WriteLine($"  U2 tool calls: {string.Join(" → ", t2)}");
+            if (r2.Error != null) { Fail("U2-update-images", $"agent error: {r2.Error}"); return 1; }
+            var host2 = Path.Combine(_workspace, "update-img.docx");
+            var html2 = File.Exists(host2) ? OfficeSupportTool.ReadStoredHtml(host2) : null;
+            if (html2 == null) { Fail("U2-update-images", "update-img.docx not created"); return 1; }
+            if (Regex.Matches(html2, "src=\"data:image/png;base64,").Count < 1) { Fail("U2-update-images", "logo not embedded after update"); return 1; }
+            if (Directory.GetFiles(_workspace, "update-img.*.bak").Length < 1) { Fail("U2-update-images", "no backup created by the update"); return 1; }
+            Pass("U2-update-images");
+
+            // U3 — rollback of a SPECIFIC document among several documents with backups. The setup
+            // (create + update of both letters) is done with direct tool calls so the test isolates
+            // the agent's rollback behavior — the real target — from the flaky create/material handling.
+            Console.WriteLine("  U3 rollback on a specific document (agent-level, deterministic setup)...");
+            var sA1 = tool.CreateDocument("business letter", "Business letter from Fiori Coffee to Nova S.p.A. thanking them for the partnership.", draft: true,
+                contextText: "Fiori Coffee S.r.l., via Roma 12, 20121 Milano, VAT IT01234567890; recipient Maria Conti, Nova S.p.A., via Torino 45, Torino; " +
+                "date 18 August 2026; subject 'Partnership renewal'; salutation 'Dear Ms. Conti'; body 'we thank you for the partnership started in 2019'; " +
+                "closing 'Best regards'; sender Luca Bianchi (CEO).",
+                saveFullNameFile: "/letterA.docx");
+            if (!sA1.StartsWith("Document created at")) { Fail("U3-setup", $"letterA create: {sA1}"); return 1; }
+            var sA2 = tool.UpdateDocument("/letterA.docx", "Replace 'started in 2019' with 'started in 2020'.");
+            if (!sA2.StartsWith("Document updated at")) { Fail("U3-setup", $"letterA update: {sA2}"); return 1; }
+            var sB1 = tool.CreateDocument("business letter", "Business letter from Fiori Coffee to Beta S.r.l. confirming the order.", draft: true,
+                contextText: "Fiori Coffee S.r.l., via Roma 12, 20121 Milano, VAT IT01234567890; recipient Giulia Neri, Beta S.r.l., via Firenze 8, Roma; " +
+                "date 18 August 2026; salutation 'Dear Ms. Neri'; body 'we confirm the order for 500 kg of coffee'; closing 'Best regards'; sender Luca Bianchi (CEO).",
+                saveFullNameFile: "/letterB.docx");
+            if (!sB1.StartsWith("Document created at")) { Fail("U3-setup", $"letterB create: {sB1}"); return 1; }
+            var sB2 = tool.UpdateDocument("/letterB.docx", "Replace '500 kg' with '750 kg'.");
+            if (!sB2.StartsWith("Document updated at")) { Fail("U3-setup", $"letterB update: {sB2}"); return 1; }
+            var (r3, t3) = RunAgent(
+                "The user asks: undo the change made to /letterA.docx — rollback it to the version before it was modified, using the backup the tool reported. Do NOT touch /letterB.docx.",
+                maxIterations: 30);
+            WriteResult("U3 trace: " + string.Join(" | ", t3));
+            Console.WriteLine($"  U3 tool calls: {string.Join(" → ", t3)}");
+            if (r3.Error != null) { Fail("U3-rollback-specific", $"agent error: {r3.Error}"); return 1; }
+            var htmlA = OfficeSupportTool.ReadStoredHtml(Path.Combine(_workspace, "letterA.docx"));
+            var htmlB = OfficeSupportTool.ReadStoredHtml(Path.Combine(_workspace, "letterB.docx"));
+            if (htmlA == null || htmlB == null) { Fail("U3-rollback-specific", "documents missing"); return 1; }
+            if (htmlA.Contains("started in 2020")) { Fail("U3-rollback-specific", "letterA still contains the change — rollback failed"); return 1; }
+            if (!htmlA.Contains("started in 2019")) { Fail("U3-rollback-specific", "letterA original wording missing"); return 1; }
+            if (!htmlB.Contains("750 kg")) { Fail("U3-rollback-specific", "letterB was wrongly touched (must keep its change)"); return 1; }
+            Pass("U3-rollback-specific");
+
+            // U4 — create from a context FILE
+            Console.WriteLine("  U4 create with contextFile (agent-level)...");
+            var ctxDir = Path.Combine(_workspace, "context");
+            Directory.CreateDirectory(ctxDir);
+            File.WriteAllText(Path.Combine(ctxDir, "company.md"),
+                "Fiori Coffee S.r.l. — via Roma 12, 20121 Milano, Italy. VAT IT01234567890, phone +39 02 12345678, email info@fioricoffee.it, website www.fioricoffee.it. Company tagline: 'Specialty coffee since 1998'. " +
+                "Income statement for the fiscal year ended 31 December 2025, prepared on 18 August 2026 by Maria Rossi (Chief Accountant), approved by Luca Bianchi (CEO). Status: final. Currency: EUR. " +
+                "Revenue 1,240,000; cost of goods sold 610,000; gross profit 630,000; operating expenses 320,000 (of which: salaries 180,000, rent 60,000, marketing 50,000, utilities 30,000); " +
+                "operating income 310,000; other income 5,000; interest expense 8,000; income before taxes 307,000; taxes 85,000; net income 222,000. " +
+                "Previous year 2024: revenue 1,050,000; net income 175,000. Key ratios: gross margin 50.8%; net margin 17.9%. " +
+                "Notes: figures in EUR, prepared in accordance with IFRS.");
+            var (r4, t4) = RunAgent(
+                "Create an income statement for Fiori Coffee for the year 2025. The company data and figures are in the workspace file /context/company.md — pass it as contextFile. " +
+                "If any template field is still missing, set the draft parameter and generate a sensible value. Save as /income-statement.docx.",
+                maxIterations: 30);
+            WriteResult("U4 trace: " + string.Join(" | ", t4));
+            Console.WriteLine($"  U4 tool calls: {string.Join(" → ", t4)}");
+            if (r4.Error != null) { Fail("U4-contextFile", $"agent error: {r4.Error}"); return 1; }
+            var html4 = File.Exists(Path.Combine(_workspace, "income-statement.docx")) ? OfficeSupportTool.ReadStoredHtml(Path.Combine(_workspace, "income-statement.docx")) : null;
+            if (html4 == null) { Fail("U4-contextFile", "income-statement.docx not created"); return 1; }
+            if (!html4.Contains("1,240,000")) { Fail("U4-contextFile", "income statement data missing"); return 1; }
+            Pass("U4-contextFile");
+
+            // U5 — template reuse across calls: the second create of the same unknown type must reuse
+            // the template saved by the first (no regeneration), visible in the log
+            Console.WriteLine("  U5 template reuse across calls (agent-level)...");
+            var (r5, t5) = RunAgent(
+                "Complete ALL tasks in order; do not stop early. " +
+                "TASK 1: Create a 'vendor risk register' document for Fiori Coffee (draft ok) listing risk categories Financial, Operational, Compliance — save as /risk1.docx. " +
+                "TASK 2: Create ANOTHER 'vendor risk register' document for Fiori Coffee (draft ok) — the same document type — with risk categories Financial, Operational, Reputational — save as /risk2.docx.",
+                maxIterations: 40);
+            WriteResult("U5 trace: " + string.Join(" | ", t5));
+            Console.WriteLine($"  U5 tool calls: {string.Join(" → ", t5)}");
+            if (r5.Error != null) { Fail("U5-template-reuse", $"agent error: {r5.Error}"); return 1; }
+            if (!File.Exists(Path.Combine(_workspace, "risk2.docx"))) { Fail("U5-template-reuse", "risk2.docx not created"); return 1; }
+            if (Log.CurrentLogFile == null || !File.Exists(Log.CurrentLogFile)) { Fail("U5-template-reuse", "log file unavailable"); return 1; }
+            var logText = File.ReadAllText(Log.CurrentLogFile);
+            var genCount = Regex.Matches(logText, "no template for 'vendor-risk-register'").Count;
+            if (genCount != 1) { Fail("U5-template-reuse", $"expected exactly 1 template generation, found {genCount} (second create did not reuse the saved template)"); return 1; }
+            Pass("U5-template-reuse");
+
+            // U6 — chained updates + restore to the FIRST version. The memo is created and updated
+            // twice with direct tool calls; the agent handles only the restore-to-first-backup turn.
+            Console.WriteLine("  U6 chained updates + restore to first version (agent-level, deterministic setup)...");
+            var sM1 = tool.CreateDocument("memorandum", "Memorandum about the holiday schedule.", draft: true,
+                contextText: "Fiori Coffee S.r.l., via Roma 12, 20121 Milano, VAT IT01234567890; sender Luca Bianchi (CEO); to all staff; " +
+                "subject 'Holiday schedule'; body 'The office will close from 24 December to 2 January.'; date 18 August 2026.",
+                saveFullNameFile: "/memo.docx");
+            if (!sM1.StartsWith("Document created at")) { Fail("U6-setup", $"memo create: {sM1}"); return 1; }
+            var sM2 = tool.UpdateDocument("/memo.docx", "Change the closing period to '24 December to 6 January'.");
+            if (!sM2.StartsWith("Document updated at")) { Fail("U6-setup", $"memo update 1: {sM2}"); return 1; }
+            var sM3 = tool.UpdateDocument("/memo.docx", "Change the subject to 'Holiday schedule 2026'.");
+            if (!sM3.StartsWith("Document updated at")) { Fail("U6-setup", $"memo update 2: {sM3}"); return 1; }
+            var (r6, t6) = RunAgent(
+                "The user asks: go back to the ORIGINAL version of /memo.docx (before the first modification) — restore it using the FIRST backup (memo.001.bak).",
+                maxIterations: 30);
+            WriteResult("U6 trace: " + string.Join(" | ", t6));
+            Console.WriteLine($"  U6 tool calls: {string.Join(" → ", t6)}");
+            if (r6.Error != null) { Fail("U6-chained-restore", $"agent error: {r6.Error}"); return 1; }
+            var host6 = Path.Combine(_workspace, "memo.docx");
+            var html6 = OfficeSupportTool.ReadStoredHtml(host6);
+            if (html6 == null) { Fail("U6-chained-restore", "memo.docx not created"); return 1; }
+            if (!html6.Contains("24 December to 2 January")) { Fail("U6-chained-restore", "memo not restored to the original period"); return 1; }
+            if (html6.Contains("6 January")) { Fail("U6-chained-restore", "memo still contains the first change"); return 1; }
+            if (Directory.GetFiles(_workspace, "memo.*.bak").Length < 3) { Fail("U6-chained-restore", "backup chain shorter than expected (2 updates + restore swap)"); return 1; }
+            Pass("U6-chained-restore");
+
+            // U7 — deterministic error paths (direct calls, no LLM)
+            File.WriteAllText(Path.Combine(_workspace, "images", "bad.txt"), "not an image");
+            var u7a = tool.CreateDocument("invoice", "test", draft: true, contextText: "x", imageFiles: new[] { "/images/logo.png", "/images/bad.txt" });
+            if (!u7a.StartsWith("Error:") || !u7a.Contains("unsupported image type")) { Fail("U7-error-image-type", $"unexpected: {u7a}"); return 1; }
+            Pass("U7-error-image-type");
+            var u7b = tool.CreateDocument("invoice", "test", draft: true, contextText: "x", contextFile: "/nope/missing.md");
+            if (!u7b.StartsWith("Error:") || !u7b.Contains("not found")) { Fail("U7-error-context-file", $"unexpected: {u7b}"); return 1; }
+            Pass("U7-error-context-file");
+            var u7c = tool.CreateDocument("invoice", "test", draft: true, contextText: "x", saveFullNameFile: "/out/foo.txt");
+            if (!u7c.StartsWith("Error:") || !u7c.Contains(".docx")) { Fail("U7-error-extension", $"unexpected: {u7c}"); return 1; }
+            Pass("U7-error-extension");
+            var u7d = tool.UpdateDocument("/missing.docx", "change x");
+            if (!u7d.StartsWith("Error:") || !u7d.Contains("not found")) { Fail("U7-error-update-missing", $"unexpected: {u7d}"); return 1; }
+            Pass("U7-error-update-missing");
+
+            Console.WriteLine();
+            Console.WriteLine(_failures == 0 ? "  ALL UNTESTED-FLOW TESTS PASSED" : $"  {_failures} UTEST FAILURES");
+            WriteResult(_failures == 0 ? "DONE PASS" : $"DONE FAIL ({_failures})");
+            return _failures == 0 ? 0 : 1;
+        }
+        catch (Exception ex)
+        {
+            Fail("main", $"CRASH {ex.GetType().Name}: {ex.Message}");
+            WriteResult($"DONE FAIL (crash {ex.GetType().Name})");
             return 1;
         }
     }
@@ -613,6 +838,8 @@ static class Program
         Directory.CreateDirectory(dir);
         WritePng(Path.Combine(dir, "logo.png"), 64, 64, "#8B1A1A");
         WritePng(Path.Combine(dir, "coffee.png"), 72, 48, "#6F4E37");
+        WritePng(Path.Combine(dir, "beans.png"), 64, 64, "#3E7C17");
+        WritePng(Path.Combine(dir, "cup.png"), 56, 64, "#2563EB");
     }
 
     static void WritePng(string path, int w, int h, string hex)
