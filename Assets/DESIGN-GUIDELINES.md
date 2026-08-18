@@ -4,7 +4,12 @@ Design directives for creating HTML templates for **HtmlToOpenXml** (HTML → DO
 All templates live in this `Assets` folder and must be visually uniform, professionally styled,
 and "LLM-first": easy for an LLM to edit and repurpose.
 
-Reference: full converter capabilities in [`../HtmlToOpenXml-Guide.md`](../HtmlToOpenXml-Guide.md).
+This is the **single design guide** (valid for humans and LLM alike). The environment-specific
+parts (local icon paths, verification harness, converter reference) live in
+[`PRODUCTION-GUIDELINES.md`](PRODUCTION-GUIDELINES.md) — never pass that file to the LLM.
+
+The converter supports only the HTML/CSS subset listed in §6. Inline CSS only: no `<style>`,
+no external CSS, no scripts, no flexbox/grid, no external image URLs.
 
 ---
 
@@ -139,26 +144,27 @@ Every template follows the same block order:
 
 ---
 
-## 4. Icons (SVG, inline, self-contained)
+## 4. Icons (SVG)
 
-- **Source:** `C:\Users\andre\OneDrive\Sorgenti\AIOrchestrator\assets\icons` — 1743 Lucide-style
-  SVG icons (stroke-based, MIT). Pick the icon that best matches the document's purpose.
-- **Embedding:** paste the SVG **inline** in the badge. HtmlToOpenXml embeds inline SVG as an image
-  part (verified; supported format).
-- **Badge recipe:**
+- **Badge recipe (inline SVG):** the header badge is an inline SVG circle with the set pastel
+  fill and the set ink strokes. **Always give `width`/`height` an explicit unit (`px`)** —
+  HtmlToOpenXml's `Unit.Parse` rejects bare numbers (`width="46"`) and produces a 0×0 image:
   ```html
-  <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <svg width="46px" height="46px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <title>{{ Document Title }}</title>
     <circle cx="12" cy="12" r="11.5" fill="{{ pastel }}"/>
     <g stroke="{{ ink }}" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
-      …icon paths from the Lucide source…
+      …simple geometric paths that evoke the document…
     </g>
   </svg>
   ```
-- **Adapting colors:** copy the icon's `<path>`/`<polyline>` elements into the `<g>` above; set the
-  circle fill to the document's pastel and strokes to the set's ink. Delete any original `fill`/
-  `stroke`/`stroke-width` attributes from the paths (the `<g>` overrides them).
-- `<title>` is kept for accessibility and becomes the image description in Word.
+  Draw simple, minimalist geometric paths yourself (stroke-based, Lucide-style); the `<title>`
+  becomes the image description in Word. Inline SVG is embedded by HtmlToOpenXml as an image part.
+- **Additional icons (auto-resolved placeholders):** anywhere else in the document you may add
+  extra SVG icons with a self-descriptive placeholder file name that encodes size and color:
+  `<icon-name>.<size>.<rrggbb>.svg`. These are auto-generated from the host icon set and embedded
+  as data URIs. Usage example: `disc.32.aa0000.svg` (a disc icon, 32×32 px, hex color #aa0000) →
+  `<img src="disc.32.aa0000.svg" alt="disc">`.
 - An LLM may replace the badge with `{{ company_logo }}` via the HTML comment that accompanies it.
 
 ---
@@ -174,6 +180,10 @@ Every template follows the same block order:
   - any color rule the LLM must apply (e.g. risk-level cell colors),
   - where a `page-break` is placed and why,
   - how to move the footer into `converter.ParseFooter()` if repeating on every page is desired.
+  - **Never nest comments:** a `<!-- … -->` must NOT contain another `<!--`/`-->` inside it (invalid
+    HTML — the inner `-->` closes the outer comment and the remaining text becomes visible in the
+    document). Keep the header banner flat; put row markers such as `<!-- SLA-ROW -->` directly above
+    the row, outside the banner.
 - **Money values:** always append the `{{ currency }}` placeholder to amounts.
 - **Keep inline styles:** the LLM must preserve all `style="…"` attributes when filling data.
 
@@ -190,6 +200,10 @@ thead tbody tfoot tr th td time u ul svg`
 `margin`, `padding`, `border(-style/-width/-color)`, `page-break-before/after` (`always`),
 `break-before/after` (`page`), `writing-mode` (`tb-lr`, `tb-rl`), `page-orientation` (only `body`,
 `landscape`).
+
+**Background colors:** apply `background-color` **on `td` or `tr` only — NEVER on `<table>`**:
+HtmlToOpenXml ignores table-level backgrounds (issue #12) and the strip silently disappears,
+leaving the text on white. `tr` backgrounds propagate to its cells.
 
 **Also allowed attributes:** `width`/`height` (px, pt, %), `align`, `valign`, `border`, `bgcolor`,
 `cellspacing`, `colspan`, `rowspan`, `dir`, `lang`, `class` (only for a Word style that exists or will
@@ -208,11 +222,12 @@ images from external URLs (all assets must be inline/data-URI), `webp`, everythi
 - Keep body text in the neutral office scale (§2). Never set body paragraphs in the category color.
 - Use zebra striping `#F8FAFC` on data tables (odd rows).
 - Use small-caps for titles/labels; use `&mdash;`, `&middot;`, `&nbsp;`, `&ndash;` entities.
-- Keep every file fully self-contained (all SVGs inline, no external references).
+- Keep every file fully self-contained (all SVGs inline/data-URI, no external references).
 - Start each file with the same 3-comment header (title, LLM instructions, design line).
 
 **Don't**
 - No saturated full-width bands (no dark blue/purple/red headers), no dark footer bands.
+- No `background-color` on `<table>` (ignored by the converter — see §6).
 - No `style` on `font` for `text-align`; no `page-orientation` outside `body`.
 - No placeholder format other than `{{ … }}`.
 - No unnecessary repetition: reuse tokens from §2, never invent new hex values for neutral text.
@@ -222,10 +237,11 @@ images from external URLs (all assets must be inline/data-URI), `webp`, everythi
 ## 8. Checklist for creating a new template
 
 1. Identify the set (A–G) → pick `pastel` from the manifest, `ink`, `rule`.
-2. Pick the Lucide icon from `AIOrchestrator\assets\icons`; build the badge per §4.
+2. Build the badge per §4 (simple geometric paths; the icon is auto-resolved at runtime).
 3. Assemble the skeleton (§3) with the correct tokens; keep the meta strip 3–4 fields.
 4. Write sections with real structure (tables for tabular data, lists where natural); mark duplicable
    rows with LLM comments.
 5. Add placeholders everywhere; keep inline styles intact; put money values with `{{ currency }}`.
 6. Add page breaks before signatures/confidential parts.
-7. Verify with the harness (`dotnet run` + `OpenXmlValidator`, then LibreOffice render) before delivery.
+7. The template must be professionally valid: balanced structure, correct table nesting,
+   complete `{{ … }}` placeholders for every variable field, closing tags for every element.

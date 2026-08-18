@@ -226,12 +226,12 @@ namespace AIOrchestrator.API
         }
 
         /// <summary>Design guidelines for template creation, loaded from the packed asset
-        /// (assets/template-guidelines.md); falls back to a compact built-in copy when missing.</summary>
+        /// (assets/design-guidelines.md); falls back to a compact built-in copy when missing.</summary>
         private static readonly Lazy<string> TemplateGuidelinesLazy = new(() =>
         {
             try
             {
-                var file = Path.Combine(AppContext.BaseDirectory, "assets", "template-guidelines.md");
+                var file = Path.Combine(AppContext.BaseDirectory, "assets", "design-guidelines.md");
                 if (File.Exists(file)) return File.ReadAllText(file, Encoding.UTF8);
             }
             catch { }
@@ -688,12 +688,23 @@ namespace AIOrchestrator.API
                 mainPart.Document = new Document(new Body());
                 var converter = new HtmlConverter(mainPart);
                 converter.ParseBody(renderHtml).GetAwaiter().GetResult();
+                SetPageMargins(mainPart.Document.Body!);
                 mainPart.Document.Save();
             }
             ms.Position = 0;
             using (var pkg = Package.Open(ms, FileMode.Open, FileAccess.ReadWrite))
                 WriteHtmlMetadata(pkg, html);
             return ms.ToArray();
+        }
+
+        /// <summary>Sets 1 cm page margins (567 twips per side) — the converted documents adapt
+        /// better to further conversions (PDF, print); HtmlToOpenXml leaves the default setup.</summary>
+        private static void SetPageMargins(Body body)
+        {
+            var sectPr = body.Elements<SectionProperties>().LastOrDefault()
+                ?? body.AppendChild(new SectionProperties());
+            sectPr.RemoveAllChildren<PageMargin>();
+            sectPr.AppendChild(new PageMargin { Top = 567, Bottom = 567, Left = 567, Right = 567 });
         }
 
         /// <summary>HtmlToOpenXml's Unit.Parse requires a unit on the svg width/height attributes:

@@ -18,7 +18,7 @@
        output (AppContext.BaseDirectory) because the plugin resolves them at runtime. -->
   <ItemGroup>
     <None Include="..\Assets\*.html" Link="assets\templates\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="..\Assets\TEMPLATE-GUIDELINES.md" Link="assets\template-guidelines.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Assets\DESIGN-GUIDELINES.md" Link="assets\design-guidelines.md" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

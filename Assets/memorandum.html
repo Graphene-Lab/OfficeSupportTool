@@ -51,8 +51,8 @@
 <table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#5EEAD4; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
 
 <!-- ============ MEMO HEADER BLOCK ============ -->
-<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
-  <tr>
+<table width="100%" cellspacing="0" cellpadding="0" border="0">
+  <tr style="background-color:#F8FAFC;">
     <td width="18%" style="padding:9px 20px; border-bottom:1px solid #E5E7EB;">
       <div style="font-size:8.5pt; font-weight:bold; color:#115E59; font-variant:small-caps;">To</div>
     </td>
@@ -60,7 +60,7 @@
       <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ memo_to }}</div>
     </td>
   </tr>
-  <tr>
+  <tr style="background-color:#F8FAFC;">
     <td style="padding:9px 20px; border-bottom:1px solid #E5E7EB;">
       <div style="font-size:8.5pt; font-weight:bold; color:#115E59; font-variant:small-caps;">From</div>
     </td>
@@ -69,7 +69,7 @@
       <div style="font-size:9pt; color:#4B5563;">{{ memo_from_role }}</div>
     </td>
   </tr>
-  <tr>
+  <tr style="background-color:#F8FAFC;">
     <td style="padding:9px 20px; border-bottom:1px solid #E5E7EB;">
       <div style="font-size:8.5pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Date</div>
     </td>
@@ -77,7 +77,7 @@
       <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ memo_date }}</div>
     </td>
   </tr>
-  <tr>
+  <tr style="background-color:#F8FAFC;">
     <td style="padding:9px 20px; border-bottom:1px solid #E5E7EB;">
       <div style="font-size:8.5pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Subject</div>
     </td>
@@ -85,7 +85,7 @@
       <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ memo_subject }}</div>
     </td>
   </tr>
-  <tr>
+  <tr style="background-color:#F8FAFC;">
     <td style="padding:9px 20px; border-bottom:1px solid #E5E7EB;">
       <div style="font-size:8.5pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Cc</div>
     </td>
@@ -93,7 +93,7 @@
       <div style="font-size:10pt;">{{ memo_cc }}</div>
     </td>
   </tr>
-  <tr>
+  <tr style="background-color:#F8FAFC;">
     <td style="padding:9px 20px;">
       <div style="font-size:8.5pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Ref. No.</div>
     </td>
@@ -173,8 +173,8 @@
     </td>
   </tr>
 </table>
-<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
-  <tr>
+<table width="100%" cellspacing="0" cellpadding="0" border="0">
+  <tr style="background-color:#F8FAFC;">
     <td style="padding:10px 14px; font-size:9pt; color:#4B5563;">
       This memorandum is confidential and intended only for the recipients listed above. It should not
       be distributed further without the written consent of {{ memo_from }}.
@@ -199,8 +199,8 @@
 <!-- LLM: to repeat this block on every page instead of once at the end,
      pass it to converter.ParseFooter() and remove it from the body. -->
 <table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#5EEAD4; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
-<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
-  <tr>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr style="background-color:#F3F4F6;">
     <td align="center" style="padding:12px 20px;">
       <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
       <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />

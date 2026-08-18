@@ -48,11 +48,11 @@
       <Pack>true</Pack>
       <PackagePath>lib/$(TargetFramework)/assets/templates/%(Filename)%(Extension)</PackagePath>
     </None>
-    <None Update="Assets\TEMPLATE-GUIDELINES.md">
+    <None Update="Assets\DESIGN-GUIDELINES.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>assets/template-guidelines.md</TargetPath>
+      <TargetPath>assets/design-guidelines.md</TargetPath>
       <Pack>true</Pack>
-      <PackagePath>lib/$(TargetFramework)/assets/template-guidelines.md</PackagePath>
+      <PackagePath>lib/$(TargetFramework)/assets/design-guidelines.md</PackagePath>
     </None>
   </ItemGroup>
   <ItemGroup>

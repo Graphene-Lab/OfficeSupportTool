@@ -130,7 +130,7 @@ Block/structure: `article`, `aside`, `blockquote`, `body`, `br`, `div`, `dl` (`d
 |---|---|
 | `a` | `href` (only valid absolute or relative URIs: `://www.site.com`, `www.site.com`, `http://…`; **ignored** `javascript:`, empty `#`, empty, `site.com` without domain → rendered as a plain run); `title` → tooltip |
 | `img` | `src` (absolute, relative with `BaseImageUrl`, or base64 data URI), `alt`, `width`, `height`, `border`; style: `border-style`, `border-width`, `border-color` |
-| `table` | `width` (px, pt, %), `align`, `border`, `cellspacing`, `bgcolor`, `dir`; style: `margin` (`auto` to center), `padding` |
+| `table` | `width` (px, pt, %), `align`, `border`, `cellspacing`, `dir`; style: `margin` (`auto` to center), `padding`. ⚠️ **`bgcolor`/`background-color` on `<table>` is NOT applied** (issue #12) — put the background on the cells (`td`/`tr`) instead |
 | `td`/`th` | `colspan`, `rowspan`, `width` (px, pt, %), `bgcolor`, `valign`, `align`; style: `writing-mode: tb-lr\|tb-rl` (vertical text), `padding` |
 | `tr` | `height` (px, pt, %), `bgcolor`, `valign`, `align` |
 | `caption` | `align`; style: `text-align` |
@@ -170,7 +170,7 @@ Block/structure: `article`, `aside`, `blockquote`, `body`, `br`, `div`, `dl` (`d
 | `writing-mode` | `tb-lr`, `tb-rl` (vertical text, on `td`) |
 | `border`, `border-style`, `border-width`, `border-color` | `dotted`, `dashed`, `solid`, `double`, `inset`, `outset`, `none`; `border-width` only px or `medium`/`thick`/`thin`; `border` shorthand (e.g. `1px dashed rgba(0,0,0,.4)`) |
 
-Table (`table`, `tr`, `td`, `thead`, `tbody`, `tfoot`): `bgcolor`, `valign`, `align` and styles `background-color`, `vertical-align`, `text-align`, `width`.
+Table (`tr`, `td`, `thead`, `tbody`, `tfoot`): `bgcolor`, `valign`, `align` and styles `background-color`, `vertical-align`, `text-align`, `width`. ⚠️ The `<table>` element itself ignores `bgcolor`/`background-color` (issue #12) — apply backgrounds on `tr`/`td` only.
 
 ---
 
