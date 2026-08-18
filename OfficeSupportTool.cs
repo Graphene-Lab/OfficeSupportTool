@@ -240,8 +240,38 @@ namespace AIOrchestrator.API
 
         private static string TemplateGuidelines => TemplateGuidelinesLazy.Value;
 
-        /// <summary>Compact fallback copy of the guidelines (the full version lives in
-        /// Assets/TEMPLATE-GUIDELINES.md and is packed with the package).</summary>
+        /// <summary>Minimal LLM-facing rules for creating/editing a document's HTML, loaded from the
+        /// packed asset (assets/essential-guidelines.md); attached to the create/update prompts as
+        /// "Follow these rules:" with a ```text fence. Falls back to a compact built-in copy.</summary>
+        private static readonly Lazy<string> EssentialGuidelinesLazy = new(() =>
+        {
+            try
+            {
+                var file = Path.Combine(AppContext.BaseDirectory, "assets", "essential-guidelines.md");
+                if (File.Exists(file)) return File.ReadAllText(file, Encoding.UTF8);
+            }
+            catch { }
+            return BuiltInEssential;
+        }, LazyThreadSafetyMode.ExecutionAndPublication);
+
+        private static string EssentialGuidelines => EssentialGuidelinesLazy.Value;
+
+        /// <summary>Compact fallback copy of the essential rules (the full version lives in
+        /// Assets/ESSENTIAL-GUIDELINES.md and is packed with the package).</summary>
+        private const string BuiltInEssential = """
+            You are writing HTML code that will be converted into a Word (DOCX) document. Follow these rules strictly.
+            Allowed tags: a abbr acronym b blockquote body br cite del dfn div dl dt dd em figure figcaption font h1 h2 h3 h4 h5 h6 hr i img li ol p pre q s section span strike strong sub sup table caption col colgroup thead tbody tfoot tr th td time u ul svg
+            - Inline CSS only (style="..." attributes): text-align, color, background-color, text-decoration, font-style, font-weight, font-size, font-family, font-variant, text-indent, line-height, margin, padding, border(-style/-width/-color), page-break-before/after (always), break-before/after (page). Forbidden: <style>, external CSS, <script>, flexbox/grid, display, position, float, external image URLs.
+            - Put background-color on td or tr ONLY, never on <table> (it is ignored and the background disappears).
+            - Every svg needs width/height with an explicit unit (e.g. 46px); bare numbers produce an invisible 0x0 image.
+            - Do NOT nest HTML comments (a comment must never contain another <!-- or --> inside it); keep marker comments like <!-- SLA-ROW --> outside any banner comment.
+            - Replace every {{ placeholder_name }} with real data; keep all inline styles; money values keep the {{ currency }} placeholder; images must be inline/data-URI.
+            - Be faithful to the existing document/template: keep structure and inline styles; change ONLY what is requested; the exact strings of the change request MUST appear verbatim.
+            - Output ONLY full HTML code. No opening or closing comments, no fences, no explanations.
+            """;
+
+        /// <summary>Compact fallback copy of the design guidelines (the full version lives in
+        /// Assets/DESIGN-GUIDELINES.md and is packed with the package).</summary>
         private const string BuiltInGuidelines = """
             Design tokens: font 'Calibri','Carlito',sans-serif 10pt; body #1F2937; headings #111827;
             secondary #4B5563; labels #6B7280; muted #9CA3AF; neutral fill #F8FAFC; footer band #F3F4F6.
@@ -449,9 +479,11 @@ namespace AIOrchestrator.API
                 sb.AppendLine("```");
             }
             sb.AppendLine();
-            sb.AppendLine("- Be faithful to the template: keep its structure, CSS classes and inline styles unchanged; do not add styling, graphics or visual elements beyond the template.");
-            sb.AppendLine("- Replace every {{ placeholder }} with the real data from the note and the context; follow the template's HTML comments (e.g. duplicate the marked rows once per line item).");
-            sb.AppendLine("- Keep the template's HTML comments single-level: never put a <!-- inside another comment (a nested <!-- makes the text after the inner --> visible in the document).");
+            sb.AppendLine("Follow these rules:");
+            sb.AppendLine("```text");
+            sb.AppendLine(EssentialGuidelines.TrimEnd());
+            sb.AppendLine("```");
+            sb.AppendLine("- Follow the template's HTML comments (e.g. duplicate the marked rows once per line item).");
             sb.AppendLine("- Only inline CSS is supported: no <style>, no external CSS, no scripts, no flexbox/grid.");
             if (images.Count > 0)
             {
@@ -481,7 +513,10 @@ namespace AIOrchestrator.API
             sb.AppendLine("Apply the requested changes LITERALLY to the HTML below:");
             sb.AppendLine("- The exact strings in the changes request (titles, labels, text, values) MUST appear verbatim in the output — do not reword or replace them.");
             sb.AppendLine("- Change ONLY what the changes request; keep the rest of the content, wording and structure identical.");
-            sb.AppendLine("- Keep the template structure and all inline styles unchanged; only inline CSS is supported (no <style>, no scripts, no flexbox/grid).");
+            sb.AppendLine("Follow these rules:");
+            sb.AppendLine("```text");
+            sb.AppendLine(EssentialGuidelines.TrimEnd());
+            sb.AppendLine("```");
             sb.AppendLine();
             sb.AppendLine("Current document HTML:");
             sb.AppendLine("```html");

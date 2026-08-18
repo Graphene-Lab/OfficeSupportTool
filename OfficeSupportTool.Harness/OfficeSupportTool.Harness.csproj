@@ -19,6 +19,7 @@
   <ItemGroup>
     <None Include="..\Assets\*.html" Link="assets\templates\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Assets\DESIGN-GUIDELINES.md" Link="assets\design-guidelines.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Assets\ESSENTIAL-GUIDELINES.md" Link="assets\essential-guidelines.md" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

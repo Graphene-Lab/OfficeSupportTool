@@ -1,15 +1,13 @@
-# OfficeSupportTool — Document Template Design Guidelines
+# OfficeSupportTool — Design Guidelines (complementary)
 
-Design directives for creating HTML templates for **HtmlToOpenXml** (HTML → DOCX).
-All templates live in this `Assets` folder and must be visually uniform, professionally styled,
-and "LLM-first": easy for an LLM to edit and repurpose.
+Visual and structural system for the document templates in this `Assets` folder. This file is the
+**complement** of [`ESSENTIAL-GUIDELINES.md`](ESSENTIAL-GUIDELINES.md): the essential file holds the
+strictly required HTML/CSS rules (allowed tags, inline-only CSS, backgrounds, SVG units, comments,
+placeholders) that every document must obey; this file defines the **design language** — how the
+documents look, how the sets are colored, and how the templates are structured.
 
-This is the **single design guide** (valid for humans and LLM alike). The environment-specific
-parts (local icon paths, verification harness, converter reference) live in
-[`PRODUCTION-GUIDELINES.md`](PRODUCTION-GUIDELINES.md) — never pass that file to the LLM.
-
-The converter supports only the HTML/CSS subset listed in §6. Inline CSS only: no `<style>`,
-no external CSS, no scripts, no flexbox/grid, no external image URLs.
+Reference the converter specs in `../HtmlToOpenXml-Guide.md`; environment-specific tooling (local
+icon paths, verification harness) lives in [`PRODUCTION-GUIDELINES.md`](PRODUCTION-GUIDELINES.md).
 
 ---
 
@@ -147,8 +145,7 @@ Every template follows the same block order:
 ## 4. Icons (SVG)
 
 - **Badge recipe (inline SVG):** the header badge is an inline SVG circle with the set pastel
-  fill and the set ink strokes. **Always give `width`/`height` an explicit unit (`px`)** —
-  HtmlToOpenXml's `Unit.Parse` rejects bare numbers (`width="46"`) and produces a 0×0 image:
+  fill and the set ink strokes (the svg `width`/`height` MUST carry a unit — see the essential rules):
   ```html
   <svg width="46px" height="46px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <title>{{ Document Title }}</title>
@@ -169,52 +166,23 @@ Every template follows the same block order:
 
 ---
 
-## 5. Placeholders and LLM directives
+## 5. Placeholders and template directives
 
 - **Placeholder format:** `{{ placeholder_name }}` — lowercase snake_case, used for every variable
   field (dates, names, amounts, clauses, table cells…).
-- **LLM comments:** HTML comments (`<!-- … -->`) at the top of the file and next to repetitive
-  structures. They must state:
+- **Template comments:** HTML comments (`<!-- … -->`) at the top of the file and next to repetitive
+  structures (see the essential rules for the no-nesting constraint). They must state:
   - what the template is and the converter constraints (inline CSS only, no scripts),
   - which row to duplicate (e.g. line items, risk rows) with a clear marker comment,
   - any color rule the LLM must apply (e.g. risk-level cell colors),
   - where a `page-break` is placed and why,
   - how to move the footer into `converter.ParseFooter()` if repeating on every page is desired.
-  - **Never nest comments:** a `<!-- … -->` must NOT contain another `<!--`/`-->` inside it (invalid
-    HTML — the inner `-->` closes the outer comment and the remaining text becomes visible in the
-    document). Keep the header banner flat; put row markers such as `<!-- SLA-ROW -->` directly above
-    the row, outside the banner.
 - **Money values:** always append the `{{ currency }}` placeholder to amounts.
 - **Keep inline styles:** the LLM must preserve all `style="…"` attributes when filling data.
 
 ---
 
-## 6. Supported HTML/CSS subset (do not exceed)
-
-**Allowed tags:** `a abbr acronym b blockquote body br cite del dfn div dl dt dd em figure figcaption
-font h1–h6 hr i img li ol p pre q s section span strike strong sub sup table caption col colgroup
-thead tbody tfoot tr th td time u ul svg`
-
-**Allowed CSS (inline `style` only):** `text-align`, `color`, `background-color`, `text-decoration`,
-`font-style`, `font-weight`, `font-size`, `font-family`, `font-variant`, `text-indent`, `line-height`,
-`margin`, `padding`, `border(-style/-width/-color)`, `page-break-before/after` (`always`),
-`break-before/after` (`page`), `writing-mode` (`tb-lr`, `tb-rl`), `page-orientation` (only `body`,
-`landscape`).
-
-**Background colors:** apply `background-color` **on `td` or `tr` only — NEVER on `<table>`**:
-HtmlToOpenXml ignores table-level backgrounds (issue #12) and the strip silently disappears,
-leaving the text on white. `tr` backgrounds propagate to its cells.
-
-**Also allowed attributes:** `width`/`height` (px, pt, %), `align`, `valign`, `border`, `bgcolor`,
-`cellspacing`, `colspan`, `rowspan`, `dir`, `lang`, `class` (only for a Word style that exists or will
-be added via `StyleMissing`), `id`/`name` (bookmarks/anchors), `start`/`type` on `ol`.
-
-**Forbidden:** `<style>`, external CSS, `<script>`, flexbox/grid, `display`, `position`, `float`,
-images from external URLs (all assets must be inline/data-URI), `webp`, everything not listed above.
-
----
-
-## 7. Do's and Don'ts
+## 6. Do's and Don'ts
 
 **Do**
 - Use **pastel fills** (`pastel`) only for graphic elements: badge, section bars, table headers,
@@ -227,20 +195,20 @@ images from external URLs (all assets must be inline/data-URI), `webp`, everythi
 
 **Don't**
 - No saturated full-width bands (no dark blue/purple/red headers), no dark footer bands.
-- No `background-color` on `<table>` (ignored by the converter — see §6).
+- No `background-color` on `<table>` (ignored by the converter — see the essential rules).
 - No `style` on `font` for `text-align`; no `page-orientation` outside `body`.
 - No placeholder format other than `{{ … }}`.
 - No unnecessary repetition: reuse tokens from §2, never invent new hex values for neutral text.
 
 ---
 
-## 8. Checklist for creating a new template
+## 7. Checklist for creating a new template
 
 1. Identify the set (A–G) → pick `pastel` from the manifest, `ink`, `rule`.
 2. Build the badge per §4 (simple geometric paths; the icon is auto-resolved at runtime).
 3. Assemble the skeleton (§3) with the correct tokens; keep the meta strip 3–4 fields.
 4. Write sections with real structure (tables for tabular data, lists where natural); mark duplicable
-   rows with LLM comments.
+   rows with template comments.
 5. Add placeholders everywhere; keep inline styles intact; put money values with `{{ currency }}`.
 6. Add page breaks before signatures/confidential parts.
 7. The template must be professionally valid: balanced structure, correct table nesting,

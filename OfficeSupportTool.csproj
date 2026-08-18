@@ -54,6 +54,12 @@
       <Pack>true</Pack>
       <PackagePath>lib/$(TargetFramework)/assets/design-guidelines.md</PackagePath>
     </None>
+    <None Update="Assets\ESSENTIAL-GUIDELINES.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>assets/essential-guidelines.md</TargetPath>
+      <Pack>true</Pack>
+      <PackagePath>lib/$(TargetFramework)/assets/essential-guidelines.md</PackagePath>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Graphene.AIOrchestrator" Version="1.*" />

@@ -23,7 +23,8 @@ host resolves automatically.
 ## Converter reference
 
 Full HtmlToOpenXml capabilities and limits: `../HtmlToOpenXml-Guide.md` (in this repository).
-DESIGN-GUIDELINES §6 is the condensed subset that templates must not exceed.
+`ESSENTIAL-GUIDELINES.md` is the strictly-required HTML/CSS subset (attached to the LLM prompts as
+"Follow these rules:"); `DESIGN-GUIDELINES.md` is the complementary design system.
 
 ## Verification harness (before delivery)
 
