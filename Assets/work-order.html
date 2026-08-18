@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     WORK ORDER — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Duplicate the rows marked below (materials, labor items) once per entry,
+         renumbering the leading column and keeping the zebra striping (#F8FAFC on odd rows).
+       - Money values always carry {{ currency }}.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Work Order</title>
+              <circle cx="12" cy="12" r="11.5" fill="#CCFBF1"/>
+              <g stroke="#115E59" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"/>
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:20pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Work Order</div>
+      <span style="background-color:#CCFBF1; color:#115E59; font-weight:bold; font-size:8pt; padding:2px 10px;">{{ work_order_status }}</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#5EEAD4; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td width="20%" style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">WO No.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ work_order_number }}</div>
+    </td>
+    <td width="20%" style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ work_order_date }}</div>
+    </td>
+    <td width="20%" style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Priority</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ work_order_priority }}</div>
+    </td>
+    <td width="20%" style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Due Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ due_date }}</div>
+    </td>
+    <td width="20%" style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Status</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ work_order_status }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ REQUESTED BY / ASSIGNED TO ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:12px 10px 0 0; vertical-align:top;">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+        <tr>
+          <td style="padding:10px 14px;">
+            <div style="font-size:9pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Requested By</div>
+            <div style="font-size:10pt; color:#1F2937;">{{ requested_by }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ requested_by_department }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ requested_by_phone }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="50%" style="padding:12px 0 0 10px; vertical-align:top;">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+        <tr>
+          <td style="padding:10px 14px;">
+            <div style="font-size:9pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Assigned To</div>
+            <div style="font-size:10pt; color:#1F2937;">{{ assigned_to }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ assigned_to_role }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ assigned_to_phone }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ 1. WORK DESCRIPTION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CCFBF1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#115E59; font-variant:small-caps;">1. Work Description</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">{{ work_description }}</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#CCFBF1;">
+    <th width="25%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:left;">Location</th>
+    <th width="25%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:left;">Asset / Equipment</th>
+    <th width="50%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:left;">Special Instructions</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ work_location }}</td>
+    <td style="padding:6px 8px;">{{ work_asset }}</td>
+    <td style="padding:6px 8px;">{{ work_special_instructions }}</td>
+  </tr>
+</table>
+
+<!-- ============ 2. MATERIALS & PARTS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CCFBF1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#115E59; font-variant:small-caps;">2. Materials and Parts</span>
+    </td>
+  </tr>
+</table>
+<!-- LLM: MATERIALS ROW — duplicate this <tr> once per material; update #, item, qty, unit and notes. -->
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#CCFBF1;">
+    <th width="7%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:center;">#</th>
+    <th width="33%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:left;">Item</th>
+    <th width="12%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:center;">Qty</th>
+    <th width="13%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:center;">Unit</th>
+    <th width="35%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:left;">Notes</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">1</td>
+    <td style="padding:6px 8px;">{{ material_item }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ material_quantity }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ material_unit }}</td>
+    <td style="padding:6px 8px;">{{ material_notes }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px; text-align:center;">2</td>
+    <td style="padding:6px 8px;">{{ material_item }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ material_quantity }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ material_unit }}</td>
+    <td style="padding:6px 8px;">{{ material_notes }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">3</td>
+    <td style="padding:6px 8px;">{{ material_item }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ material_quantity }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ material_unit }}</td>
+    <td style="padding:6px 8px;">{{ material_notes }}</td>
+  </tr>
+</table>
+
+<!-- ============ 3. LABOR ESTIMATE ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CCFBF1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#115E59; font-variant:small-caps;">3. Labor Estimate</span>
+    </td>
+  </tr>
+</table>
+<!-- LLM: LABOR ROW — duplicate this <tr> once per labor task; update task, hours, rate and amount,
+     then recompute the totals in the last row. Money values keep {{ currency }}. -->
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#CCFBF1;">
+    <th width="40%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:left;">Task</th>
+    <th width="15%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:center;">Est. Hours</th>
+    <th width="20%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:right;">Rate ({{ currency }})</th>
+    <th width="25%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:right;">Amount ({{ currency }})</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ labor_task }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ labor_estimated_hours }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ labor_rate }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ labor_amount }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ labor_task }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ labor_estimated_hours }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ labor_rate }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ labor_amount }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ labor_task }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ labor_estimated_hours }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ labor_rate }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ labor_amount }}</td>
+  </tr>
+  <!-- LLM: TOTALS ROW — this is the pastel highlight row; keep it as the last row of the table. -->
+  <tr style="background-color:#CCFBF1;">
+    <td style="padding:6px 8px; font-size:10pt; font-weight:bold; color:#115E59; text-align:right;">Total Estimated Labor</td>
+    <td style="padding:6px 8px; font-size:10pt; font-weight:bold; color:#115E59; text-align:center;">{{ labor_total_hours }}</td>
+    <td style="padding:6px 8px; font-size:10pt; font-weight:bold; color:#115E59; text-align:center;">&nbsp;</td>
+    <td style="padding:6px 8px; font-size:10pt; font-weight:bold; color:#115E59; text-align:right;">{{ labor_total_amount }} {{ currency }}</td>
+  </tr>
+</table>
+
+<!-- ============ 4. SAFETY REQUIREMENTS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CCFBF1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#115E59; font-variant:small-caps;">4. Safety Requirements</span>
+    </td>
+  </tr>
+</table>
+<ul style="font-size:10pt;">
+  <li>{{ safety_requirement_1 }}</li>
+  <li>{{ safety_requirement_2 }}</li>
+  <li>{{ safety_requirement_3 }}</li>
+  <li>{{ safety_requirement_4 }}</li>
+</ul>
+
+<!-- ============ 5. COMPLETION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CCFBF1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#115E59; font-variant:small-caps;">5. Completion</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#CCFBF1;">
+    <th width="20%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:left;">Date Completed</th>
+    <th width="20%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:left;">Hours Used</th>
+    <th width="60%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:left;">Completion Notes</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ completion_date }}</td>
+    <td style="padding:6px 8px;">{{ hours_used }}</td>
+    <td style="padding:6px 8px;">{{ completion_notes }}</td>
+  </tr>
+</table>
+
+<!-- ============ NOTES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CCFBF1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Notes</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:10px 14px; font-size:9pt; color:#4B5563;">
+      {{ work_order_notes }}
+    </td>
+  </tr>
+</table>
+
+<!-- LLM: page break before the approvals so they start on a fresh page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ APPROVALS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CCFBF1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Approvals</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="33%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Requested By</div>
+      <div style="font-size:10pt;">{{ requested_by }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ requested_by_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="33%" style="padding:16px 10px 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Assigned To</div>
+      <div style="font-size:10pt;">{{ assigned_to }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ assigned_to_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="34%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Approved By</div>
+      <div style="font-size:10pt;">{{ approved_by }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ approved_by_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#5EEAD4; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">Work order {{ work_order_number }} &mdash; internal service record of {{ company_name }}.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

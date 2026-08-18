@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     ARTICLES OF INCORPORATION — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Keep the article structure; rephrase or extend clause text as needed
+         while preserving the article numbering.
+       - In the Share Capital, Directors and Incorporators tables, duplicate the
+         rows marked below once per share class / director / incorporator.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Articles of Incorporation</title>
+              <circle cx="12" cy="12" r="11.5" fill="#CBD5E1"/>
+              <g stroke="#334155" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 12h4" />
+                <path d="M10 8h4" />
+                <path d="M14 21v-3a2 2 0 0 0-4 0v3" />
+                <path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2" />
+                <path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" />
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:18pt; font-weight:bold; color:#334155; font-variant:small-caps;">Articles of<br />Incorporation</div>
+      <div style="font-size:8pt; color:#6B7280;">As filed with {{ registration_authority }}</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#94A3B8; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Registration Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ registration_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Registration No.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ registration_number }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Jurisdiction</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ jurisdiction }}</div>
+    </td>
+  </tr>
+</table>
+
+<p style="font-size:10pt; margin-top:12pt;">
+  The undersigned incorporators, acting as incorporators of a business corporation under the laws of
+  {{ jurisdiction }}, adopt the following Articles of Incorporation:
+</p>
+
+<!-- ============ 1. NAME ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">1. Name of the Company</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>1.1</b>&nbsp;&nbsp;The name of the Company is <b>{{ company_legal_name }}</b>.</p>
+<p style="font-size:10pt;"><b>1.2</b>&nbsp;&nbsp;The Company may transact business under the name {{ company_trade_name }} and may adopt and use any other trade name permitted by law.</p>
+
+<!-- ============ 2. REGISTERED OFFICE ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">2. Registered Office</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>2.1</b>&nbsp;&nbsp;The registered office of the Company is located at {{ registered_office_address }}.</p>
+<p style="font-size:10pt;"><b>2.2</b>&nbsp;&nbsp;The registered agent of the Company is {{ registered_agent_name }}, with an office at {{ registered_agent_address }}.</p>
+<p style="font-size:10pt;"><b>2.3</b>&nbsp;&nbsp;The Board of Directors may change the registered office or the registered agent by filing the required notice in accordance with applicable law.</p>
+
+<!-- ============ 3. CORPORATE PURPOSE ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">3. Corporate Purpose</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>3.1</b>&nbsp;&nbsp;The purpose for which the Company is incorporated is {{ corporate_purpose }}.</p>
+<p style="font-size:10pt;"><b>3.2</b>&nbsp;&nbsp;The Company may exercise all powers conferred on corporations by the laws of {{ jurisdiction }}, including the power to acquire, hold and dispose of property, to enter into contracts, to invest funds, and to engage in {{ principal_activities }}.</p>
+
+<!-- ============ 4. SHARE CAPITAL ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">4. Share Capital</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>4.1</b>&nbsp;&nbsp;The authorized share capital of the Company is <b>{{ authorized_capital }} {{ currency }}</b>, divided into {{ total_shares_authorized }} shares as set out below.</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#CBD5E1;">
+    <th width="26%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Share Class</th>
+    <th width="24%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Par Value ({{ currency }})</th>
+    <th width="25%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:right;">Shares Authorized</th>
+    <th width="25%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:right;">Shares Issued</th>
+  </tr>
+  <!-- LLM: SHARE CLASS ROW — duplicate this <tr> once per share class, updating class, par value and share counts. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ share_class_name }}</td>
+    <td style="padding:6px 8px;">{{ share_class_par_value }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ share_class_authorized }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ share_class_issued }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ share_class_name }}</td>
+    <td style="padding:6px 8px;">{{ share_class_par_value }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ share_class_authorized }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ share_class_issued }}</td>
+  </tr>
+  <tr style="background-color:#CBD5E1;">
+    <td colspan="2" style="padding:6px 8px; font-size:10pt; font-weight:bold; color:#334155;">Total</td>
+    <td style="padding:6px 8px; font-size:10pt; font-weight:bold; color:#334155; text-align:right;">{{ total_shares_authorized }}</td>
+    <td style="padding:6px 8px; font-size:10pt; font-weight:bold; color:#334155; text-align:right;">{{ total_shares_issued }}</td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>4.2</b>&nbsp;&nbsp;The rights, preferences and restrictions of each share class are set out in the Bylaws and in any resolution of the Board of Directors.</p>
+
+<!-- ============ 5. DIRECTORS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">5. Directors</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>5.1</b>&nbsp;&nbsp;The Board of Directors shall consist of {{ number_of_directors }} directors. The directors named below shall serve until their successors are duly elected and qualified.</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#CBD5E1;">
+    <th width="8%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:center;">#</th>
+    <th width="46%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Name</th>
+    <th width="46%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Role</th>
+  </tr>
+  <!-- LLM: DIRECTOR ROW — duplicate this <tr> once per director, renumbering. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">1</td>
+    <td style="padding:6px 8px;">{{ director_name }}</td>
+    <td style="padding:6px 8px;">{{ director_role }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px; text-align:center;">2</td>
+    <td style="padding:6px 8px;">{{ director_name }}</td>
+    <td style="padding:6px 8px;">{{ director_role }}</td>
+  </tr>
+</table>
+
+<!-- ============ 6. INCORPORATORS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">6. Incorporators</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#CBD5E1;">
+    <th width="8%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:center;">#</th>
+    <th width="34%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Name</th>
+    <th width="40%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Address</th>
+    <th width="18%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Citizenship</th>
+  </tr>
+  <!-- LLM: INCORPORATOR ROW — duplicate this <tr> once per incorporator, renumbering. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">1</td>
+    <td style="padding:6px 8px;">{{ incorporator_name }}</td>
+    <td style="padding:6px 8px;">{{ incorporator_address }}</td>
+    <td style="padding:6px 8px;">{{ incorporator_citizenship }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px; text-align:center;">2</td>
+    <td style="padding:6px 8px;">{{ incorporator_name }}</td>
+    <td style="padding:6px 8px;">{{ incorporator_address }}</td>
+    <td style="padding:6px 8px;">{{ incorporator_citizenship }}</td>
+  </tr>
+</table>
+
+<!-- ============ 7. DURATION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">7. Duration</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>7.1</b>&nbsp;&nbsp;The duration of the Company is {{ company_duration }}.</p>
+<p style="font-size:10pt;"><b>7.2</b>&nbsp;&nbsp;The Company may be dissolved voluntarily by resolution of the shareholders or involuntarily in accordance with applicable law.</p>
+
+<!-- ============ 8. EXECUTION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">8. Execution</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>8.1</b>&nbsp;&nbsp;These Articles of Incorporation are executed by each incorporator on the date indicated and shall take effect upon filing with the {{ registration_authority }}.</p>
+<p style="font-size:10pt;"><b>8.2</b>&nbsp;&nbsp;IN WITNESS WHEREOF, the undersigned incorporators execute these Articles of Incorporation on {{ execution_date }} in {{ place_of_execution }}.</p>
+
+<!-- LLM: page break before the signature block so it starts on a fresh page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ SIGNATURES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">Execution by Incorporators</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="33%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">Incorporator 1</div>
+      <div style="font-size:10pt;">{{ incorporator_1_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ incorporator_1_address }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="33%" style="padding:16px 10px 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">Incorporator 2</div>
+      <div style="font-size:10pt;">{{ incorporator_2_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ incorporator_2_address }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="34%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">Incorporator 3</div>
+      <div style="font-size:10pt;">{{ incorporator_3_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ incorporator_3_address }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#94A3B8; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This document is a public record filed with the {{ registration_authority }}.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

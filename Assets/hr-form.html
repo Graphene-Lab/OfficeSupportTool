@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     HR FORM — generic internal HR form (leave/absence, request, claim)
+     — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Section 1: mark the applicable option by replacing the blank ballot box
+         &#9744; with the checked box &#9745;.
+       - Section 2: duplicate the DETAIL ROW marked below once per additional field.
+       - Section 3: duplicate the ATTACHMENT item marked below once per document.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>HR Form</title>
+              <circle cx="12" cy="12" r="11.5" fill="#EDE9FE"/>
+              <g stroke="#5B21B6" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 4h2a2 2 0 0 1 2 2v2" />
+                <path d="M21.34 15.664a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" />
+                <path d="M8 22H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                <rect x="8" y="2" width="8" height="4" rx="1" />
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:20pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">HR<br />Form</div>
+      <div style="font-size:8pt; color:#6B7280;">{{ form_type }}</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#A78BFA; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 16px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Form No.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ form_number }}</div>
+    </td>
+    <td style="padding:8px 16px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ form_date }}</div>
+    </td>
+    <td style="padding:8px 16px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Employee Name</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ employee_name }}</div>
+    </td>
+    <td style="padding:8px 16px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Employee ID</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ employee_id }}</div>
+    </td>
+    <td style="padding:8px 16px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Department</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ department }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ 1. REASON / REQUEST TYPE ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EDE9FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">1. Reason / Request Type</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#EDE9FE;">
+    <th width="10%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:center;">Select</th>
+    <th width="90%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:left;">Reason / Request Type</th>
+  </tr>
+  <!-- LLM: mark the applicable option by replacing the blank box &#9744; with the checked box &#9745;. -->
+  <tr style="background-color:#F8FAFC;">
+    <td align="center" style="padding:6px 8px;">&#9744;</td>
+    <td style="padding:6px 8px;">Leave of absence (annual / sick / unpaid)</td>
+  </tr>
+  <tr>
+    <td align="center" style="padding:6px 8px;">&#9744;</td>
+    <td style="padding:6px 8px;">Expense / reimbursement claim</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td align="center" style="padding:6px 8px;">&#9744;</td>
+    <td style="padding:6px 8px;">Training / development request</td>
+  </tr>
+  <tr>
+    <td align="center" style="padding:6px 8px;">&#9744;</td>
+    <td style="padding:6px 8px;">Equipment / access request</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td align="center" style="padding:6px 8px;">&#9744;</td>
+    <td style="padding:6px 8px;">Other &mdash; {{ form_reason }}</td>
+  </tr>
+</table>
+<p style="font-size:9pt; color:#4B5563;">Brief description of the reason / request: <b>{{ form_reason }}</b></p>
+
+<!-- ============ 2. DETAILS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EDE9FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">2. Details</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#EDE9FE;">
+    <th width="30%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:left;">Field</th>
+    <th width="70%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:left;">Value</th>
+  </tr>
+  <!-- LLM: DETAIL ROW — duplicate this <tr> once per additional field; keep the label/value layout. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">From date</td>
+    <td style="padding:6px 8px;">{{ from_date }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">To date</td>
+    <td style="padding:6px 8px;">{{ to_date }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">Days</td>
+    <td style="padding:6px 8px;">{{ number_of_days }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">Notes</td>
+    <td style="padding:6px 8px;">{{ details_notes }}</td>
+  </tr>
+</table>
+
+<!-- ============ 3. ATTACHMENTS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EDE9FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">3. Attachments / Supporting Documents</span>
+    </td>
+  </tr>
+</table>
+<ul style="font-size:10pt; margin-top:4pt; margin-bottom:4pt;">
+  <!-- LLM: ATTACHMENT ITEM — duplicate this <li> once per supporting document. -->
+  <li>{{ attachment_1 }}</li>
+  <li>{{ attachment_2 }}</li>
+  <li>{{ attachment_3 }}</li>
+</ul>
+
+<!-- ============ 4. APPROVALS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EDE9FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">4. Approvals</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="33%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">Requester</div>
+      <div style="font-size:10pt;">{{ employee_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ employee_id }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="33%" style="padding:16px 10px 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">Immediate Manager</div>
+      <div style="font-size:10pt;">{{ manager_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ manager_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="34%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">HR</div>
+      <div style="font-size:10pt;">{{ hr_representative }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ hr_representative_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#A78BFA; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This form is an internal HR document of {{ company_name }}.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

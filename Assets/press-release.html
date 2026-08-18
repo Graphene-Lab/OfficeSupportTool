@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     PRESS RELEASE — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Keep the release structure: immediate-release line, dateline, headline,
+         subheadline, body, quote, "About" boilerplate, media contact box.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Press Release</title>
+              <circle cx="12" cy="12" r="11.5" fill="#FEF3C7"/>
+              <g stroke="#92400E" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/>
+                <path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14"/>
+                <path d="M8 6v8"/>
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:20pt; font-weight:bold; color:#92400E; font-variant:small-caps;">Press<br />Release</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FBBF24; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ FOR IMMEDIATE RELEASE ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td align="center" style="padding:10pt 20px 2pt 20px;">
+      <span style="font-size:10pt; font-weight:bold; color:#92400E;">FOR IMMEDIATE RELEASE</span>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC; margin-top:6pt;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Release Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ release_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Distribution</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ press_distribution }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Media Contact</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ press_contact_name }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ DATELINE ============ -->
+<p style="font-size:10pt; margin:12pt 0 4pt 0;">{{ dateline_city }}, {{ release_date }} &mdash;</p>
+
+<!-- ============ HEADLINE & SUBHEADLINE ============ -->
+<div style="font-size:16pt; font-weight:bold; color:#111827; margin-top:4pt;">{{ press_headline }}</div>
+<div style="font-size:11pt; font-style:italic; color:#4B5563; margin-top:6pt;">{{ press_subheadline }}</div>
+
+<!-- ============ BODY ============ -->
+<p style="font-size:10pt; margin:10pt 0 6pt 0;">{{ press_body_1 }}</p>
+<p style="font-size:10pt; margin:6pt 0;">{{ press_body_2 }}</p>
+<p style="font-size:10pt; margin:6pt 0;">{{ press_body_3 }}</p>
+<p style="font-size:10pt; margin:6pt 0;">{{ press_body_4 }}</p>
+
+<!-- ============ QUOTE BLOCK ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#FEF3C7;">
+  <tr>
+    <td style="padding:12px 16px;">
+      <div style="font-size:11pt; font-style:italic; color:#111827;">&ldquo;{{ press_quote }}&rdquo;</div>
+      <div style="font-size:9pt; font-weight:bold; color:#92400E; margin-top:6pt;">&mdash; {{ quote_source }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ ABOUT ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FEF3C7; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#92400E; font-variant:small-caps;">About {{ company_name }}</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt; margin:8pt 0 6pt 0; color:#4B5563;">{{ about_company_text }}</p>
+
+<!-- ============ MEDIA CONTACT BOX ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td width="38%" style="padding:10px 14px; vertical-align:top;">
+      <div style="font-size:9pt; font-weight:bold; color:#92400E; font-variant:small-caps;">Media Contact</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ press_contact_name }}</div>
+    </td>
+    <td width="62%" style="padding:10px 14px; vertical-align:top;">
+      <div style="font-size:9pt; color:#4B5563;">{{ press_contact_email }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ press_contact_phone }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ press_contact_website }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FBBF24; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">For media inquiries, contact {{ press_contact_name }} at {{ press_contact_email }}.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

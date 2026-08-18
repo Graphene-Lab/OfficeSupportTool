@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     NON-DISCLOSURE AGREEMENT (NDA) — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Keep the clause structure; rephrase or extend clause text as needed
+         while preserving the section numbering.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Non-Disclosure Agreement</title>
+              <circle cx="12" cy="12" r="11.5" fill="#F1F5F9"/>
+              <g stroke="#334155" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:18pt; font-weight:bold; color:#334155; font-variant:small-caps;">Non-Disclosure<br />Agreement</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#94A3B8; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Agreement No.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ agreement_number }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ agreement_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Place of Signing</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ place_of_signing }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ PARTIES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:12px 10px 0 0; vertical-align:top;">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+        <tr>
+          <td style="padding:10px 14px;">
+            <div style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">Disclosing Party</div>
+            <div style="font-size:10pt; color:#1F2937;">{{ disclosing_party_name }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ disclosing_party_legal_form }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ disclosing_party_address }}</div>
+            <div style="font-size:9pt; color:#4B5563;">Tax ID: {{ disclosing_party_tax_id }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ disclosing_party_contact }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="50%" style="padding:12px 0 0 10px; vertical-align:top;">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+        <tr>
+          <td style="padding:10px 14px;">
+            <div style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">Receiving Party</div>
+            <div style="font-size:10pt; color:#1F2937;">{{ receiving_party_name }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ receiving_party_legal_form }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ receiving_party_address }}</div>
+            <div style="font-size:9pt; color:#4B5563;">Tax ID: {{ receiving_party_tax_id }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ receiving_party_contact }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<p style="font-size:10pt; margin-top:12pt;">
+  This Non-Disclosure Agreement (the &ldquo;Agreement&rdquo;) is entered into between the Disclosing Party and the
+  Receiving Party (together, the &ldquo;Parties&rdquo;) as of {{ agreement_date }}, to protect the confidentiality of
+  information exchanged in connection with {{ purpose_of_disclosure }}. The Parties agree as follows:
+</p>
+
+<!-- ============ CONFIDENTIAL NOTE ============ -->
+<!-- LLM: this pastel note marks the whole document as confidential; keep the inline styles. -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:8px 12px;">
+      <span style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">Confidential</span>
+      &nbsp;&nbsp;<span style="font-size:9pt; color:#1F2937;">This agreement and all information disclosed under it are strictly confidential and may not be reproduced or distributed without the Disclosing Party's written consent.</span>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ 1. PURPOSE ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">1. Purpose</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>1.1</b>&nbsp;&nbsp;The Disclosing Party may disclose Confidential Information to the Receiving Party solely for the purpose of {{ purpose_of_disclosure }} (the &ldquo;Purpose&rdquo;).</p>
+<p style="font-size:10pt;"><b>1.2</b>&nbsp;&nbsp;The Receiving Party may use the Confidential Information only to evaluate and pursue the Purpose, and for no other purpose whatsoever.</p>
+
+<!-- ============ 2. CONFIDENTIAL INFORMATION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">2. Definition of Confidential Information</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>2.1</b>&nbsp;&nbsp;&ldquo;Confidential Information&rdquo; means all non-public information disclosed by the Disclosing Party to the Receiving Party, whether orally, in writing or by any other means, including business plans, financial data, customer and supplier data, product specifications, source code, trade secrets, inventions and know-how.</p>
+<p style="font-size:10pt;"><b>2.2</b>&nbsp;&nbsp;Information disclosed orally or visually is considered Confidential Information if it is identified as confidential at the time of disclosure or if its confidential character is evident from its nature or the circumstances of disclosure.</p>
+<p style="font-size:10pt;"><b>2.3</b>&nbsp;&nbsp;All information transmitted through {{ disclosure_channel }} in connection with the Purpose is deemed Confidential Information unless expressly marked otherwise.</p>
+
+<!-- ============ 3. EXCLUSIONS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">3. Exclusions</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>3.1</b>&nbsp;&nbsp;Confidential Information does not include information that the Receiving Party can demonstrate:</p>
+<ul style="font-size:10pt;">
+  <li>is or becomes generally available to the public through no breach of this Agreement by the Receiving Party;</li>
+  <li>was lawfully in the Receiving Party's possession, without confidentiality obligations, before disclosure;</li>
+  <li>is received from a third party who is lawfully entitled to disclose it without confidentiality obligations; or</li>
+  <li>is independently developed by the Receiving Party without use of or reference to the Confidential Information.</li>
+</ul>
+
+<!-- ============ 4. OBLIGATIONS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">4. Obligations of the Receiving Party</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>4.1</b>&nbsp;&nbsp;The Receiving Party shall protect the Confidential Information with at least the same degree of care it applies to its own confidential information, and in no event less than reasonable care.</p>
+<p style="font-size:10pt;"><b>4.2</b>&nbsp;&nbsp;The Receiving Party shall use the Confidential Information solely for the Purpose and shall not disclose it to any third party, except to its employees, officers and advisors who need to know it for the Purpose and who are bound by confidentiality obligations no less restrictive than those of this Agreement.</p>
+<p style="font-size:10pt;"><b>4.3</b>&nbsp;&nbsp;The Receiving Party shall not copy or reproduce the Confidential Information except to the extent necessary for the Purpose; all copies remain the property of the Disclosing Party.</p>
+<p style="font-size:10pt;"><b>4.4</b>&nbsp;&nbsp;If the Receiving Party is required by law or a competent authority to disclose Confidential Information, it shall notify the Disclosing Party promptly and cooperate to obtain a protective order or other appropriate remedy.</p>
+<p style="font-size:10pt;"><b>4.5</b>&nbsp;&nbsp;Nothing in this Agreement grants either Party any right, title or interest in the other Party's intellectual property.</p>
+
+<!-- ============ 5. TERM AND SURVIVAL ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">5. Term and Survival</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>5.1</b>&nbsp;&nbsp;This Agreement takes effect on {{ agreement_date }} and remains in force for {{ confidentiality_period }} (the &ldquo;Confidentiality Period&rdquo;).</p>
+<p style="font-size:10pt;"><b>5.2</b>&nbsp;&nbsp;The obligations of the Receiving Party under Clause 4 survive the expiry or termination of this Agreement for a further period of {{ survival_period }}, and with respect to trade secrets, for as long as such information retains its trade secret status.</p>
+
+<!-- ============ 6. RETURN OF MATERIALS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">6. Return of Materials</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>6.1</b>&nbsp;&nbsp;Upon written request or upon completion of the Purpose, the Receiving Party shall return all Confidential Information and copies thereof, or certify in writing that all such materials have been destroyed.</p>
+<p style="font-size:10pt;"><b>6.2</b>&nbsp;&nbsp;The Receiving Party may retain a single archival copy for legal or regulatory compliance purposes, subject to continuing confidentiality obligations.</p>
+
+<!-- ============ 7. REMEDIES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">7. Remedies</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>7.1</b>&nbsp;&nbsp;The Parties acknowledge that damages alone would not be an adequate remedy for breach of this Agreement. The Disclosing Party is entitled to seek injunctive relief and any other equitable remedy, without prejudice to any other rights.</p>
+<p style="font-size:10pt;"><b>7.2</b>&nbsp;&nbsp;The breaching Party shall indemnify the other Party for all documented damages and reasonable costs (including legal fees) arising out of a breach of this Agreement.</p>
+
+<!-- ============ 8. GOVERNING LAW ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">8. Governing Law</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>8.1</b>&nbsp;&nbsp;This Agreement is governed by the laws of {{ governing_law_jurisdiction }}.</p>
+<p style="font-size:10pt;"><b>8.2</b>&nbsp;&nbsp;Any dispute arising out of or in connection with this Agreement shall be subject to the exclusive jurisdiction of the courts of {{ competent_courts }}.</p>
+<p style="font-size:10pt;"><b>8.3</b>&nbsp;&nbsp;This Agreement constitutes the entire agreement between the Parties with respect to its subject matter and may only be amended in writing signed by both Parties.</p>
+
+<!-- LLM: page break before the signature block so it starts on a fresh page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ SIGNATURES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">Signatures</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">IN WITNESS WHEREOF, the Parties have executed this Agreement in duplicate, in {{ place_of_signing }}, on {{ agreement_date }}.</p>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">Disclosing Party</div>
+      <div style="font-size:10pt;">{{ disclosing_party_representative }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ disclosing_party_representative_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">Receiving Party</div>
+      <div style="font-size:10pt;">{{ receiving_party_representative }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ receiving_party_representative_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#94A3B8; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This agreement is confidential and intended solely for the Parties.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

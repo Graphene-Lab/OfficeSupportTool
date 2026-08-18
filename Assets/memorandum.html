@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     MEMORANDUM — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Body: replace each {{ memo_body }} paragraph with real text and duplicate the
+         paragraph element (marked below) once per additional paragraph.
+       - Distribution list: duplicate the row marked below once per recipient, renumbering.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     Set E (Operations & Procedures, teal family): pastel #CCFBF1, ink #115E59, rule #5EEAD4.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Memorandum</title>
+              <circle cx="12" cy="12" r="11.5" fill="#CCFBF1"/>
+              <g stroke="#115E59" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/>
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:20pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Memorandum</div>
+      <div style="font-size:8pt; color:#6B7280;">Internal &mdash; {{ memo_classification }}</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#5EEAD4; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ MEMO HEADER BLOCK ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td width="18%" style="padding:9px 20px; border-bottom:1px solid #E5E7EB;">
+      <div style="font-size:8.5pt; font-weight:bold; color:#115E59; font-variant:small-caps;">To</div>
+    </td>
+    <td width="82%" style="padding:9px 20px; border-bottom:1px solid #E5E7EB;">
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ memo_to }}</div>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:9px 20px; border-bottom:1px solid #E5E7EB;">
+      <div style="font-size:8.5pt; font-weight:bold; color:#115E59; font-variant:small-caps;">From</div>
+    </td>
+    <td style="padding:9px 20px; border-bottom:1px solid #E5E7EB;">
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ memo_from }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ memo_from_role }}</div>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:9px 20px; border-bottom:1px solid #E5E7EB;">
+      <div style="font-size:8.5pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Date</div>
+    </td>
+    <td style="padding:9px 20px; border-bottom:1px solid #E5E7EB;">
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ memo_date }}</div>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:9px 20px; border-bottom:1px solid #E5E7EB;">
+      <div style="font-size:8.5pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Subject</div>
+    </td>
+    <td style="padding:9px 20px; border-bottom:1px solid #E5E7EB;">
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ memo_subject }}</div>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:9px 20px; border-bottom:1px solid #E5E7EB;">
+      <div style="font-size:8.5pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Cc</div>
+    </td>
+    <td style="padding:9px 20px; border-bottom:1px solid #E5E7EB;">
+      <div style="font-size:10pt;">{{ memo_cc }}</div>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:9px 20px;">
+      <div style="font-size:8.5pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Ref. No.</div>
+    </td>
+    <td style="padding:9px 20px;">
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ memo_reference_no }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ BODY ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CCFBF1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Body</span>
+    </td>
+  </tr>
+</table>
+<!-- LLM: BODY PARAGRAPH — replace {{ memo_body }} with real text; duplicate this <p> element
+     once per additional paragraph. -->
+<p style="font-size:10pt;">{{ memo_body }}</p>
+<p style="font-size:10pt;">{{ memo_body }}</p>
+<p style="font-size:10pt;">{{ memo_body }}</p>
+
+<!-- ============ ACTION / DECISION SUMMARY ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CCFBF1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Action / Decision Summary</span>
+    </td>
+  </tr>
+</table>
+<ul style="font-size:10pt;">
+  <li>{{ action_summary_1 }}</li>
+  <li>{{ action_summary_2 }}</li>
+  <li>{{ action_summary_3 }}</li>
+  <li>{{ action_summary_4 }}</li>
+</ul>
+<p style="font-size:9pt; color:#4B5563;">Unless otherwise noted, responses or confirmations are expected by {{ action_summary_due_date }}.</p>
+
+<!-- ============ DISTRIBUTION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CCFBF1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Distribution</span>
+    </td>
+  </tr>
+</table>
+<!-- LLM: DISTRIBUTION ROW — duplicate this <tr> once per recipient; update name, department and #. -->
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#CCFBF1;">
+    <th width="8%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:center;">#</th>
+    <th width="52%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:left;">Name</th>
+    <th width="40%" style="padding:6px 8px; color:#115E59; font-size:9pt; text-align:left;">Department</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center; font-size:9pt;">1</td>
+    <td style="padding:6px 8px; font-size:9pt;">{{ distribution_name }}</td>
+    <td style="padding:6px 8px; font-size:9pt;">{{ distribution_department }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px; text-align:center; font-size:9pt;">2</td>
+    <td style="padding:6px 8px; font-size:9pt;">{{ distribution_name }}</td>
+    <td style="padding:6px 8px; font-size:9pt;">{{ distribution_department }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center; font-size:9pt;">3</td>
+    <td style="padding:6px 8px; font-size:9pt;">{{ distribution_name }}</td>
+    <td style="padding:6px 8px; font-size:9pt;">{{ distribution_department }}</td>
+  </tr>
+</table>
+
+<!-- ============ NOTES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CCFBF1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#115E59; font-variant:small-caps;">Notes</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:10px 14px; font-size:9pt; color:#4B5563;">
+      This memorandum is confidential and intended only for the recipients listed above. It should not
+      be distributed further without the written consent of {{ memo_from }}.
+    </td>
+  </tr>
+</table>
+
+<!-- ============ SIGNATURE (FROM) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="40%" style="padding:16px 0 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#115E59; font-variant:small-caps;">From</div>
+      <div style="font-size:10pt;">{{ memo_from }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ memo_from_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#5EEAD4; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This memorandum is an internal communication of {{ company_name }}.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     PAYROLL — pay slip / payroll record — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - In the Earnings table, duplicate the row marked below once per earning line.
+       - In the Deductions table, duplicate the row marked below once per deduction line.
+       - Keep amounts consistent: always append {{ currency }} to money values.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Payroll</title>
+              <circle cx="12" cy="12" r="11.5" fill="#F5F3FF"/>
+              <g stroke="#5B21B6" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" />
+                <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" />
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:18pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">Payroll</div>
+      <div style="font-size:8pt; color:#6B7280;">Pay slip &mdash; {{ payroll_reference }}</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#A78BFA; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 16px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Pay Period</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ pay_period }}</div>
+    </td>
+    <td style="padding:8px 16px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Pay Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ pay_date }}</div>
+    </td>
+    <td style="padding:8px 16px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Employee Name</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ employee_name }}</div>
+    </td>
+    <td style="padding:8px 16px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Employee ID</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ employee_id }}</div>
+    </td>
+    <td style="padding:8px 16px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Department</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ department }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ 1. EARNINGS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F5F3FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">1. Earnings</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#F5F3FF;">
+    <th width="5%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:center;">#</th>
+    <th width="46%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:left;">Description</th>
+    <th width="15%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:center;">Hours / Units</th>
+    <th width="17%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:right;">Rate ({{ currency }})</th>
+    <th width="17%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:right;">Amount ({{ currency }})</th>
+  </tr>
+  <!-- LLM: EARNINGS ROW — duplicate this <tr> once per earning line; update description, hours/units, rate and amount. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">1</td>
+    <td style="padding:6px 8px;">{{ earning_description }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ earning_hours_units }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ earning_rate }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ earning_amount }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px; text-align:center;">2</td>
+    <td style="padding:6px 8px;">{{ earning_description }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ earning_hours_units }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ earning_rate }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ earning_amount }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">3</td>
+    <td style="padding:6px 8px;">{{ earning_description }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ earning_hours_units }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ earning_rate }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ earning_amount }}</td>
+  </tr>
+  <tr>
+    <td colspan="4" align="right" style="padding:6px 8px; font-weight:bold;">Subtotal &mdash; Gross Earnings</td>
+    <td align="right" style="padding:6px 8px; font-weight:bold;">{{ gross_earnings }} {{ currency }}</td>
+  </tr>
+</table>
+
+<!-- ============ 2. DEDUCTIONS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F5F3FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">2. Deductions</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#F5F3FF;">
+    <th width="72%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:left;">Description</th>
+    <th width="28%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:right;">Amount ({{ currency }})</th>
+  </tr>
+  <!-- LLM: DEDUCTION ROW — duplicate this <tr> once per deduction line; update description and amount. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ deduction_description }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ deduction_amount }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ deduction_description }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ deduction_amount }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ deduction_description }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ deduction_amount }}</td>
+  </tr>
+  <tr>
+    <td align="right" style="padding:6px 8px; font-weight:bold;">Subtotal &mdash; Total Deductions</td>
+    <td align="right" style="padding:6px 8px; font-weight:bold;">{{ total_deductions }} {{ currency }}</td>
+  </tr>
+</table>
+
+<!-- ============ NET PAY (highlight row) ============ -->
+<table width="46%" align="right" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="padding:4px 10px; font-size:9pt; color:#4B5563;">Gross Earnings</td>
+    <td style="padding:4px 10px; font-size:9pt; text-align:right;">{{ gross_earnings }} {{ currency }}</td>
+  </tr>
+  <tr>
+    <td style="padding:4px 10px; font-size:9pt; color:#4B5563;">Total Deductions</td>
+    <td style="padding:4px 10px; font-size:9pt; text-align:right;">&ndash; {{ total_deductions }} {{ currency }}</td>
+  </tr>
+  <!-- LLM: the Net Pay row is the pay slip highlight; keep the pastel fill and bold ink text. -->
+  <tr style="background-color:#F5F3FF;">
+    <td style="padding:6px 10px; font-size:11pt; font-weight:bold; color:#5B21B6;">Net Pay</td>
+    <td style="padding:6px 10px; font-size:11pt; font-weight:bold; color:#5B21B6; text-align:right;">{{ net_pay }} {{ currency }}</td>
+  </tr>
+</table>
+
+<!-- ============ 3. PAYMENT DETAILS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F5F3FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">3. Payment Details</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="25%" style="padding:6px 10px 0 0; vertical-align:top;">
+      <div style="font-size:8pt; font-variant:small-caps; color:#6B7280;">Payment Method</div>
+      <div style="font-size:10pt;">{{ payment_method }}</div>
+    </td>
+    <td width="25%" style="padding:6px 10px 0 0; vertical-align:top;">
+      <div style="font-size:8pt; font-variant:small-caps; color:#6B7280;">Bank Name</div>
+      <div style="font-size:10pt;">{{ bank_name }}</div>
+    </td>
+    <td width="25%" style="padding:6px 10px 0 0; vertical-align:top;">
+      <div style="font-size:8pt; font-variant:small-caps; color:#6B7280;">Account Holder</div>
+      <div style="font-size:10pt;">{{ bank_account_holder }}</div>
+    </td>
+    <td width="25%" style="padding:6px 0 0 0; vertical-align:top;">
+      <div style="font-size:8pt; font-variant:small-caps; color:#6B7280;">Account / IBAN</div>
+      <div style="font-size:10pt;">{{ bank_account_iban }}</div>
+    </td>
+  </tr>
+</table>
+<p style="font-size:9pt; color:#4B5563;">Net pay is transferred to the bank account above on {{ pay_date }}. Statutory contributions and withholdings are reported to the relevant authorities by {{ company_name }}.</p>
+
+<!-- ============ NOTES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F5F3FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">Notes</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:10px 14px; font-size:9pt; color:#4B5563;">
+      {{ payroll_notes }}
+    </td>
+  </tr>
+</table>
+
+<!-- LLM: page break before the signature block so it starts on a fresh page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ SIGNATURES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F5F3FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">Signatures</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">For the Employer</div>
+      <div style="font-size:10pt;">{{ employer_representative }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ employer_representative_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">HR Department</div>
+      <div style="font-size:10pt;">{{ hr_representative }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ hr_representative_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#A78BFA; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This pay slip contains confidential payroll information and is intended solely for the employee.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

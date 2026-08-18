@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     MEETING MINUTES (BOARD OF DIRECTORS) — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - In the Attendees table, duplicate the row marked below once per attendee.
+       - In the Agenda & Resolutions section, duplicate the block marked below once
+         per agenda item, renumbering the item and updating the vote counts.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Board Meeting Minutes</title>
+              <circle cx="12" cy="12" r="11.5" fill="#F1F5F9"/>
+              <g stroke="#334155" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m14 13-8.381 8.38a1 1 0 0 1-3.001-3l8.384-8.381" />
+                <path d="m16 16 6-6" />
+                <path d="m21.5 10.5-8-8" />
+                <path d="m8 8 6-6" />
+                <path d="m8.5 7.5 8 8" />
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:18pt; font-weight:bold; color:#334155; font-variant:small-caps;">Board Meeting<br />Minutes</div>
+      <div style="font-size:8pt; color:#6B7280;">Board of Directors</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#94A3B8; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Meeting Type</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ meeting_type }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ meeting_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Time</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ meeting_time }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Venue</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ meeting_venue }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Meeting No.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ meeting_number }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ ATTENDEES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">Attendance</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#F1F5F9;">
+    <th width="8%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:center;">#</th>
+    <th width="38%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Name</th>
+    <th width="34%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Role</th>
+    <th width="20%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:center;">Status</th>
+  </tr>
+  <!-- LLM: ATTENDEE ROW — duplicate this <tr> once per attendee; set status to Present or Absent. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">1</td>
+    <td style="padding:6px 8px;">{{ attendee_name }}</td>
+    <td style="padding:6px 8px;">{{ attendee_role }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ attendee_status }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px; text-align:center;">2</td>
+    <td style="padding:6px 8px;">{{ attendee_name }}</td>
+    <td style="padding:6px 8px;">{{ attendee_role }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ attendee_status }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">3</td>
+    <td style="padding:6px 8px;">{{ attendee_name }}</td>
+    <td style="padding:6px 8px;">{{ attendee_role }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ attendee_status }}</td>
+  </tr>
+</table>
+<p style="font-size:9pt; color:#4B5563;">Quorum: {{ quorum_requirement }}. A quorum was present at the opening and throughout the meeting.</p>
+<p style="font-size:10pt;">
+  The meeting was called to order at {{ meeting_start_time }} by {{ chairperson_name }}. Guests in
+  attendance: {{ meeting_guests }}.
+</p>
+
+<!-- ============ AGENDA & RESOLUTIONS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">Agenda &amp; Resolutions</span>
+    </td>
+  </tr>
+</table>
+
+<!-- LLM: AGENDA ITEM — duplicate this section bar and the paragraphs below it once per agenda item,
+     renumbering the item and updating discussion, resolution text and vote counts. -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">1. {{ agenda_item_title }}</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>Discussion.</b>&nbsp;&nbsp;{{ discussion_summary }}</p>
+<p style="font-size:10pt;"><b>RESOLVED</b>, that {{ resolution_text }}</p>
+<p style="font-size:10pt; color:#4B5563;">Vote: {{ votes_for }} in favor &middot; {{ votes_against }} against &middot; {{ votes_abstentions }} abstentions</p>
+
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">2. {{ agenda_item_title }}</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>Discussion.</b>&nbsp;&nbsp;{{ discussion_summary }}</p>
+<p style="font-size:10pt;"><b>RESOLVED</b>, that {{ resolution_text }}</p>
+<p style="font-size:10pt; color:#4B5563;">Vote: {{ votes_for }} in favor &middot; {{ votes_against }} against &middot; {{ votes_abstentions }} abstentions</p>
+
+<!-- ============ ADJOURNMENT ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">Adjournment</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">There being no further business, the meeting was adjourned at {{ adjournment_time }}.</p>
+<p style="font-size:10pt;">The next meeting of the Board of Directors is scheduled for {{ next_meeting_date }} at {{ next_meeting_time }}.</p>
+
+<!-- LLM: page break before the signature block so it starts on a fresh page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ SIGNATURES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F1F5F9; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">Approval and Signatures</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">These minutes were approved by the Board of Directors on {{ minutes_approval_date }}.</p>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">Chairperson</div>
+      <div style="font-size:10pt;">{{ chairperson_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">Chairperson of the Board</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">Secretary</div>
+      <div style="font-size:10pt;">{{ secretary_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">Corporate Secretary</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#94A3B8; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">These minutes are confidential and intended solely for Board members and their advisors.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

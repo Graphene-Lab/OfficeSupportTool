@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     HACCP MANUAL — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Duplicate the rows marked below once per team member, product,
+         hazard-analysis step or CCP.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>HACCP Manual</title>
+              <circle cx="12" cy="12" r="11.5" fill="#FECDD3"/>
+              <g stroke="#991B1B" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                <path d="m9 14 2 2 4-4"/>
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:19pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">HACCP<br />Manual</div>
+      <div style="font-size:8pt; color:#6B7280;">Hazard Analysis &amp; Critical Control Points</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FCA5A5; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Manual No.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ manual_number }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Version</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ document_version }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Effective Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ effective_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Site</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ site_name }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ 1. PURPOSE & SCOPE ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FECDD3; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">1. Purpose and Scope</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>1.1 Purpose.</b>&nbsp;&nbsp;This manual defines the food safety management system based on the Hazard Analysis and Critical Control Point (HACCP) principles of Codex Alimentarius, applicable to the activities performed at {{ site_name }}, {{ site_address }}.</p>
+<p style="font-size:10pt;"><b>1.2 Scope.</b>&nbsp;&nbsp;It covers all stages of the process from {{ process_scope_start }} to {{ process_scope_end }}, including receiving, storage, preparation, production, packaging and dispatch of the products described in section 3.</p>
+<p style="font-size:10pt;"><b>1.3 Responsibility.</b>&nbsp;&nbsp;All personnel are required to comply with the procedures in this manual. The HACCP team leader is responsible for maintaining and updating the system; deviations must be reported without delay.</p>
+
+<!-- ============ 2. HACCP TEAM ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FECDD3; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">2. HACCP Team</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">The multidisciplinary HACCP team is responsible for the development, implementation and review of the HACCP plan:</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FECDD3;">
+    <th width="26%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Name</th>
+    <th width="24%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Role</th>
+    <th width="50%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Responsibility</th>
+  </tr>
+  <!-- LLM: HACCP TEAM ROW — duplicate this <tr> once per team member. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ team_member_name }}</td>
+    <td style="padding:6px 8px;">{{ team_member_role }}</td>
+    <td style="padding:6px 8px;">{{ team_member_responsibility }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ team_member_name }}</td>
+    <td style="padding:6px 8px;">{{ team_member_role }}</td>
+    <td style="padding:6px 8px;">{{ team_member_responsibility }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ team_member_name }}</td>
+    <td style="padding:6px 8px;">{{ team_member_role }}</td>
+    <td style="padding:6px 8px;">{{ team_member_responsibility }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ team_member_name }}</td>
+    <td style="padding:6px 8px;">{{ team_member_role }}</td>
+    <td style="padding:6px 8px;">{{ team_member_responsibility }}</td>
+  </tr>
+</table>
+
+<!-- ============ 3. PRODUCT DESCRIPTION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FECDD3; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">3. Product Description</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">The products covered by this plan are described below, including storage conditions and expected shelf life:</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FECDD3;">
+    <th width="22%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Product</th>
+    <th width="40%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Description</th>
+    <th width="20%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Storage</th>
+    <th width="18%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Shelf Life</th>
+  </tr>
+  <!-- LLM: PRODUCT ROW — duplicate this <tr> once per product. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ product_name }}</td>
+    <td style="padding:6px 8px;">{{ product_description }}</td>
+    <td style="padding:6px 8px;">{{ product_storage }}</td>
+    <td style="padding:6px 8px;">{{ product_shelf_life }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ product_name }}</td>
+    <td style="padding:6px 8px;">{{ product_description }}</td>
+    <td style="padding:6px 8px;">{{ product_storage }}</td>
+    <td style="padding:6px 8px;">{{ product_shelf_life }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ product_name }}</td>
+    <td style="padding:6px 8px;">{{ product_description }}</td>
+    <td style="padding:6px 8px;">{{ product_storage }}</td>
+    <td style="padding:6px 8px;">{{ product_shelf_life }}</td>
+  </tr>
+</table>
+
+<!-- ============ 4. PROCESS FLOW ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FECDD3; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">4. Process Flow</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">The production process is carried out in the following sequence. The flow diagram is verified on site by the HACCP team:</p>
+<ol style="font-size:10pt;">
+  <li>{{ process_step }}</li>
+  <li>{{ process_step }}</li>
+  <li>{{ process_step }}</li>
+  <li>{{ process_step }}</li>
+  <li>{{ process_step }}</li>
+  <li>{{ process_step }}</li>
+  <li>{{ process_step }}</li>
+  <li>{{ process_step }}</li>
+</ol>
+
+<!-- ============ 5. HAZARD ANALYSIS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FECDD3; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">5. Hazard Analysis</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">For each process step, significant biological, chemical and physical hazards are identified and evaluated; control measures and criticality are recorded:</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FECDD3;">
+    <th width="20%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Process Step</th>
+    <th width="32%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Hazard</th>
+    <th width="32%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Control Measure</th>
+    <th width="16%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:center;">Criticality</th>
+  </tr>
+  <!-- LLM: HAZARD ROW — duplicate this <tr> once per hazard; set Criticality to High / Medium / Low. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ hazard_process_step }}</td>
+    <td style="padding:6px 8px;">{{ hazard_type }} &mdash; {{ hazard_description }}</td>
+    <td style="padding:6px 8px;">{{ hazard_control }}</td>
+    <td align="center" style="padding:6px 8px;">{{ hazard_criticality }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ hazard_process_step }}</td>
+    <td style="padding:6px 8px;">{{ hazard_type }} &mdash; {{ hazard_description }}</td>
+    <td style="padding:6px 8px;">{{ hazard_control }}</td>
+    <td align="center" style="padding:6px 8px;">{{ hazard_criticality }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ hazard_process_step }}</td>
+    <td style="padding:6px 8px;">{{ hazard_type }} &mdash; {{ hazard_description }}</td>
+    <td style="padding:6px 8px;">{{ hazard_control }}</td>
+    <td align="center" style="padding:6px 8px;">{{ hazard_criticality }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ hazard_process_step }}</td>
+    <td style="padding:6px 8px;">{{ hazard_type }} &mdash; {{ hazard_description }}</td>
+    <td style="padding:6px 8px;">{{ hazard_control }}</td>
+    <td align="center" style="padding:6px 8px;">{{ hazard_criticality }}</td>
+  </tr>
+</table>
+
+<!-- ============ 6. CCPs ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FECDD3; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">6. Critical Control Points</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">Each CCP is controlled through critical limits, monitoring procedures, corrective actions and verification, as follows:</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FECDD3;">
+    <th width="8%" style="padding:6px 6px; color:#991B1B; font-size:9pt; text-align:center;">CCP No.</th>
+    <th width="17%" style="padding:6px 6px; color:#991B1B; font-size:9pt; text-align:left;">Process Step</th>
+    <th width="20%" style="padding:6px 6px; color:#991B1B; font-size:9pt; text-align:left;">Critical Limit</th>
+    <th width="19%" style="padding:6px 6px; color:#991B1B; font-size:9pt; text-align:left;">Monitoring</th>
+    <th width="20%" style="padding:6px 6px; color:#991B1B; font-size:9pt; text-align:left;">Corrective Action</th>
+    <th width="16%" style="padding:6px 6px; color:#991B1B; font-size:9pt; text-align:left;">Verification</th>
+  </tr>
+  <!-- LLM: CCP ROW — duplicate this <tr> once per critical control point; renumber the CCP column. -->
+  <tr style="background-color:#F8FAFC;">
+    <td align="center" style="padding:6px 6px;">{{ ccp_number }}</td>
+    <td style="padding:6px 6px;">{{ ccp_process_step }}</td>
+    <td style="padding:6px 6px;">{{ ccp_critical_limit }}</td>
+    <td style="padding:6px 6px;">{{ ccp_monitoring }}</td>
+    <td style="padding:6px 6px;">{{ ccp_corrective_action }}</td>
+    <td style="padding:6px 6px;">{{ ccp_verification }}</td>
+  </tr>
+  <tr>
+    <td align="center" style="padding:6px 6px;">{{ ccp_number }}</td>
+    <td style="padding:6px 6px;">{{ ccp_process_step }}</td>
+    <td style="padding:6px 6px;">{{ ccp_critical_limit }}</td>
+    <td style="padding:6px 6px;">{{ ccp_monitoring }}</td>
+    <td style="padding:6px 6px;">{{ ccp_corrective_action }}</td>
+    <td style="padding:6px 6px;">{{ ccp_verification }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td align="center" style="padding:6px 6px;">{{ ccp_number }}</td>
+    <td style="padding:6px 6px;">{{ ccp_process_step }}</td>
+    <td style="padding:6px 6px;">{{ ccp_critical_limit }}</td>
+    <td style="padding:6px 6px;">{{ ccp_monitoring }}</td>
+    <td style="padding:6px 6px;">{{ ccp_corrective_action }}</td>
+    <td style="padding:6px 6px;">{{ ccp_verification }}</td>
+  </tr>
+</table>
+
+<!-- ============ 7. RECORDS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FECDD3; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">7. Records</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">The following records are maintained to demonstrate the effective operation of the HACCP system and are retained for {{ records_retention_period }}:</p>
+<ul style="font-size:10pt;">
+  <li>{{ record_type }}</li>
+  <li>{{ record_type }}</li>
+  <li>{{ record_type }}</li>
+  <li>{{ record_type }}</li>
+  <li>{{ record_type }}</li>
+</ul>
+
+<!-- ============ 8. VERIFICATION & REVIEW ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FECDD3; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">8. Verification and Review</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>8.1 Verification.</b>&nbsp;&nbsp;The HACCP system is verified through {{ verification_methods }}, including calibration of monitoring equipment, review of CCP records and microbiological or chemical testing performed by {{ testing_laboratory }}.</p>
+<p style="font-size:10pt;"><b>8.2 Review.</b>&nbsp;&nbsp;The plan is reviewed by the HACCP team at least {{ review_frequency }}, and whenever changes occur in raw materials, recipes, equipment, packaging, premises or legal requirements.</p>
+<p style="font-size:10pt;"><b>8.3 Non-conformities.</b>&nbsp;&nbsp;Any deviation from critical limits is treated as a non-conformity: the affected product is placed on hold, corrective action is applied and the event is recorded and reviewed by the HACCP team leader.</p>
+
+<!-- ============ NOTES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FECDD3; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Notes</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:10px 14px; font-size:9pt; color:#4B5563;">
+      {{ haccp_notes }}
+    </td>
+  </tr>
+</table>
+
+<!-- LLM: page break before the signature block so approvals start on a fresh page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ SIGNATURES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FECDD3; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Signatures</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">This manual is approved and becomes effective as of {{ effective_date }}.</p>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">HACCP Team Leader</div>
+      <div style="font-size:10pt;">{{ haccp_team_leader }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ haccp_team_leader_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Plant Manager</div>
+      <div style="font-size:10pt;">{{ plant_manager }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ plant_manager_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FCA5A5; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This manual must be reviewed whenever the process, product, equipment or legal requirements change.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

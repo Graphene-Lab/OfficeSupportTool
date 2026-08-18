@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     BUSINESS PLAN — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - TEAM ROW, FINANCIAL ROW and MILESTONE ROW: duplicate the marked rows once
+         per entry; renumber where applicable and keep the totals row up to date.
+       - Always append {{ currency }} to money values (columns 2-4 of the financial table).
+       - Page breaks: before the Financial Plan (section 8) and before the signature page.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Business Plan</title>
+              <circle cx="12" cy="12" r="11.5" fill="#FED7AA"/>
+              <g stroke="#92400E" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <circle cx="12" cy="12" r="6"/>
+                <circle cx="12" cy="12" r="2"/>
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:20pt; font-weight:bold; color:#92400E; font-variant:small-caps;">Business<br />Plan</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FBBF24; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Company</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Plan Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ plan_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Version</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ plan_version }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Author</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ plan_author }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ 1. EXECUTIVE SUMMARY ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FED7AA; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#92400E; font-variant:small-caps;">1. Executive Summary</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt; margin:8pt 0 6pt 0;">{{ exec_summary_1 }}</p>
+<p style="font-size:10pt; margin:6pt 0;">{{ exec_summary_2 }}</p>
+
+<!-- ============ 2. COMPANY OVERVIEW ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FED7AA; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#92400E; font-variant:small-caps;">2. Company Overview</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt; margin:8pt 0 6pt 0;">{{ company_overview_text }}</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FED7AA;">
+    <th width="30%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:left;">Attribute</th>
+    <th width="70%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:left;">Detail</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">Legal form</td>
+    <td style="padding:6px 8px;">{{ company_legal_form }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">Founded</td>
+    <td style="padding:6px 8px;">{{ company_founded_year }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">Headquarters</td>
+    <td style="padding:6px 8px;">{{ company_address }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">Website</td>
+    <td style="padding:6px 8px;">{{ company_website }}</td>
+  </tr>
+</table>
+
+<!-- ============ 3. MARKET ANALYSIS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FED7AA; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#92400E; font-variant:small-caps;">3. Market Analysis</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt; margin:8pt 0 6pt 0;">{{ market_analysis_text }}</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FED7AA;">
+    <th width="40%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:left;">Segment</th>
+    <th width="30%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:left;">Size ({{ currency }})</th>
+    <th width="30%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:left;">Growth</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ market_segment_name }}</td>
+    <td style="padding:6px 8px;">{{ market_segment_size }}</td>
+    <td style="padding:6px 8px;">{{ market_segment_growth }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ market_segment_name }}</td>
+    <td style="padding:6px 8px;">{{ market_segment_size }}</td>
+    <td style="padding:6px 8px;">{{ market_segment_growth }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ market_segment_name }}</td>
+    <td style="padding:6px 8px;">{{ market_segment_size }}</td>
+    <td style="padding:6px 8px;">{{ market_segment_growth }}</td>
+  </tr>
+</table>
+
+<!-- ============ 4. PRODUCTS & SERVICES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FED7AA; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#92400E; font-variant:small-caps;">4. Products &amp; Services</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt; margin:8pt 0 6pt 0;">{{ products_services_intro }}</p>
+<ul style="font-size:10pt;">
+  <li>{{ product_service_1 }}</li>
+  <li>{{ product_service_2 }}</li>
+  <li>{{ product_service_3 }}</li>
+</ul>
+
+<!-- ============ 5. MARKETING & SALES STRATEGY ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FED7AA; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#92400E; font-variant:small-caps;">5. Marketing &amp; Sales Strategy</span>
+    </td>
+  </tr>
+</table>
+<ul style="font-size:10pt; margin:8pt 0 6pt 0;">
+  <li>{{ marketing_strategy_1 }}</li>
+  <li>{{ marketing_strategy_2 }}</li>
+  <li>{{ marketing_strategy_3 }}</li>
+  <li>{{ marketing_strategy_4 }}</li>
+</ul>
+
+<!-- ============ 6. OPERATIONS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FED7AA; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#92400E; font-variant:small-caps;">6. Operations</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt; margin:8pt 0 6pt 0;">{{ operations_text }}</p>
+<ul style="font-size:10pt;">
+  <li>{{ operations_facility_1 }}</li>
+  <li>{{ operations_facility_2 }}</li>
+  <li>{{ operations_facility_3 }}</li>
+</ul>
+
+<!-- ============ 7. MANAGEMENT TEAM ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FED7AA; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#92400E; font-variant:small-caps;">7. Management Team</span>
+    </td>
+  </tr>
+</table>
+<!-- LLM: TEAM ROW — duplicate this <tr> once per team member; fill name, role and background. -->
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FED7AA;">
+    <th width="25%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:left;">Name</th>
+    <th width="25%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:left;">Role</th>
+    <th width="50%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:left;">Background</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ team_member_name }}</td>
+    <td style="padding:6px 8px;">{{ team_member_role }}</td>
+    <td style="padding:6px 8px;">{{ team_member_background }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ team_member_name }}</td>
+    <td style="padding:6px 8px;">{{ team_member_role }}</td>
+    <td style="padding:6px 8px;">{{ team_member_background }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ team_member_name }}</td>
+    <td style="padding:6px 8px;">{{ team_member_role }}</td>
+    <td style="padding:6px 8px;">{{ team_member_background }}</td>
+  </tr>
+</table>
+
+<!-- LLM: page break before the financial plan so the figures start on a fresh page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ 8. FINANCIAL PLAN ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FED7AA; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#92400E; font-variant:small-caps;">8. Financial Plan</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt; margin:8pt 0 6pt 0;">{{ financial_plan_text }}</p>
+<!-- LLM: FINANCIAL ROW — duplicate this <tr> once per fiscal year; keep amounts in {{ currency }}
+     and update the totals row at the bottom of the table. -->
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FED7AA;">
+    <th width="25%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:left;">Year</th>
+    <th width="25%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:right;">Revenue ({{ currency }})</th>
+    <th width="25%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:right;">Expenses ({{ currency }})</th>
+    <th width="25%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:right;">Profit ({{ currency }})</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ financial_year }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ financial_revenue }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ financial_expenses }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ financial_profit }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ financial_year }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ financial_revenue }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ financial_expenses }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ financial_profit }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ financial_year }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ financial_revenue }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ financial_expenses }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ financial_profit }}</td>
+  </tr>
+  <tr style="background-color:#FED7AA;">
+    <td style="padding:6px 8px; font-weight:bold; color:#92400E;">Total</td>
+    <td style="padding:6px 8px; text-align:right; font-weight:bold; color:#92400E;">{{ total_revenue }}</td>
+    <td style="padding:6px 8px; text-align:right; font-weight:bold; color:#92400E;">{{ total_expenses }}</td>
+    <td style="padding:6px 8px; text-align:right; font-weight:bold; color:#92400E;">{{ total_profit }}</td>
+  </tr>
+</table>
+
+<!-- ============ 9. FUNDING REQUEST ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FED7AA; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#92400E; font-variant:small-caps;">9. Funding Request</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FED7AA; padding:10px 14px;">
+      <span style="font-size:11pt; font-weight:bold; color:#92400E;">Requested funding: {{ funding_amount }} {{ currency }}</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt; margin:8pt 0 6pt 0;">{{ funding_use_text }}</p>
+<p style="font-size:10pt; margin:6pt 0; color:#4B5563;">{{ funding_terms_text }}</p>
+
+<!-- ============ 10. MILESTONES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FED7AA; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#92400E; font-variant:small-caps;">10. Milestones</span>
+    </td>
+  </tr>
+</table>
+<!-- LLM: MILESTONE ROW — duplicate this <tr> once per milestone; fill the description and target date. -->
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FED7AA;">
+    <th width="70%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:left;">Milestone</th>
+    <th width="30%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:left;">Target Date</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ milestone_description }}</td>
+    <td style="padding:6px 8px;">{{ milestone_target_date }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ milestone_description }}</td>
+    <td style="padding:6px 8px;">{{ milestone_target_date }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ milestone_description }}</td>
+    <td style="padding:6px 8px;">{{ milestone_target_date }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ milestone_description }}</td>
+    <td style="padding:6px 8px;">{{ milestone_target_date }}</td>
+  </tr>
+</table>
+
+<!-- LLM: page break before the signature page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ SIGNATURES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FED7AA; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#92400E; font-variant:small-caps;">Signatures</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt; margin:8pt 0 6pt 0;">This Business Plan is submitted for review and approval on {{ plan_date }}.</p>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:28pt 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#92400E; font-variant:small-caps;">Founder</div>
+      <div style="font-size:10pt;">{{ founder_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ founder_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:28pt 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#92400E; font-variant:small-caps;">Chief Executive Officer</div>
+      <div style="font-size:10pt;">{{ ceo_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ ceo_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FBBF24; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This plan is confidential and intended solely for the named recipient.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     OFFER LETTER — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Keep the letter structure; rephrase or extend paragraphs as needed.
+       - The acceptance box (section 7) must keep its pastel fill and the
+         acceptance statement; fill in candidate signature/date.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Offer Letter</title>
+              <circle cx="12" cy="12" r="11.5" fill="#F3E8FF"/>
+              <g stroke="#5B21B6" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:20pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">Offer<br />Letter</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#A78BFA; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Offer Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ offer_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Offer Valid Until</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ offer_valid_until }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Position</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ position_title }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ CANDIDATE ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="padding:12px 0 0 0; vertical-align:top;">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+        <tr>
+          <td style="padding:10px 14px;">
+            <div style="font-size:9pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">Candidate</div>
+            <div style="font-size:10pt; color:#1F2937;">{{ candidate_name }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ candidate_address }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ candidate_email }} &middot; {{ candidate_phone }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<p style="font-size:10pt; margin-top:12pt;">Dear {{ candidate_name }},</p>
+
+<!-- ============ 1. OFFER OF EMPLOYMENT ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F3E8FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">1. Offer of Employment</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">On behalf of {{ company_name }}, we are pleased to offer you employment in the position of <b>{{ position_title }}</b>. We were impressed by your qualifications and believe you will make a valuable contribution to our team. This letter sets out the principal terms and conditions of your employment; the full terms are contained in the Employment Contract, which will be provided separately.</p>
+
+<!-- ============ 2. POSITION AND START DATE ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F3E8FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">2. Position and Start Date</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">Your employment will commence on <b>{{ start_date }}</b>. You will be based at {{ workplace_location }} and your principal duties will be those described in the attached Job Description, together with any other duties reasonably assigned to you from time to time.</p>
+<p style="font-size:10pt;">Your normal working hours are {{ working_hours }} per week, from {{ working_hours_schedule }}. The contract type is <b>{{ contract_type }}</b>.</p>
+
+<!-- ============ 3. REPORTING LINE ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F3E8FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">3. Reporting Line</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">You will report to <b>{{ reporting_to }}</b>, {{ reporting_to_role }}, and you will work within the {{ department }} department. During the onboarding period, your manager will introduce you to your team and agree your first set of objectives.</p>
+
+<!-- ============ 4. REMUNERATION AND BENEFITS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F3E8FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">4. Remuneration and Benefits</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#F3E8FF;">
+    <th width="40%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:left;">Component</th>
+    <th width="60%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:left;">Detail</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">Annual base salary</td>
+    <td style="padding:6px 8px;">{{ annual_base_salary }} {{ currency }} per year</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">Payment frequency</td>
+    <td style="padding:6px 8px;">{{ salary_frequency }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">Bonus / incentives</td>
+    <td style="padding:6px 8px;">{{ bonus_details }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">Benefits</td>
+    <td style="padding:6px 8px;">{{ benefits_summary }}</td>
+  </tr>
+</table>
+<p style="font-size:10pt;">Your salary is paid into the bank account you provide, net of statutory taxes and social contributions withheld by {{ company_name }}. Annual leave entitlement is {{ annual_leave_days }} working days per year.</p>
+
+<!-- ============ 5. PROBATION PERIOD ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F3E8FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">5. Probation Period</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">Your employment is subject to a probation period of <b>{{ probation_period }}</b>, during which either party may terminate the employment by giving {{ probation_notice_period }} notice. During this period you will receive regular feedback to support a successful start.</p>
+
+<!-- ============ 6. CONDITIONS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F3E8FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">6. Conditions</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">This offer is subject to the following conditions being satisfied before the start date:</p>
+<ul style="font-size:10pt;">
+  <li>Satisfactory completion of a {{ background_check_type }} background check.</li>
+  <li>Receipt of {{ number_of_references }} satisfactory professional references.</li>
+  <li>Proof of the right to work in {{ work_jurisdiction }}.</li>
+  <li>{{ additional_condition }}.</li>
+</ul>
+
+<!-- ============ 7. ACCEPTANCE ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F3E8FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">7. Acceptance</span>
+    </td>
+  </tr>
+</table>
+<!-- LLM: keep this box pastel; it is the acceptance statement the candidate signs. -->
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F3E8FF;">
+  <tr>
+    <td style="padding:12px 14px;">
+      <p style="font-size:10pt; font-weight:bold; color:#5B21B6;">&ldquo;I accept this offer of employment on the terms set out above.&rdquo;</p>
+      <p style="font-size:10pt;">Signed by: <b>{{ candidate_name }}</b> &mdash; {{ acceptance_date }}</p>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">To accept this offer, please sign above and return this letter to {{ hr_contact }} by {{ offer_valid_until }}. We look forward to welcoming you to {{ company_name }}.</p>
+
+<!-- LLM: page break before the signature block so it starts on a fresh page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ SIGNATURES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F3E8FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">Signatures</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">For the Company</div>
+      <div style="font-size:10pt;">{{ company_representative }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ company_representative_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">Human Resources</div>
+      <div style="font-size:10pt;">{{ hr_representative }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ hr_representative_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#A78BFA; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This offer letter is confidential and intended solely for the recipient.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

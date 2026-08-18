@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     FIRE SAFETY REGISTER — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Duplicate the rows marked below once per equipment item, fire warden
+         or training record; renumber where applicable.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Fire Safety Register</title>
+              <circle cx="12" cy="12" r="11.5" fill="#FFF1F2"/>
+              <g stroke="#991B1B" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/>
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:19pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Fire Safety<br />Register</div>
+      <div style="font-size:8pt; color:#6B7280;">{{ regulatory_reference }}</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FCA5A5; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Register No.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ register_number }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Site</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ site_name }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Responsible Person</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ responsible_person }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Year</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ register_year }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ 1. GENERAL INFORMATION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFF1F2; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">1. General Information</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td width="25%" style="padding:10px 14px; vertical-align:top;">
+      <div style="font-size:8pt; font-variant:small-caps; color:#6B7280;">Fire Risk Category</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ fire_risk_category }}</div>
+    </td>
+    <td width="25%" style="padding:10px 14px; vertical-align:top;">
+      <div style="font-size:8pt; font-variant:small-caps; color:#6B7280;">Maximum Occupants</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ maximum_occupants }}</div>
+    </td>
+    <td width="25%" style="padding:10px 14px; vertical-align:top;">
+      <div style="font-size:8pt; font-variant:small-caps; color:#6B7280;">Assembly Point</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ assembly_point }}</div>
+    </td>
+    <td width="25%" style="padding:10px 14px; vertical-align:top;">
+      <div style="font-size:8pt; font-variant:small-caps; color:#6B7280;">Emergency Phone</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ emergency_phone }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ 2. EQUIPMENT REGISTER ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFF1F2; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">2. Equipment Register</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">All fire-fighting and detection equipment on site is listed below. Inspections are recorded and overdue items must be serviced immediately.</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FFF1F2;">
+    <th width="24%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Equipment Type</th>
+    <th width="24%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Location</th>
+    <th width="18%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Last Inspection</th>
+    <th width="18%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Next Due</th>
+    <th width="16%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:center;">Status</th>
+  </tr>
+  <!-- LLM: EQUIPMENT ROW — duplicate this <tr> once per equipment item; set Status to Serviceable / Due / Overdue / Faulty. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ equipment_type }}</td>
+    <td style="padding:6px 8px;">{{ equipment_location }}</td>
+    <td style="padding:6px 8px;">{{ equipment_last_inspection }}</td>
+    <td style="padding:6px 8px;">{{ equipment_next_due }}</td>
+    <td align="center" style="padding:6px 8px;">{{ equipment_status }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ equipment_type }}</td>
+    <td style="padding:6px 8px;">{{ equipment_location }}</td>
+    <td style="padding:6px 8px;">{{ equipment_last_inspection }}</td>
+    <td style="padding:6px 8px;">{{ equipment_next_due }}</td>
+    <td align="center" style="padding:6px 8px;">{{ equipment_status }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ equipment_type }}</td>
+    <td style="padding:6px 8px;">{{ equipment_location }}</td>
+    <td style="padding:6px 8px;">{{ equipment_last_inspection }}</td>
+    <td style="padding:6px 8px;">{{ equipment_next_due }}</td>
+    <td align="center" style="padding:6px 8px;">{{ equipment_status }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ equipment_type }}</td>
+    <td style="padding:6px 8px;">{{ equipment_location }}</td>
+    <td style="padding:6px 8px;">{{ equipment_last_inspection }}</td>
+    <td style="padding:6px 8px;">{{ equipment_next_due }}</td>
+    <td align="center" style="padding:6px 8px;">{{ equipment_status }}</td>
+  </tr>
+</table>
+
+<!-- ============ 3. EVACUATION ROUTES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFF1F2; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">3. Evacuation Routes</span>
+    </td>
+  </tr>
+</table>
+<ul style="font-size:10pt;">
+  <li>{{ evacuation_route }}</li>
+  <li>{{ evacuation_route }}</li>
+  <li>{{ evacuation_route }}</li>
+  <li>{{ evacuation_route }}</li>
+  <li>{{ evacuation_route }}</li>
+</ul>
+
+<!-- ============ 4. FIRE WARDEN ASSIGNMENTS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFF1F2; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">4. Fire Warden Assignments</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">Fire wardens are appointed to assist with evacuation and to ensure areas are cleared. Assignments are reviewed at least annually:</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FFF1F2;">
+    <th width="30%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Name</th>
+    <th width="34%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Zone</th>
+    <th width="36%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Role</th>
+  </tr>
+  <!-- LLM: WARDEN ROW — duplicate this <tr> once per fire warden. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ warden_name }}</td>
+    <td style="padding:6px 8px;">{{ warden_zone }}</td>
+    <td style="padding:6px 8px;">{{ warden_role }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ warden_name }}</td>
+    <td style="padding:6px 8px;">{{ warden_zone }}</td>
+    <td style="padding:6px 8px;">{{ warden_role }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ warden_name }}</td>
+    <td style="padding:6px 8px;">{{ warden_zone }}</td>
+    <td style="padding:6px 8px;">{{ warden_role }}</td>
+  </tr>
+</table>
+
+<!-- ============ 5. TRAINING RECORDS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFF1F2; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">5. Training Records</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">Fire safety training and drills carried out during the year are recorded below:</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FFF1F2;">
+    <th width="16%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Date</th>
+    <th width="38%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Course / Drill</th>
+    <th width="26%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Attendees</th>
+    <th width="20%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Trainer</th>
+  </tr>
+  <!-- LLM: TRAINING ROW — duplicate this <tr> once per training session or drill. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ training_date }}</td>
+    <td style="padding:6px 8px;">{{ training_course }}</td>
+    <td style="padding:6px 8px;">{{ training_attendees }}</td>
+    <td style="padding:6px 8px;">{{ training_trainer }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ training_date }}</td>
+    <td style="padding:6px 8px;">{{ training_course }}</td>
+    <td style="padding:6px 8px;">{{ training_attendees }}</td>
+    <td style="padding:6px 8px;">{{ training_trainer }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ training_date }}</td>
+    <td style="padding:6px 8px;">{{ training_course }}</td>
+    <td style="padding:6px 8px;">{{ training_attendees }}</td>
+    <td style="padding:6px 8px;">{{ training_trainer }}</td>
+  </tr>
+</table>
+
+<!-- ============ 6. INSPECTION SCHEDULE ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFF1F2; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">6. Inspection Schedule</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">Preventive checks are carried out at the following frequencies:</p>
+<ul style="font-size:10pt;">
+  <li>{{ inspection_item }}</li>
+  <li>{{ inspection_item }}</li>
+  <li>{{ inspection_item }}</li>
+  <li>{{ inspection_item }}</li>
+  <li>{{ inspection_item }}</li>
+</ul>
+
+<!-- ============ NOTES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFF1F2; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Notes</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:10px 14px; font-size:9pt; color:#4B5563;">
+      {{ fire_safety_notes }}
+    </td>
+  </tr>
+</table>
+
+<!-- LLM: page break before the signature block so approvals start on a fresh page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ SIGNATURES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFF1F2; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Signatures</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Safety Officer</div>
+      <div style="font-size:10pt;">{{ safety_officer }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ safety_officer_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Site Manager</div>
+      <div style="font-size:10pt;">{{ site_manager }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ site_manager_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FCA5A5; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This register must be kept up to date at all times and reviewed at least quarterly.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

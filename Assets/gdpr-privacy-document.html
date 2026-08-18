@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     GDPR / PRIVACY DOCUMENT — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Duplicate the rows marked below once per data category, legal basis
+         or retention period, and extend the numbered/bulleted lists as needed.
+       - Keep section 1 (Data Controller) and section 10 (DPO) contact details accurate.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>GDPR Privacy Document</title>
+              <circle cx="12" cy="12" r="11.5" fill="#FFE4E6"/>
+              <g stroke="#991B1B" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:19pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Privacy<br />Document</div>
+      <div style="font-size:8pt; color:#6B7280;">GDPR &mdash; {{ privacy_notice_type }}</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FCA5A5; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Document No.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ document_number }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Version</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ document_version }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Effective Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ effective_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Data Controller</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ data_controller_name }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ 1. DATA CONTROLLER ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFE4E6; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">1. Data Controller</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">This document describes how {{ data_controller_name }} (the &ldquo;Controller&rdquo;) collects, uses and protects personal data, in accordance with Regulation (EU) 2016/679 (General Data Protection Regulation, &ldquo;GDPR&rdquo;) and applicable national data protection legislation.</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:10px 14px;">
+      <div style="font-size:9pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Data Controller Contact</div>
+      <div style="font-size:10pt; color:#1F2937;">{{ data_controller_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ data_controller_address }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ data_controller_email }} &middot; {{ data_controller_phone }}</div>
+      <div style="font-size:9pt; color:#4B5563;">Representative: {{ data_controller_representative }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ 2. CATEGORIES OF PERSONAL DATA ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFE4E6; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">2. Categories of Personal Data</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">The Controller processes the following categories of personal data, collected from {{ data_subjects_description }}:</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FFE4E6;">
+    <th width="30%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Category</th>
+    <th width="70%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Examples</th>
+  </tr>
+  <!-- LLM: DATA CATEGORY ROW — duplicate this <tr> once per category of personal data; adjust category and examples. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ data_category }}</td>
+    <td style="padding:6px 8px;">{{ data_category_examples }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ data_category }}</td>
+    <td style="padding:6px 8px;">{{ data_category_examples }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ data_category }}</td>
+    <td style="padding:6px 8px;">{{ data_category_examples }}</td>
+  </tr>
+</table>
+
+<!-- ============ 3. PURPOSES OF PROCESSING ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFE4E6; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">3. Purposes of Processing</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">Personal data are processed exclusively for the following purposes:</p>
+<ol style="font-size:10pt;">
+  <li>{{ processing_purpose }}</li>
+  <li>{{ processing_purpose }}</li>
+  <li>{{ processing_purpose }}</li>
+  <li>{{ processing_purpose }}</li>
+  <li>{{ processing_purpose }}</li>
+</ol>
+
+<!-- ============ 4. LEGAL BASIS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFE4E6; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">4. Legal Basis for Processing</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">Each processing purpose is supported by at least one legal basis under Article 6 GDPR, as set out below:</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FFE4E6;">
+    <th width="40%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Purpose</th>
+    <th width="60%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Legal Basis</th>
+  </tr>
+  <!-- LLM: LEGAL BASIS ROW — duplicate this <tr> once per purpose; e.g. Art. 6(1)(a) consent, (b) contract, (c) legal obligation, (f) legitimate interest. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ legal_basis_purpose }}</td>
+    <td style="padding:6px 8px;">{{ legal_basis }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ legal_basis_purpose }}</td>
+    <td style="padding:6px 8px;">{{ legal_basis }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ legal_basis_purpose }}</td>
+    <td style="padding:6px 8px;">{{ legal_basis }}</td>
+  </tr>
+</table>
+
+<!-- ============ 5. DATA RETENTION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFE4E6; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">5. Data Retention</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">Personal data are kept only for as long as necessary to fulfil the purposes for which they were collected, in line with the retention schedule below. Upon expiry, data are securely deleted or anonymised.</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FFE4E6;">
+    <th width="40%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Data Category</th>
+    <th width="60%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Retention Period</th>
+  </tr>
+  <!-- LLM: RETENTION ROW — duplicate this <tr> once per data category and its retention period. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ retention_data_category }}</td>
+    <td style="padding:6px 8px;">{{ retention_period }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ retention_data_category }}</td>
+    <td style="padding:6px 8px;">{{ retention_period }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ retention_data_category }}</td>
+    <td style="padding:6px 8px;">{{ retention_period }}</td>
+  </tr>
+</table>
+
+<!-- ============ 6. DATA SUBJECTS' RIGHTS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFE4E6; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">6. Data Subjects' Rights</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">Data subjects may exercise the following rights under the GDPR, free of charge and within one month of the request:</p>
+<ol style="font-size:10pt;">
+  <li>Right of access &mdash; to obtain confirmation of whether their personal data are processed and to receive a copy.</li>
+  <li>Right to rectification &mdash; to have inaccurate personal data corrected without undue delay.</li>
+  <li>Right to erasure (&ldquo;right to be forgotten&rdquo;) &mdash; to have personal data deleted under the conditions of Article 17.</li>
+  <li>Right to restriction of processing &mdash; to restrict processing in the cases set out in Article 18.</li>
+  <li>Right to data portability &mdash; to receive their data in a structured, machine-readable format.</li>
+  <li>Right to object &mdash; to object to processing based on legitimate interest or for direct marketing.</li>
+  <li>Right to withdraw consent at any time, without affecting the lawfulness of prior processing.</li>
+  <li>Right to lodge a complaint with the supervisory authority {{ supervisory_authority }}.</li>
+</ol>
+
+<!-- ============ 7. RECIPIENTS AND PROCESSORS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFE4E6; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">7. Recipients and Processors</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">Personal data may be disclosed to the following categories of recipients. Where a recipient acts as a processor, a data processing agreement is in place under Article 28 GDPR:</p>
+<ul style="font-size:10pt;">
+  <li>{{ recipient_category }} &mdash; {{ recipient_scope }}</li>
+  <li>{{ recipient_category }} &mdash; {{ recipient_scope }}</li>
+  <li>{{ recipient_category }} &mdash; {{ recipient_scope }}</li>
+  <li>{{ recipient_category }} &mdash; {{ recipient_scope }}</li>
+  <li>Public authorities, where disclosure is required by law or regulatory obligation.</li>
+</ul>
+
+<!-- ============ 8. SECURITY MEASURES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFE4E6; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">8. Security Measures</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">The Controller implements appropriate technical and organisational measures to ensure a level of security appropriate to the risk, in accordance with Article 32 GDPR:</p>
+<ul style="font-size:10pt;">
+  <li>{{ security_measure }}</li>
+  <li>{{ security_measure }}</li>
+  <li>{{ security_measure }}</li>
+  <li>{{ security_measure }}</li>
+  <li>{{ security_measure }}</li>
+</ul>
+
+<!-- ============ 9. DATA BREACHES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFE4E6; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">9. Data Breaches</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">In the event of a personal data breach, the Controller shall assess the risk to the rights and freedoms of data subjects without undue delay. A breach that is likely to result in a risk to those rights and freedoms shall be notified to the supervisory authority within 72 hours of becoming aware of it, unless the breach is unlikely to result in a risk. Where the breach is likely to result in a high risk, affected data subjects shall be informed without undue delay.</p>
+<p style="font-size:10pt;">All breaches, including near misses, are recorded in the internal breach register maintained by {{ breach_register_owner }}, documenting the facts, effects and remedial measures taken.</p>
+
+<!-- ============ 10. CONTACT / DPO ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFE4E6; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">10. Contact and Data Protection Officer</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:10px 14px;">
+      <div style="font-size:9pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Data Protection Officer</div>
+      <div style="font-size:10pt; color:#1F2937;">{{ dpo_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ dpo_email }} &middot; {{ dpo_phone }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ dpo_address }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ NOTES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFE4E6; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Notes</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:10px 14px; font-size:9pt; color:#4B5563;">
+      {{ privacy_notes }} This document is made available to data subjects upon request and is published at {{ company_website }}.
+    </td>
+  </tr>
+</table>
+
+<!-- LLM: page break before the signature block so approvals start on a fresh page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ APPROVAL SIGNATURES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FFE4E6; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Approval Signatures</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="33%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Prepared By</div>
+      <div style="font-size:10pt;">{{ prepared_by }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ prepared_by_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="33%" style="padding:16px 10px 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Reviewed By</div>
+      <div style="font-size:10pt;">{{ reviewed_by }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ reviewed_by_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="34%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Approved By</div>
+      <div style="font-size:10pt;">{{ approved_by }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ approved_by_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FCA5A5; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This privacy document must be reviewed at least annually or after any significant change in processing activities.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

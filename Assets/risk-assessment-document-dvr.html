@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     RISK ASSESSMENT (DVR) — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - In the Risk Register, duplicate the row marked below once per identified risk.
+       - Risk level = Likelihood x Severity. Color the "Risk Level" cell per the legend:
+         1-4 #DCFCE7 (green), 5-9 #FEF9C3 (yellow), 10-15 #FFEDD5 (orange), 16-25 #FEE2E2 (red).
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Risk Assessment</title>
+              <circle cx="12" cy="12" r="11.5" fill="#FEE2E2"/>
+              <g stroke="#B91C1C" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+                <path d="M12 8v4"/>
+                <path d="M12 16h.01"/>
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:19pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Risk<br />Assessment</div>
+      <div style="font-size:8pt; color:#6B7280;">DVR &mdash; {{ regulatory_reference }}</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FCA5A5; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Document No.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ document_number }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ assessment_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Version</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ document_version }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Next Review</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ next_review_date }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ SCOPE ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FEE2E2; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">1. Scope and Methodology</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>1.1 Scope.</b>&nbsp;&nbsp;This Risk Assessment covers the activities and premises of {{ company_name }} located at {{ workplace_address }}, business units: {{ assessed_units }}.</p>
+<p style="font-size:10pt;"><b>1.2 Methodology.</b>&nbsp;&nbsp;Risks were identified by {{ assessment_team }} using {{ assessment_method }}. Each risk is evaluated as <b>Likelihood (L, 1&ndash;5)</b> x <b>Severity (S, 1&ndash;5)</b>; the resulting <b>Risk Level</b> is classified as low, medium, high or very high per the matrix below.</p>
+
+<!-- ============ RISK MATRIX ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FEE2E2; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">2. Risk Matrix</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">Risk level = Likelihood x Severity. Cells are colored by risk level (pastel legend below).</p>
+<!-- LLM: the matrix cells below are fixed; change the color legend in section 2.2 if you change the scoring rules. -->
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FEE2E2;">
+    <th width="18%" style="padding:5px 8px; color:#991B1B; font-size:8pt;">Likelihood \ Severity</th>
+    <th width="16%" style="padding:5px 8px; color:#991B1B; font-size:8pt;">S1 Minor</th>
+    <th width="16%" style="padding:5px 8px; color:#991B1B; font-size:8pt;">S2 Moderate</th>
+    <th width="16%" style="padding:5px 8px; color:#991B1B; font-size:8pt;">S3 Serious</th>
+    <th width="16%" style="padding:5px 8px; color:#991B1B; font-size:8pt;">S4 Severe</th>
+    <th width="16%" style="padding:5px 8px; color:#991B1B; font-size:8pt;">S5 Catastrophic</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:5px 8px; font-weight:bold; font-size:8pt;">L5 &ndash; Almost certain</td>
+    <td align="center" bgcolor="#FEF9C3" style="font-size:8pt;">5</td>
+    <td align="center" bgcolor="#FEF9C3" style="font-size:8pt;">10</td>
+    <td align="center" bgcolor="#FFEDD5" style="font-size:8pt;">15</td>
+    <td align="center" bgcolor="#FEE2E2" style="font-size:8pt;">20</td>
+    <td align="center" bgcolor="#FEE2E2" style="font-size:8pt;">25</td>
+  </tr>
+  <tr>
+    <td style="padding:5px 8px; font-weight:bold; font-size:8pt;">L4 &ndash; Likely</td>
+    <td align="center" bgcolor="#FEF9C3" style="font-size:8pt;">4</td>
+    <td align="center" bgcolor="#FEF9C3" style="font-size:8pt;">8</td>
+    <td align="center" bgcolor="#FFEDD5" style="font-size:8pt;">12</td>
+    <td align="center" bgcolor="#FEE2E2" style="font-size:8pt;">16</td>
+    <td align="center" bgcolor="#FEE2E2" style="font-size:8pt;">20</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:5px 8px; font-weight:bold; font-size:8pt;">L3 &ndash; Possible</td>
+    <td align="center" bgcolor="#DCFCE7" style="font-size:8pt;">3</td>
+    <td align="center" bgcolor="#FEF9C3" style="font-size:8pt;">6</td>
+    <td align="center" bgcolor="#FEF9C3" style="font-size:8pt;">9</td>
+    <td align="center" bgcolor="#FFEDD5" style="font-size:8pt;">12</td>
+    <td align="center" bgcolor="#FEE2E2" style="font-size:8pt;">15</td>
+  </tr>
+  <tr>
+    <td style="padding:5px 8px; font-weight:bold; font-size:8pt;">L2 &ndash; Unlikely</td>
+    <td align="center" bgcolor="#DCFCE7" style="font-size:8pt;">2</td>
+    <td align="center" bgcolor="#DCFCE7" style="font-size:8pt;">4</td>
+    <td align="center" bgcolor="#FEF9C3" style="font-size:8pt;">6</td>
+    <td align="center" bgcolor="#FEF9C3" style="font-size:8pt;">8</td>
+    <td align="center" bgcolor="#FFEDD5" style="font-size:8pt;">10</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:5px 8px; font-weight:bold; font-size:8pt;">L1 &ndash; Rare</td>
+    <td align="center" bgcolor="#DCFCE7" style="font-size:8pt;">1</td>
+    <td align="center" bgcolor="#DCFCE7" style="font-size:8pt;">2</td>
+    <td align="center" bgcolor="#DCFCE7" style="font-size:8pt;">3</td>
+    <td align="center" bgcolor="#FEF9C3" style="font-size:8pt;">4</td>
+    <td align="center" bgcolor="#FEF9C3" style="font-size:8pt;">5</td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="25%" style="padding:6px 8px;"><span style="background-color:#DCFCE7; padding:1px 8px; font-size:8pt; font-weight:bold; color:#166534;">1&ndash;4 Low</span></td>
+    <td width="25%" style="padding:6px 8px;"><span style="background-color:#FEF9C3; padding:1px 8px; font-size:8pt; font-weight:bold; color:#854D0E;">5&ndash;9 Medium</span></td>
+    <td width="25%" style="padding:6px 8px;"><span style="background-color:#FFEDD5; padding:1px 8px; font-size:8pt; font-weight:bold; color:#9A3412;">10&ndash;15 High</span></td>
+    <td width="25%" style="padding:6px 8px;"><span style="background-color:#FEE2E2; padding:1px 8px; font-size:8pt; font-weight:bold; color:#991B1B;">16&ndash;25 Very High</span></td>
+  </tr>
+</table>
+
+<!-- ============ RISK REGISTER ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FEE2E2; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">3. Risk Register</span>
+    </td>
+  </tr>
+</table>
+<!-- LLM: RISK ROW — duplicate this <tr> once per identified risk. Adjust L and S, compute
+     risk_level = L x S and set the Risk Level cell background per the legend in section 2.2. -->
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FEE2E2;">
+    <th width="4%" style="padding:6px 6px; color:#991B1B; font-size:8pt;">#</th>
+    <th width="18%" style="padding:6px 6px; color:#991B1B; font-size:8pt; text-align:left;">Activity / Task</th>
+    <th width="18%" style="padding:6px 6px; color:#991B1B; font-size:8pt; text-align:left;">Hazard</th>
+    <th width="12%" style="padding:6px 6px; color:#991B1B; font-size:8pt; text-align:left;">Persons at Risk</th>
+    <th width="6%" style="padding:6px 6px; color:#991B1B; font-size:8pt; text-align:center;">L</th>
+    <th width="6%" style="padding:6px 6px; color:#991B1B; font-size:8pt; text-align:center;">S</th>
+    <th width="7%" style="padding:6px 6px; color:#991B1B; font-size:8pt; text-align:center;">Risk</th>
+    <th width="20%" style="padding:6px 6px; color:#991B1B; font-size:8pt; text-align:left;">Control Measures</th>
+    <th width="9%" style="padding:6px 6px; color:#991B1B; font-size:8pt; text-align:center;">Residual</th>
+  </tr>
+  <!-- RISK ROW START -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 6px; text-align:center; font-size:9pt;">1</td>
+    <td style="padding:6px 6px; font-size:9pt;">{{ risk_activity }}</td>
+    <td style="padding:6px 6px; font-size:9pt;">{{ risk_hazard }}</td>
+    <td style="padding:6px 6px; font-size:9pt;">{{ risk_persons }}</td>
+    <td style="padding:6px 6px; text-align:center; font-size:9pt;">{{ risk_likelihood }}</td>
+    <td style="padding:6px 6px; text-align:center; font-size:9pt;">{{ risk_severity }}</td>
+    <td align="center" bgcolor="#FEF9C3" style="padding:6px 6px; font-size:9pt; font-weight:bold; color:#854D0E;">{{ risk_level }}</td>
+    <td style="padding:6px 6px; font-size:9pt;">{{ risk_control_measures }}</td>
+    <td align="center" style="padding:6px 6px; font-size:9pt;">{{ risk_residual }}</td>
+  </tr>
+  <!-- RISK ROW END -->
+  <tr>
+    <td style="padding:6px 6px; text-align:center; font-size:9pt;">2</td>
+    <td style="padding:6px 6px; font-size:9pt;">{{ risk_activity }}</td>
+    <td style="padding:6px 6px; font-size:9pt;">{{ risk_hazard }}</td>
+    <td style="padding:6px 6px; font-size:9pt;">{{ risk_persons }}</td>
+    <td style="padding:6px 6px; text-align:center; font-size:9pt;">{{ risk_likelihood }}</td>
+    <td style="padding:6px 6px; text-align:center; font-size:9pt;">{{ risk_severity }}</td>
+    <td align="center" bgcolor="#FEF9C3" style="padding:6px 6px; font-size:9pt; font-weight:bold; color:#854D0E;">{{ risk_level }}</td>
+    <td style="padding:6px 6px; font-size:9pt;">{{ risk_control_measures }}</td>
+    <td align="center" style="padding:6px 6px; font-size:9pt;">{{ risk_residual }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 6px; text-align:center; font-size:9pt;">3</td>
+    <td style="padding:6px 6px; font-size:9pt;">{{ risk_activity }}</td>
+    <td style="padding:6px 6px; font-size:9pt;">{{ risk_hazard }}</td>
+    <td style="padding:6px 6px; font-size:9pt;">{{ risk_persons }}</td>
+    <td style="padding:6px 6px; text-align:center; font-size:9pt;">{{ risk_likelihood }}</td>
+    <td style="padding:6px 6px; text-align:center; font-size:9pt;">{{ risk_severity }}</td>
+    <td align="center" bgcolor="#FEF9C3" style="padding:6px 6px; font-size:9pt; font-weight:bold; color:#854D0E;">{{ risk_level }}</td>
+    <td style="padding:6px 6px; font-size:9pt;">{{ risk_control_measures }}</td>
+    <td align="center" style="padding:6px 6px; font-size:9pt;">{{ risk_residual }}</td>
+  </tr>
+</table>
+<p style="font-size:9pt; color:#4B5563;"><b>Evaluation rule:</b>&nbsp;&nbsp;risks rated 10&ndash;15 require immediate corrective measures with a defined deadline; risks rated 16&ndash;25 require work to stop until controls are in place.</p>
+
+<!-- ============ EMERGENCY ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FEE2E2; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">4. Emergency Procedures</span>
+    </td>
+  </tr>
+</table>
+<ul style="font-size:10pt;">
+  <li>{{ emergency_procedure_1 }}</li>
+  <li>{{ emergency_procedure_2 }}</li>
+  <li>{{ emergency_procedure_3 }}</li>
+  <li>{{ emergency_procedure_4 }}</li>
+</ul>
+
+<!-- ============ RESPONSIBILITIES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FEE2E2; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">5. Responsibilities</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FEE2E2;">
+    <th width="30%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Role</th>
+    <th width="70%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Duty</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">Employer / Management</td>
+    <td style="padding:6px 8px;">{{ employer_duty }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">Safety Manager / RSPP</td>
+    <td style="padding:6px 8px;">{{ safety_manager_duty }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">Workers</td>
+    <td style="padding:6px 8px;">{{ workers_duty }}</td>
+  </tr>
+</table>
+
+<!-- ============ APPROVAL ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FEE2E2; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">6. Review and Approval</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="33%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Prepared By</div>
+      <div style="font-size:10pt;">{{ prepared_by }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ prepared_by_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="33%" style="padding:16px 10px 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Approved By</div>
+      <div style="font-size:10pt;">{{ approved_by }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ approved_by_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="34%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Reviewed By</div>
+      <div style="font-size:10pt;">{{ reviewed_by }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ reviewed_by_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FCA5A5; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This risk assessment must be reviewed at least annually or after any significant change.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

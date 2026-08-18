@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     PPE DELIVERY RECORD — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Duplicate the PPE item row marked below once per item issued; keep the
+         signature column per row so each item is acknowledged individually.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>PPE Delivery Record</title>
+              <circle cx="12" cy="12" r="11.5" fill="#FECACA"/>
+              <g stroke="#991B1B" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5"/>
+                <path d="M14 6a6 6 0 0 1 6 6v3"/>
+                <path d="M4 15v-3a6 6 0 0 1 6-6"/>
+                <rect x="2" y="15" width="20" height="4" rx="1"/>
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:19pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">PPE Delivery<br />Record</div>
+      <div style="font-size:8pt; color:#6B7280;">{{ regulatory_reference }}</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FCA5A5; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Record No.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ record_number }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ issue_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Department</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ department }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ EMPLOYEE DETAILS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FECACA; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Employee Details</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td width="34%" style="padding:10px 14px; vertical-align:top;">
+      <div style="font-size:8pt; font-variant:small-caps; color:#6B7280;">Employee Name</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ employee_name }}</div>
+    </td>
+    <td width="33%" style="padding:10px 14px; vertical-align:top;">
+      <div style="font-size:8pt; font-variant:small-caps; color:#6B7280;">Employee ID</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ employee_id }}</div>
+    </td>
+    <td width="33%" style="padding:10px 14px; vertical-align:top;">
+      <div style="font-size:8pt; font-variant:small-caps; color:#6B7280;">Job Role</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ job_role }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ PPE ITEMS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FECACA; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Issued PPE Items</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">The following personal protective equipment was issued to the employee. Each item is acknowledged by signature.</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#FECACA;">
+    <th width="22%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Item</th>
+    <th width="12%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:center;">Size</th>
+    <th width="12%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:center;">Quantity</th>
+    <th width="16%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Issue Date</th>
+    <th width="18%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Condition</th>
+    <th width="20%" style="padding:6px 8px; color:#991B1B; font-size:9pt; text-align:left;">Signature</th>
+  </tr>
+  <!-- LLM: PPE ITEM ROW — duplicate this <tr> once per PPE item issued; keep the signature cell so each item is acknowledged. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ ppe_item }}</td>
+    <td align="center" style="padding:6px 8px;">{{ ppe_size }}</td>
+    <td align="center" style="padding:6px 8px;">{{ ppe_quantity }}</td>
+    <td style="padding:6px 8px;">{{ ppe_item_issue_date }}</td>
+    <td style="padding:6px 8px;">{{ ppe_condition }}</td>
+    <td style="padding:6px 8px;">{{ employee_signature }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ ppe_item }}</td>
+    <td align="center" style="padding:6px 8px;">{{ ppe_size }}</td>
+    <td align="center" style="padding:6px 8px;">{{ ppe_quantity }}</td>
+    <td style="padding:6px 8px;">{{ ppe_item_issue_date }}</td>
+    <td style="padding:6px 8px;">{{ ppe_condition }}</td>
+    <td style="padding:6px 8px;">{{ employee_signature }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ ppe_item }}</td>
+    <td align="center" style="padding:6px 8px;">{{ ppe_size }}</td>
+    <td align="center" style="padding:6px 8px;">{{ ppe_quantity }}</td>
+    <td style="padding:6px 8px;">{{ ppe_item_issue_date }}</td>
+    <td style="padding:6px 8px;">{{ ppe_condition }}</td>
+    <td style="padding:6px 8px;">{{ employee_signature }}</td>
+  </tr>
+</table>
+
+<!-- ============ TRAINING CONFIRMATION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FECACA; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Training Confirmation</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#FECACA;">
+  <tr>
+    <td style="padding:10px 14px;">
+      <div style="font-size:10pt; font-weight:bold; color:#991B1B;">I confirm I have received training on the correct use of the PPE listed above.</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ training_confirm_name }} &middot; {{ training_confirm_date }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ SIGNATURES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#FECACA; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Signatures</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Employee</div>
+      <div style="font-size:10pt;">{{ employee_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ employee_id }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#991B1B; font-variant:small-caps;">Issuing Officer</div>
+      <div style="font-size:10pt;">{{ issuing_officer }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ issuing_officer_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FCA5A5; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">PPE must be inspected before each use and replaced whenever damaged or worn.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

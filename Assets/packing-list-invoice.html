@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     PACKING LIST / INVOICE — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Duplicate the invoice-line row marked below once per invoice line.
+       - Duplicate the carton row marked below once per carton; keep the carton
+         numbering sequential and update weights and volume for each carton.
+       - Keep the totals (packages, gross/net weight, volume) consistent with
+         the duplicated carton rows.
+       - Always append {{ currency }} to money values.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Packing List / Invoice</title>
+              <circle cx="12" cy="12" r="11.5" fill="#D1FAE5"/>
+              <g stroke="#047857" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/>
+                <path d="m7 16.5-4.74-2.85"/>
+                <path d="m7 16.5 5-3"/>
+                <path d="M7 16.5v5.17"/>
+                <path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z"/>
+                <path d="m17 16.5-5-3"/>
+                <path d="m17 16.5 4.74-2.85"/>
+                <path d="M17 16.5v5.17"/>
+                <path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z"/>
+                <path d="M12 8 7.26 5.15"/>
+                <path d="m12 8 4.74-2.85"/>
+                <path d="M12 13.5V8"/>
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:18pt; font-weight:bold; color:#047857; font-variant:small-caps;">Packing List<br />&amp; Invoice</div>
+      <div style="font-size:8pt; color:#6B7280;">Shipping document</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#34D399; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Invoice No.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ invoice_number }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Packing List No.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ packing_list_number }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ document_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Shipment Ref.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ shipment_reference }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ SHIPPER / CONSIGNEE ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:12px 10px 0 0; vertical-align:top;">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+        <tr>
+          <td style="padding:10px 14px;">
+            <div style="font-size:9pt; font-weight:bold; color:#047857; font-variant:small-caps;">Shipper</div>
+            <div style="font-size:10pt; color:#1F2937;">{{ shipper_name }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ shipper_address }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ shipper_contact }}</div>
+            <div style="font-size:9pt; color:#4B5563;">VAT / Tax ID: {{ shipper_tax_id }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="50%" style="padding:12px 0 0 10px; vertical-align:top;">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+        <tr>
+          <td style="padding:10px 14px;">
+            <div style="font-size:9pt; font-weight:bold; color:#047857; font-variant:small-caps;">Consignee</div>
+            <div style="font-size:10pt; color:#1F2937;">{{ consignee_name }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ consignee_address }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ consignee_contact }}</div>
+            <div style="font-size:9pt; color:#4B5563;">VAT / Tax ID: {{ consignee_tax_id }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ INVOICE LINES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#D1FAE5; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#047857; font-variant:small-caps;">Invoice Lines</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#D1FAE5;">
+    <th width="5%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:center;">#</th>
+    <th width="46%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:left;">Description</th>
+    <th width="12%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:center;">Qty</th>
+    <th width="15%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:right;">Unit Price</th>
+    <th width="22%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:right;">Amount ({{ currency }})</th>
+  </tr>
+  <!-- LLM: INVOICE-LINE ROW — duplicate this <tr> once per invoice line; update #, description, qty, unit price and amount. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">1</td>
+    <td style="padding:6px 8px;">{{ line_item_description }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ line_item_quantity }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ line_item_unit_price }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ line_item_amount }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px; text-align:center;">2</td>
+    <td style="padding:6px 8px;">{{ line_item_description }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ line_item_quantity }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ line_item_unit_price }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ line_item_amount }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">3</td>
+    <td style="padding:6px 8px;">{{ line_item_description }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ line_item_quantity }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ line_item_unit_price }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ line_item_amount }}</td>
+  </tr>
+</table>
+
+<!-- ============ CARTONS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#D1FAE5; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#047857; font-variant:small-caps;">Cartons</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#D1FAE5;">
+    <th width="10%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:center;">Carton No.</th>
+    <th width="30%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:left;">Contents Description</th>
+    <th width="12%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:center;">Qty</th>
+    <th width="16%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:right;">Gross Weight</th>
+    <th width="16%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:right;">Net Weight</th>
+    <th width="16%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:right;">Volume</th>
+  </tr>
+  <!-- LLM: CARTON ROW — duplicate this <tr> once per carton; renumber carton_no sequentially and set qty, weights and volume per carton. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">{{ carton_number }}</td>
+    <td style="padding:6px 8px;">{{ carton_contents }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ carton_quantity }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ carton_gross_weight }} kg</td>
+    <td style="padding:6px 8px; text-align:right;">{{ carton_net_weight }} kg</td>
+    <td style="padding:6px 8px; text-align:right;">{{ carton_volume }} m&sup3;</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px; text-align:center;">{{ carton_number }}</td>
+    <td style="padding:6px 8px;">{{ carton_contents }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ carton_quantity }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ carton_gross_weight }} kg</td>
+    <td style="padding:6px 8px; text-align:right;">{{ carton_net_weight }} kg</td>
+    <td style="padding:6px 8px; text-align:right;">{{ carton_volume }} m&sup3;</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">{{ carton_number }}</td>
+    <td style="padding:6px 8px;">{{ carton_contents }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ carton_quantity }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ carton_gross_weight }} kg</td>
+    <td style="padding:6px 8px; text-align:right;">{{ carton_net_weight }} kg</td>
+    <td style="padding:6px 8px; text-align:right;">{{ carton_volume }} m&sup3;</td>
+  </tr>
+</table>
+
+<!-- ============ TOTALS ============ -->
+<table width="52%" align="right" cellspacing="0" cellpadding="0">
+  <tr style="background-color:#D1FAE5;">
+    <td style="padding:6px 10px; font-size:10pt; font-weight:bold; color:#047857;">Total Packages</td>
+    <td style="padding:6px 10px; font-size:10pt; font-weight:bold; color:#047857; text-align:right;">{{ total_packages }} pcs</td>
+  </tr>
+  <tr style="background-color:#D1FAE5;">
+    <td style="padding:6px 10px; font-size:10pt; font-weight:bold; color:#047857;">Total Gross Weight</td>
+    <td style="padding:6px 10px; font-size:10pt; font-weight:bold; color:#047857; text-align:right;">{{ total_gross_weight }} kg</td>
+  </tr>
+  <tr style="background-color:#D1FAE5;">
+    <td style="padding:6px 10px; font-size:10pt; font-weight:bold; color:#047857;">Total Net Weight</td>
+    <td style="padding:6px 10px; font-size:10pt; font-weight:bold; color:#047857; text-align:right;">{{ total_net_weight }} kg</td>
+  </tr>
+  <tr style="background-color:#D1FAE5;">
+    <td style="padding:6px 10px; font-size:10pt; font-weight:bold; color:#047857;">Total Volume</td>
+    <td style="padding:6px 10px; font-size:10pt; font-weight:bold; color:#047857; text-align:right;">{{ total_volume }} m&sup3;</td>
+  </tr>
+</table>
+
+<!-- ============ SHIPPING MARKS & NOTES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#D1FAE5; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#047857; font-variant:small-caps;">Shipping Marks &amp; Notes</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:10px 14px; font-size:9pt; color:#4B5563;">
+      <b style="color:#1F2937;">Marks:</b>&nbsp;&nbsp;{{ shipping_marks }}<br />
+      <b style="color:#1F2937;">Carrier:</b>&nbsp;&nbsp;{{ carrier_name }} &middot; {{ carrier_reference }}<br />
+      <b style="color:#1F2937;">Mode of transport:</b>&nbsp;&nbsp;{{ transport_mode }}<br />
+      <b style="color:#1F2937;">Notes:</b>&nbsp;&nbsp;{{ shipping_notes }}
+    </td>
+  </tr>
+</table>
+
+<!-- ============ DECLARATION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#D1FAE5; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#047857; font-variant:small-caps;">Declaration</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">
+  We hereby declare that the goods listed in this Packing List / Invoice are correctly and accurately
+  described, properly packed, marked and secured, and in good condition for transport as of
+  {{ document_date }}.
+</p>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#047857; font-variant:small-caps;">Issued By</div>
+      <div style="font-size:10pt;">{{ issued_by_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ issued_by_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#047857; font-variant:small-caps;">Place / Date</div>
+      <div style="font-size:10pt;">{{ place_of_issue }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ document_date }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Carrier acknowledgement &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#34D399; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This document accompanies the shipment {{ shipment_reference }} and must travel with the goods.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

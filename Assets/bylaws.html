@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     BYLAWS — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Keep the article structure; rephrase or extend clause text as needed
+         while preserving the article numbering.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Bylaws</title>
+              <circle cx="12" cy="12" r="11.5" fill="#E2E8F0"/>
+              <g stroke="#334155" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:20pt; font-weight:bold; color:#334155; font-variant:small-caps;">Bylaws</div>
+      <div style="font-size:8pt; color:#6B7280;">{{ jurisdiction }}</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#94A3B8; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Company</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ company_legal_name }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Adoption Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ adoption_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Registration No.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ registration_number }}</div>
+    </td>
+  </tr>
+</table>
+
+<p style="font-size:10pt; margin-top:12pt;">
+  These Bylaws govern the internal management and operation of {{ company_legal_name }} (the
+  &ldquo;Company&rdquo;), a corporation organized under the laws of {{ jurisdiction }}. The Bylaws are adopted
+  pursuant to the Articles of Incorporation and applicable law.
+</p>
+
+<!-- ============ 1. OFFICES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#E2E8F0; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">1. Offices</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>1.1</b>&nbsp;&nbsp;The registered office of the Company is located at {{ registered_office_address }}.</p>
+<p style="font-size:10pt;"><b>1.2</b>&nbsp;&nbsp;The Company may maintain additional offices at such places, within or outside the jurisdiction, as the Board of Directors may determine from time to time.</p>
+
+<!-- ============ 2. SHAREHOLDERS MEETINGS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#E2E8F0; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">2. Shareholders Meetings</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>2.1</b>&nbsp;&nbsp;The annual meeting of shareholders shall be held on {{ annual_meeting_date }} at {{ annual_meeting_time }}, at such place as the Board of Directors shall designate, for the election of directors and the transaction of other business.</p>
+<p style="font-size:10pt;"><b>2.2</b>&nbsp;&nbsp;Special meetings of shareholders may be called by the Board of Directors, the Chairman of the Board, or the holders of {{ special_meeting_threshold }} of the outstanding shares.</p>
+<p style="font-size:10pt;"><b>2.3</b>&nbsp;&nbsp;Written notice of every meeting shall be given to each shareholder entitled to vote, no fewer than {{ meeting_notice_days }} days and no more than {{ meeting_notice_max_days }} days before the meeting.</p>
+<p style="font-size:10pt;"><b>2.4</b>&nbsp;&nbsp;The presence, in person or by proxy, of the holders of {{ quorum_threshold }} of the outstanding shares entitled to vote constitutes a quorum.</p>
+<p style="font-size:10pt;"><b>2.5</b>&nbsp;&nbsp;Each shareholder shall have one vote for each share held, and action is taken by the affirmative vote of a majority of the votes cast, unless a greater vote is required by law or the Articles of Incorporation.</p>
+
+<!-- ============ 3. BOARD OF DIRECTORS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#E2E8F0; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">3. Board of Directors</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>3.1</b>&nbsp;&nbsp;The business and affairs of the Company shall be managed by a Board of Directors of not fewer than {{ minimum_directors }} and not more than {{ maximum_directors }} directors.</p>
+<p style="font-size:10pt;"><b>3.2</b>&nbsp;&nbsp;Directors are elected at the annual meeting of shareholders and serve for {{ director_term }} until their successors are elected and qualified.</p>
+<p style="font-size:10pt;"><b>3.3</b>&nbsp;&nbsp;Regular meetings of the Board may be held at such time and place as the Board determines. Special meetings may be called by the Chairman or by any two directors upon {{ board_meeting_notice }} notice.</p>
+<p style="font-size:10pt;"><b>3.4</b>&nbsp;&nbsp;A majority of the directors in office constitutes a quorum for the transaction of business; the act of a majority of the directors present at a meeting at which a quorum exists is the act of the Board.</p>
+<p style="font-size:10pt;"><b>3.5</b>&nbsp;&nbsp;Directors may participate in meetings by conference call or similar communications equipment, and such participation constitutes presence in person.</p>
+
+<!-- ============ 4. OFFICERS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#E2E8F0; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">4. Officers</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>4.1</b>&nbsp;&nbsp;The officers of the Company shall include a Chief Executive Officer, a Chief Financial Officer and a Secretary, and such other officers as the Board may appoint. One person may hold more than one office.</p>
+<p style="font-size:10pt;"><b>4.2</b>&nbsp;&nbsp;Officers are appointed by the Board of Directors and serve at the pleasure of the Board. Any officer may be removed, with or without cause, by a majority of the Board.</p>
+<p style="font-size:10pt;"><b>4.3</b>&nbsp;&nbsp;The Chief Executive Officer shall have general supervision of the business and affairs of the Company. The Secretary shall keep the minutes of meetings and maintain the corporate records and the share register.</p>
+
+<!-- ============ 5. SHARES AND DIVIDENDS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#E2E8F0; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">5. Shares and Dividends</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>5.1</b>&nbsp;&nbsp;Certificates representing shares shall be signed by the Chief Executive Officer and the Secretary and may be issued in bearer or registered form as provided by law.</p>
+<p style="font-size:10pt;"><b>5.2</b>&nbsp;&nbsp;Shares are transferable only on the books of the Company, upon surrender of the certificate and the delivery of a written assignment. The Board may impose reasonable restrictions on transfer as permitted by law.</p>
+<p style="font-size:10pt;"><b>5.3</b>&nbsp;&nbsp;The Board of Directors may declare and pay dividends out of legally available funds, in cash, property or shares, at such times as it deems advisable.</p>
+<p style="font-size:10pt;"><b>5.4</b>&nbsp;&nbsp;The Board may fix a record date, not more than {{ record_date_max_days }} days before the date of the meeting or payment, to determine the shareholders entitled to notice, vote or dividends.</p>
+
+<!-- ============ 6. BOOKS AND RECORDS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#E2E8F0; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">6. Books and Records</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>6.1</b>&nbsp;&nbsp;The Company shall keep correct and complete books and records of account, minutes of the proceedings of shareholders and directors, and a record of shareholders with their names, addresses and shareholdings.</p>
+<p style="font-size:10pt;"><b>6.2</b>&nbsp;&nbsp;The fiscal year of the Company ends on {{ fiscal_year_end }}.</p>
+<p style="font-size:10pt;"><b>6.3</b>&nbsp;&nbsp;Shareholders entitled to vote may inspect the books and records of the Company during business hours for a proper purpose, subject to reasonable restrictions.</p>
+
+<!-- ============ 7. INDEMNIFICATION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#E2E8F0; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">7. Indemnification</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>7.1</b>&nbsp;&nbsp;The Company shall indemnify any person who is or was a director or officer against expenses, judgments, fines and amounts paid in settlement, actually and reasonably incurred in connection with any proceeding, if such person acted in good faith and in a manner reasonably believed to be in the best interests of the Company.</p>
+<p style="font-size:10pt;"><b>7.2</b>&nbsp;&nbsp;Indemnification is not available where the person is adjudged liable for willful misconduct or gross negligence. The Company may purchase and maintain insurance on behalf of directors and officers against any liability asserted against them.</p>
+
+<!-- ============ 8. AMENDMENTS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#E2E8F0; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">8. Amendments</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>8.1</b>&nbsp;&nbsp;These Bylaws may be amended or repealed, and new bylaws adopted, by the affirmative vote of a majority of the Board of Directors, subject to any greater requirement imposed by law or the Articles of Incorporation.</p>
+<p style="font-size:10pt;"><b>8.2</b>&nbsp;&nbsp;Shareholders entitled to vote may also amend these Bylaws by the affirmative vote of {{ shareholders_amendment_threshold }} of the outstanding shares.</p>
+
+<!-- LLM: page break before the adoption block so it starts on a fresh page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ ADOPTION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#E2E8F0; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">Adoption</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">
+  These Bylaws were duly adopted by the Board of Directors of {{ company_legal_name }} on
+  {{ adoption_date }}, at {{ adoption_place }}, and take effect immediately upon adoption.
+  The original of these Bylaws is kept at the registered office of the Company.
+</p>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">President of the Board</div>
+      <div style="font-size:10pt;">{{ president_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ president_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">Secretary</div>
+      <div style="font-size:10pt;">{{ secretary_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">Corporate Secretary</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#94A3B8; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">These Bylaws are the internal governance charter of {{ company_legal_name }}.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

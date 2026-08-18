@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     EXPLANATORY NOTES — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - In section 3, duplicate the note-register row and the note-paragraph
+         block marked below once per note; keep numbers and titles in sync.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Explanatory Notes</title>
+              <circle cx="12" cy="12" r="11.5" fill="#EFF6FF"/>
+              <g stroke="#1E40AF" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/>
+                <path d="M14 2v5a1 1 0 0 0 1 1h5"/>
+                <path d="M10 9H8"/>
+                <path d="M16 13H8"/>
+                <path d="M16 17H8"/>
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:20pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">Explanatory<br />Notes</div>
+      <div style="font-size:8pt; color:#6B7280;">Accompanying the financial statements</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#60A5FA; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Company</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Reporting Period</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ reporting_period }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Reference</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ accompanying_statements_reference }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ 1. BASIS OF PREPARATION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EFF6FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">1. Basis of Preparation</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">These explanatory notes form an integral part of the financial statements of {{ company_name }} for the {{ reporting_period }} and should be read in conjunction with the statement of financial position, the statement of profit or loss, the statement of changes in equity and the statement of cash flows.</p>
+<p style="font-size:10pt;"><b>Statement of compliance.</b>&nbsp;&nbsp;{{ statement_of_compliance_text }}</p>
+<p style="font-size:10pt;"><b>Basis of measurement.</b>&nbsp;&nbsp;{{ basis_of_measurement_text }}</p>
+<p style="font-size:10pt;"><b>Functional and presentation currency.</b>&nbsp;&nbsp;The financial statements are presented in {{ currency }}.</p>
+
+<!-- ============ 2. SIGNIFICANT ACCOUNTING POLICIES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EFF6FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">2. Significant Accounting Policies</span>
+    </td>
+  </tr>
+</table>
+<ul style="font-size:10pt;">
+  <li><b>Revenue recognition.</b>&nbsp;&nbsp;{{ revenue_recognition_policy }}</li>
+  <li><b>Property, plant and equipment.</b>&nbsp;&nbsp;{{ property_plant_equipment_policy }}</li>
+  <li><b>Inventories.</b>&nbsp;&nbsp;{{ inventory_policy }}</li>
+  <li><b>Financial instruments.</b>&nbsp;&nbsp;{{ financial_instruments_policy }}</li>
+</ul>
+
+<!-- ============ 3. NOTES TO THE FINANCIAL STATEMENTS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EFF6FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">3. Notes to the Financial Statements</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">The register below lists the notes that accompany the financial statements; the detailed text of each note follows the register.</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#EFF6FF;">
+    <th width="14%" style="padding:6px 8px; color:#1E40AF; font-size:9pt; text-align:center;">Note No.</th>
+    <th width="56%" style="padding:6px 8px; color:#1E40AF; font-size:9pt; text-align:left;">Note Title</th>
+    <th width="30%" style="padding:6px 8px; color:#1E40AF; font-size:9pt; text-align:left;">Reference</th>
+  </tr>
+  <!-- LLM: NOTE REGISTER ROW — duplicate this <tr> once per note; keep note numbers sequential. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">1</td>
+    <td style="padding:6px 8px;">{{ note_title_1 }}</td>
+    <td style="padding:6px 8px;">{{ note_reference_1 }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px; text-align:center;">2</td>
+    <td style="padding:6px 8px;">{{ note_title_2 }}</td>
+    <td style="padding:6px 8px;">{{ note_reference_2 }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">3</td>
+    <td style="padding:6px 8px;">{{ note_title_3 }}</td>
+    <td style="padding:6px 8px;">{{ note_reference_3 }}</td>
+  </tr>
+</table>
+<!-- LLM: NOTE PARAGRAPH BLOCK — duplicate this block once per note; keep the note number
+     and title in sync with the register table above, then rewrite the note text. -->
+<p style="font-size:10pt; margin-top:8pt;"><b>Note {{ note_number_1 }} &mdash; {{ note_title_1 }}</b></p>
+<p style="font-size:10pt;">{{ note_text_1 }}</p>
+<p style="font-size:10pt; margin-top:8pt;"><b>Note {{ note_number_2 }} &mdash; {{ note_title_2 }}</b></p>
+<p style="font-size:10pt;">{{ note_text_2 }}</p>
+<p style="font-size:10pt; margin-top:8pt;"><b>Note {{ note_number_3 }} &mdash; {{ note_title_3 }}</b></p>
+<p style="font-size:10pt;">{{ note_text_3 }}</p>
+
+<!-- ============ 4. CONTINGENCIES AND COMMITMENTS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EFF6FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">4. Contingencies and Commitments</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">{{ contingencies_and_commitments_text }}</p>
+
+<!-- ============ 5. SUBSEQUENT EVENTS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EFF6FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">5. Subsequent Events</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">{{ subsequent_events_text }}</p>
+
+<!-- ============ 6. APPROVAL ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EFF6FF; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">6. Approval</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">These notes were approved by the Board of Directors on {{ approval_date }} and are signed on its behalf by:</p>
+
+<!-- LLM: page break before the signature block -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ SIGNATURES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">Prepared By</div>
+      <div style="font-size:10pt;">{{ prepared_by }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ prepared_by_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">Approved By</div>
+      <div style="font-size:10pt;">{{ approved_by }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ approved_by_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#60A5FA; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">These notes are an integral part of the financial statements of {{ company_name }}.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

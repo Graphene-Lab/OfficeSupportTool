@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     PURCHASE ORDER — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Duplicate the line-item row marked below once per ordered line, renumbering.
+       - Keep amounts consistent: always append {{ currency }} to money values.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Purchase Order</title>
+              <circle cx="12" cy="12" r="11.5" fill="#D1FAE5"/>
+              <g stroke="#047857" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="21" r="1"/>
+                <circle cx="19" cy="21" r="1"/>
+                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:22pt; font-weight:bold; color:#047857; font-variant:small-caps;">Purchase<br />Order</div>
+      <span style="background-color:#D1FAE5; color:#047857; font-weight:bold; font-size:8pt; padding:2px 10px;">{{ po_status }}</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#34D399; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">PO Number</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ po_number }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Order Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ po_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Delivery Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ delivery_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Payment Terms</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ payment_terms }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ PARTIES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:12px 10px 0 0; vertical-align:top;">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+        <tr>
+          <td style="padding:10px 14px;">
+            <div style="font-size:9pt; font-weight:bold; color:#047857; font-variant:small-caps;">Vendor</div>
+            <div style="font-size:10pt; color:#1F2937;">{{ vendor_name }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ vendor_address }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ vendor_email }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ vendor_phone }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="50%" style="padding:12px 0 0 10px; vertical-align:top;">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+        <tr>
+          <td style="padding:10px 14px;">
+            <div style="font-size:9pt; font-weight:bold; color:#047857; font-variant:small-caps;">Ship To</div>
+            <div style="font-size:10pt; color:#1F2937;">{{ ship_to_contact }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ ship_to_address }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ shipping_method }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ shipping_terms }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ LINE ITEMS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#D1FAE5; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#047857; font-variant:small-caps;">Ordered Items</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#D1FAE5;">
+    <th width="4%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:center;">#</th>
+    <th width="10%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:center;">Item No.</th>
+    <th width="40%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:left;">Description</th>
+    <th width="9%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:center;">Qty</th>
+    <th width="16%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:right;">Unit Price</th>
+    <th width="21%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:right;">Amount</th>
+  </tr>
+  <!-- LLM: LINE-ITEM ROW — duplicate this <tr> once per ordered line; update #, item no., description, qty, unit price and amount. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">1</td>
+    <td style="padding:6px 8px; text-align:center;">{{ line_item_number }}</td>
+    <td style="padding:6px 8px;">{{ line_item_description }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ line_item_quantity }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ line_item_unit_price }} {{ currency }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ line_item_amount }} {{ currency }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px; text-align:center;">2</td>
+    <td style="padding:6px 8px; text-align:center;">{{ line_item_number }}</td>
+    <td style="padding:6px 8px;">{{ line_item_description }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ line_item_quantity }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ line_item_unit_price }} {{ currency }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ line_item_amount }} {{ currency }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">3</td>
+    <td style="padding:6px 8px; text-align:center;">{{ line_item_number }}</td>
+    <td style="padding:6px 8px;">{{ line_item_description }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ line_item_quantity }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ line_item_unit_price }} {{ currency }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ line_item_amount }} {{ currency }}</td>
+  </tr>
+</table>
+
+<!-- ============ TOTALS ============ -->
+<table width="46%" align="right" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="padding:4px 10px; font-size:9pt; color:#4B5563;">Subtotal</td>
+    <td style="padding:4px 10px; font-size:9pt; text-align:right;">{{ subtotal }} {{ currency }}</td>
+  </tr>
+  <tr>
+    <td style="padding:4px 10px; font-size:9pt; color:#4B5563;">Tax ({{ tax_rate }})</td>
+    <td style="padding:4px 10px; font-size:9pt; text-align:right;">{{ tax_amount }} {{ currency }}</td>
+  </tr>
+  <tr style="background-color:#D1FAE5;">
+    <td style="padding:6px 10px; font-size:11pt; font-weight:bold; color:#047857;">Total</td>
+    <td style="padding:6px 10px; font-size:11pt; font-weight:bold; color:#047857; text-align:right;">{{ total_amount }} {{ currency }}</td>
+  </tr>
+</table>
+
+<!-- ============ DELIVERY TERMS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#D1FAE5; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#047857; font-variant:small-caps;">Delivery Terms</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">{{ delivery_terms }}</p>
+
+<!-- ============ PAYMENT TERMS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#D1FAE5; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#047857; font-variant:small-caps;">Payment Terms</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">{{ payment_terms_detail }}</p>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:6px 10px 0 0; vertical-align:top;">
+      <div style="font-size:8pt; font-variant:small-caps; color:#6B7280;">Bank</div>
+      <div style="font-size:10pt;">{{ bank_name }}</div>
+    </td>
+    <td width="50%" style="padding:6px 0 0 10px; vertical-align:top;">
+      <div style="font-size:8pt; font-variant:small-caps; color:#6B7280;">Account / IBAN</div>
+      <div style="font-size:10pt;">{{ bank_account_iban }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- LLM: page break before the authorization block so it starts on a fresh page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ AUTHORIZATION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#D1FAE5; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#047857; font-variant:small-caps;">Authorization</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#047857; font-variant:small-caps;">Prepared By</div>
+      <div style="font-size:10pt;">{{ prepared_by }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ prepared_by_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#047857; font-variant:small-caps;">Approved By</div>
+      <div style="font-size:10pt;">{{ approved_by }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ approved_by_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#34D399; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This purchase order is subject to the delivery and payment terms stated above.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

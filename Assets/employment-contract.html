@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     EMPLOYMENT CONTRACT — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Keep the clause structure; rephrase or extend clause text as needed
+         while preserving the section numbering.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Employment Contract</title>
+              <circle cx="12" cy="12" r="11.5" fill="#EDE9FE"/>
+              <g stroke="#6D28D9" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12.659 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v9.34"/>
+                <path d="M14 2v5a1 1 0 0 0 1 1h5"/>
+                <path d="M10.378 12.622a1 1 0 0 1 3 3.003L8.36 20.637a2 2 0 0 1-.854.506l-2.867.837a.5.5 0 0 1-.62-.62l.836-2.869a2 2 0 0 1 .506-.853z"/>
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:20pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">Employment<br />Contract</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#A78BFA; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Contract Ref.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ contract_reference }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Effective Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ contract_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Place of Signing</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ place_of_signing }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ PARTIES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:12px 10px 0 0; vertical-align:top;">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+        <tr>
+          <td style="padding:10px 14px;">
+            <div style="font-size:9pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">The Employer</div>
+            <div style="font-size:10pt; color:#1F2937;">{{ employer_name }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ employer_address }}</div>
+            <div style="font-size:9pt; color:#4B5563;">Tax ID: {{ employer_tax_id }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ employer_contact }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="50%" style="padding:12px 0 0 10px; vertical-align:top;">
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+        <tr>
+          <td style="padding:10px 14px;">
+            <div style="font-size:9pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">The Employee</div>
+            <div style="font-size:10pt; color:#1F2937;">{{ employee_name }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ employee_address }}</div>
+            <div style="font-size:9pt; color:#4B5563;">Tax ID / SSN: {{ employee_tax_id }}</div>
+            <div style="font-size:9pt; color:#4B5563;">Date of birth: {{ employee_date_of_birth }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<p style="font-size:10pt; margin-top:12pt;">
+  This Employment Contract (the &ldquo;Contract&rdquo;) is entered into between the Employer and the Employee
+  (together, the &ldquo;Parties&rdquo;) as of {{ contract_date }}. The Parties agree as follows:
+</p>
+
+<!-- ============ 1. POSITION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EDE9FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">1. Position and Duties</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>1.1</b>&nbsp;&nbsp;The Employee is engaged in the position of <b>{{ job_title }}</b>, reporting to <b>{{ reporting_to }}</b>, in the department of <b>{{ department }}</b>.</p>
+<p style="font-size:10pt;"><b>1.2</b>&nbsp;&nbsp;The Employee's principal duties and responsibilities are described in the attached Job Description and include: {{ job_duties_summary }}.</p>
+<p style="font-size:10pt;"><b>1.3</b>&nbsp;&nbsp;The place of work is {{ workplace_location }}. The Employer may reasonably require travel or a temporary change of workplace in accordance with applicable law.</p>
+<p style="font-size:10pt;"><b>1.4</b>&nbsp;&nbsp;Normal working hours are {{ working_hours }} per {{ working_hours_period }}, from {{ working_hours_schedule }}.</p>
+<p style="font-size:10pt;"><b>1.5</b>&nbsp;&nbsp;The Employee will devote their full working time and attention to the Employer's business during working hours.</p>
+
+<!-- ============ 2. REMUNERATION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EDE9FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">2. Remuneration and Benefits</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#EDE9FE;">
+    <th width="40%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:left;">Component</th>
+    <th width="30%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:left;">Value</th>
+    <th width="30%" style="padding:6px 8px; color:#5B21B6; font-size:9pt; text-align:left;">Frequency</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">Gross base salary</td>
+    <td style="padding:6px 8px;">{{ gross_salary }} {{ currency }}</td>
+    <td style="padding:6px 8px;">{{ salary_frequency }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">Bonus / commission</td>
+    <td style="padding:6px 8px;">{{ bonus_commission }}</td>
+    <td style="padding:6px 8px;">{{ bonus_frequency }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">Benefits</td>
+    <td style="padding:6px 8px;">{{ benefits_summary }}</td>
+    <td style="padding:6px 8px;">{{ benefits_frequency }}</td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>2.1</b>&nbsp;&nbsp;The gross salary is payable {{ salary_payment_schedule }} into the bank account indicated by the Employee. Statutory deductions (taxes and social contributions) are withheld by the Employer.</p>
+<p style="font-size:10pt;"><b>2.2</b>&nbsp;&nbsp;The Employer may review the remuneration annually; any adjustment is communicated in writing.</p>
+<p style="font-size:10pt;"><b>2.3</b>&nbsp;&nbsp;Additional benefits: {{ additional_benefits }}.</p>
+
+<!-- ============ 3. LEAVE ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EDE9FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">3. Leave and Absence</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>3.1</b>&nbsp;&nbsp;The Employee is entitled to {{ annual_leave_days }} working days of paid annual leave per {{ annual_leave_period }}. Leave must be requested in advance and approved by the Employer.</p>
+<p style="font-size:10pt;"><b>3.2</b>&nbsp;&nbsp;Sick leave is regulated by applicable law; the Employee must notify the Employer without undue delay and provide a medical certificate as required.</p>
+<p style="font-size:10pt;"><b>3.3</b>&nbsp;&nbsp;Other absences require the Employer's prior written consent.</p>
+
+<!-- ============ 4. TERMINATION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EDE9FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">4. Duration and Termination</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>4.1</b>&nbsp;&nbsp;This Contract is <b>{{ contract_duration_type }}</b> and commences on {{ employment_start_date }}.</p>
+<p style="font-size:10pt;"><b>4.2</b>&nbsp;&nbsp;The first {{ probation_period }} constitutes a probation period, during which the notice period is {{ probation_notice_period }}.</p>
+<p style="font-size:10pt;"><b>4.3</b>&nbsp;&nbsp;After the probation period, either Party may terminate the Contract by giving {{ notice_period }} written notice.</p>
+<p style="font-size:10pt;"><b>4.4</b>&nbsp;&nbsp;The Employer may terminate the Contract with immediate effect in case of {{ gross_misconduct_examples }}.</p>
+
+<!-- LLM: page break before the confidential clauses so they start on a fresh page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ 5. CONFIDENTIALITY & IP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EDE9FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">5. Confidentiality and Intellectual Property</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>5.1</b>&nbsp;&nbsp;The Employee must keep confidential all information acquired during employment relating to the Employer's business, clients, suppliers and technology, both during and after employment, except where disclosure is required by law.</p>
+<p style="font-size:10pt;"><b>5.2</b>&nbsp;&nbsp;All work product created by the Employee within the scope of employment belongs to the Employer, including any intellectual property rights therein. The Employee assigns such rights to the Employer to the fullest extent permitted by law and will sign any document reasonably requested to perfect such assignment.</p>
+<p style="font-size:10pt;"><b>5.3</b>&nbsp;&nbsp;On termination, the Employee must return all company property, documents and data in their possession.</p>
+
+<!-- ============ 6. RESTRICTIONS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EDE9FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">6. Post-Employment Restrictions</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>6.1</b>&nbsp;&nbsp;{{ non_compete_clause }} {{ non_compete_period }} {{ non_compete_scope }} {{ non_compete_territory }}</p>
+<p style="font-size:10pt;"><b>6.2</b>&nbsp;&nbsp;{{ non_solicitation_clause }}</p>
+
+<!-- ============ 7. GOVERNING LAW ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EDE9FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">7. Governing Law and Disputes</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>7.1</b>&nbsp;&nbsp;This Contract is governed by the laws of {{ governing_law_jurisdiction }}.</p>
+<p style="font-size:10pt;"><b>7.2</b>&nbsp;&nbsp;Any dispute arising out of this Contract shall first be submitted to {{ dispute_resolution }} and, failing settlement, to the competent courts of {{ competent_courts }}.</p>
+
+<!-- ============ 8. GENERAL ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EDE9FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">8. General Provisions</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;"><b>8.1</b>&nbsp;&nbsp;This Contract constitutes the entire agreement between the Parties and supersedes all prior agreements. Amendments must be in writing and signed by both Parties.</p>
+<p style="font-size:10pt;"><b>8.2</b>&nbsp;&nbsp;If any provision is held invalid or unenforceable, the remaining provisions continue in full force.</p>
+
+<!-- LLM: page break before the signature block -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ SIGNATURES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#EDE9FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">Signatures</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">Signed in duplicate, in {{ place_of_signing }}, on {{ contract_date }}.</p>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">For the Employer</div>
+      <div style="font-size:10pt;">{{ employer_representative }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ employer_representative_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">The Employee</div>
+      <div style="font-size:10pt;">{{ employee_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ employee_tax_id }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">Witness 1</div>
+      <div style="font-size:10pt;">{{ witness_1_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ witness_1_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#5B21B6; font-variant:small-caps;">Witness 2</div>
+      <div style="font-size:10pt;">{{ witness_2_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ witness_2_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#A78BFA; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This document is confidential and intended solely for the Parties.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     CASH FLOW STATEMENT — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - In each activity section, duplicate the line-item row marked below
+         once per cash-flow item; keep the net-cash highlight rows consistent.
+       - Keep the reconciliation exact: ending cash = beginning cash + net change.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Cash Flow Statement</title>
+              <circle cx="12" cy="12" r="11.5" fill="#E0F2FE"/>
+              <g stroke="#1E40AF" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m17 2 4 4-4 4"/>
+                <path d="M3 11v-1a4 4 0 0 1 4-4h14"/>
+                <path d="m7 22-4-4 4-4"/>
+                <path d="M21 13v1a4 4 0 0 1-4 4H3"/>
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:20pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">Cash Flow<br />Statement</div>
+      <div style="font-size:8pt; color:#6B7280;">For the period ended {{ period_end_date }}</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#60A5FA; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Period Ended</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ period_end_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Company</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Currency</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ currency }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Prepared Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ prepared_date }}</div>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">The statement of cash flows of {{ company_name }} for the {{ reporting_period }} is presented below in {{ currency }}.</p>
+
+<!-- ============ 1. OPERATING ACTIVITIES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#E0F2FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">1. Operating Activities</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#E0F2FE;">
+    <th width="76%" style="padding:6px 8px; color:#1E40AF; font-size:9pt; text-align:left;">Line Item</th>
+    <th width="24%" style="padding:6px 8px; color:#1E40AF; font-size:9pt; text-align:right;">Amount ({{ currency }})</th>
+  </tr>
+  <!-- LLM: CASH-FLOW LINE-ITEM ROW — duplicate this <tr> once per operating cash-flow item. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ cash_flow_line_item }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ cash_flow_line_item_amount }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">Net income</td>
+    <td style="padding:6px 8px; text-align:right;">{{ net_income }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">Depreciation and amortization</td>
+    <td style="padding:6px 8px; text-align:right;">{{ depreciation_and_amortization }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">Change in accounts receivable</td>
+    <td style="padding:6px 8px; text-align:right;">{{ change_in_accounts_receivable }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">Change in inventory</td>
+    <td style="padding:6px 8px; text-align:right;">{{ change_in_inventory }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">Change in accounts payable</td>
+    <td style="padding:6px 8px; text-align:right;">{{ change_in_accounts_payable }}</td>
+  </tr>
+  <tr style="background-color:#E0F2FE;">
+    <td style="padding:6px 8px; font-size:9.5pt; font-weight:bold; color:#1E40AF;">Net Cash Provided by Operating Activities</td>
+    <td style="padding:6px 8px; font-size:9.5pt; font-weight:bold; color:#1E40AF; text-align:right;">{{ net_cash_from_operating_activities }} {{ currency }}</td>
+  </tr>
+</table>
+
+<!-- ============ 2. INVESTING ACTIVITIES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#E0F2FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">2. Investing Activities</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#E0F2FE;">
+    <th width="76%" style="padding:6px 8px; color:#1E40AF; font-size:9pt; text-align:left;">Line Item</th>
+    <th width="24%" style="padding:6px 8px; color:#1E40AF; font-size:9pt; text-align:right;">Amount ({{ currency }})</th>
+  </tr>
+  <!-- LLM: CASH-FLOW LINE-ITEM ROW — duplicate this <tr> once per investing cash-flow item. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ cash_flow_line_item }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ cash_flow_line_item_amount }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">Purchases of property, plant and equipment</td>
+    <td style="padding:6px 8px; text-align:right;">{{ purchases_of_property_plant_and_equipment }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">Proceeds from sale of property, plant and equipment</td>
+    <td style="padding:6px 8px; text-align:right;">{{ proceeds_from_sale_of_assets }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">Acquisitions of investments</td>
+    <td style="padding:6px 8px; text-align:right;">{{ acquisitions_of_investments }}</td>
+  </tr>
+  <tr style="background-color:#E0F2FE;">
+    <td style="padding:6px 8px; font-size:9.5pt; font-weight:bold; color:#1E40AF;">Net Cash Used in Investing Activities</td>
+    <td style="padding:6px 8px; font-size:9.5pt; font-weight:bold; color:#1E40AF; text-align:right;">{{ net_cash_from_investing_activities }} {{ currency }}</td>
+  </tr>
+</table>
+
+<!-- ============ 3. FINANCING ACTIVITIES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#E0F2FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">3. Financing Activities</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#E0F2FE;">
+    <th width="76%" style="padding:6px 8px; color:#1E40AF; font-size:9pt; text-align:left;">Line Item</th>
+    <th width="24%" style="padding:6px 8px; color:#1E40AF; font-size:9pt; text-align:right;">Amount ({{ currency }})</th>
+  </tr>
+  <!-- LLM: CASH-FLOW LINE-ITEM ROW — duplicate this <tr> once per financing cash-flow item. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ cash_flow_line_item }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ cash_flow_line_item_amount }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">Proceeds from borrowings</td>
+    <td style="padding:6px 8px; text-align:right;">{{ proceeds_from_borrowings }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">Repayment of borrowings</td>
+    <td style="padding:6px 8px; text-align:right;">{{ repayment_of_borrowings }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">Dividends paid</td>
+    <td style="padding:6px 8px; text-align:right;">{{ dividends_paid }}</td>
+  </tr>
+  <tr style="background-color:#E0F2FE;">
+    <td style="padding:6px 8px; font-size:9.5pt; font-weight:bold; color:#1E40AF;">Net Cash Provided by Financing Activities</td>
+    <td style="padding:6px 8px; font-size:9.5pt; font-weight:bold; color:#1E40AF; text-align:right;">{{ net_cash_from_financing_activities }} {{ currency }}</td>
+  </tr>
+</table>
+
+<!-- ============ 4. NET CHANGE IN CASH ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#E0F2FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">4. Net Change in Cash</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#E0F2FE;">
+    <th width="76%" style="padding:6px 8px; color:#1E40AF; font-size:9pt; text-align:left;">Item</th>
+    <th width="24%" style="padding:6px 8px; color:#1E40AF; font-size:9pt; text-align:right;">Amount ({{ currency }})</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">Net increase / (decrease) in cash</td>
+    <td style="padding:6px 8px; text-align:right;">{{ net_change_in_cash }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">Cash and cash equivalents at beginning of period</td>
+    <td style="padding:6px 8px; text-align:right;">{{ cash_at_beginning_of_period }}</td>
+  </tr>
+  <tr style="background-color:#E0F2FE;">
+    <td style="padding:6px 8px; font-size:9.5pt; font-weight:bold; color:#1E40AF;">Cash and Cash Equivalents at End of Period</td>
+    <td style="padding:6px 8px; font-size:9.5pt; font-weight:bold; color:#1E40AF; text-align:right;">{{ cash_at_end_of_period }} {{ currency }}</td>
+  </tr>
+</table>
+
+<!-- ============ 5. NOTES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#E0F2FE; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">5. Notes</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:10px 14px; font-size:9pt; color:#4B5563;">
+      {{ cash_flow_notes }}
+    </td>
+  </tr>
+</table>
+
+<!-- LLM: page break before the signature block -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ SIGNATURES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">Prepared By</div>
+      <div style="font-size:10pt;">{{ prepared_by }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ prepared_by_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#1E40AF; font-variant:small-caps;">Approved By</div>
+      <div style="font-size:10pt;">{{ approved_by }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ approved_by_role }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#60A5FA; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This statement reconciles the movement in cash and cash equivalents during the {{ reporting_period }}.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

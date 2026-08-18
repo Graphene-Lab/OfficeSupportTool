@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     BUSINESS LETTER — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - Keep the letter structure: recipient block, subject, salutation,
+         body paragraphs, closing, signature block, enclosures/CC lines.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: pastel accents (graphic elements only), neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="64%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Business Letter</title>
+              <circle cx="12" cy="12" r="11.5" fill="#FEF3C7"/>
+              <g stroke="#92400E" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/>
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="36%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:20pt; font-weight:bold; color:#92400E; font-variant:small-caps;">Business Letter</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FBBF24; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F8FAFC;">
+  <tr>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Letter Ref.</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ letter_reference }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ letter_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Attention</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ letter_attention }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ RECIPIENT BLOCK ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="padding:12px 20px 0 20px;">
+      <div style="font-size:9pt; font-weight:bold; color:#92400E; font-variant:small-caps;">Recipient</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr style="background-color:#F8FAFC;">
+    <td width="26%" style="padding:6px 8px 6px 20px; font-size:8pt; font-variant:small-caps; color:#6B7280;">Name</td>
+    <td width="74%" style="padding:6px 8px; font-size:10pt;">{{ recipient_name }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px 6px 20px; font-size:8pt; font-variant:small-caps; color:#6B7280;">Title</td>
+    <td style="padding:6px 8px; font-size:10pt;">{{ recipient_title }}</td>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px 6px 20px; font-size:8pt; font-variant:small-caps; color:#6B7280;">Company</td>
+    <td style="padding:6px 8px; font-size:10pt;">{{ recipient_company }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px 6px 20px; font-size:8pt; font-variant:small-caps; color:#6B7280;">Address</td>
+    <td style="padding:6px 8px; font-size:10pt; color:#4B5563;">{{ recipient_address }}</td>
+  </tr>
+</table>
+
+<!-- ============ SUBJECT LINE (bold, pastel accent) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0" style="margin-top:12pt;">
+  <tr>
+    <td style="background-color:#FEF3C7; padding:8px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#92400E;">Subject: {{ letter_subject }}</span>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ SALUTATION ============ -->
+<p style="font-size:10pt; margin:12pt 0 6pt 0;">{{ salutation }},</p>
+
+<!-- ============ BODY ============ -->
+<p style="font-size:10pt; margin:6pt 0;">{{ letter_body_1 }}</p>
+<p style="font-size:10pt; margin:6pt 0;">{{ letter_body_2 }}</p>
+<p style="font-size:10pt; margin:6pt 0;">{{ letter_body_3 }}</p>
+
+<!-- ============ CLOSING & SIGNATURE BLOCK ============ -->
+<p style="font-size:10pt; margin:12pt 0 0 0;">{{ closing_salutation }},</p>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="40%" style="padding:28pt 0 0 0; vertical-align:bottom;">
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ sender_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ sender_role }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ company_name }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ ENCLOSURES / CC ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="padding:16pt 0 0 0;">
+      <div style="font-size:9pt; color:#4B5563;">Enclosures: {{ enclosures }}</div>
+      <div style="font-size:9pt; color:#4B5563;">CC: {{ cc_recipients }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#FBBF24; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F3F4F6;">
+  <tr>
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">This letter is confidential and intended solely for the named recipient.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>
