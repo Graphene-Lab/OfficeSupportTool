@@ -122,7 +122,7 @@ any secondary one. Borderline cases are decided as follows:
 
 Every template follows the same block order:
 
-1. **Header** — full-width single-row table, white background, left/right cells:
+1. **Header** — full-width single-row table, white background on the row/cells (never on `<table>`), left/right cells:
    - *Left:* icon badge (46×46 SVG) + `{{ company_name }}` (15pt bold `#111827`) + `{{ company_tagline }}` (8pt `#6B7280`)
    - *Right:* document title (18–22pt bold small-caps, `ink`), optional secondary line (8pt `#6B7280`)
 2. **Accent rule** — 1-row table, 2px, `rule` color

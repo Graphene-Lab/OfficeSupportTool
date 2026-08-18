@@ -5,6 +5,9 @@ using AIOrchestrator;
 using AIOrchestrator.API;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace OfficeSupportToolHarness;
 
@@ -45,6 +48,7 @@ static class Program
         Setup.DocumentsPath = _workspace;
         Setup.ProviderConfig = ProviderConfigs.Get(_providerName);
         StageIcons();
+        StageImages();
 
         File.WriteAllText(ResultsFile, $"RUN {DateTime.Now:HH:mm:ss} provider={_providerName}\n");
         WriteResult("STARTED");
@@ -84,6 +88,18 @@ static class Program
             { Fail("T1-create", "converted DOCX text does not contain the company name"); return 1; }
             Pass("T1-create");
 
+            // T1b — overwriting the same path must report the created backup (Save() pattern)
+            var r1b = tool.CreateDocument(
+                "balance sheet",
+                "Balance sheet of Fiori Coffee S.r.l. as of 31 December 2025 (second version: higher retained earnings).",
+                draft: true, contextText: context,
+                saveFullNameFile: "/balance-sheet.docx");
+            Console.WriteLine($"  T1b CreateDocument(overwrite) → {r1b}");
+            if (!r1b.Contains("backed up as", StringComparison.OrdinalIgnoreCase)
+                || !File.Exists(Path.Combine(_workspace, "balance-sheet.001.bak")))
+            { Fail("T1-overwrite-backup", $"expected backup report: {r1b}"); return 1; }
+            Pass("T1-overwrite-backup");
+
             // T2 — update the document via the embedded HTML metadata
             var r2 = tool.UpdateDocument(
                 "/balance-sheet.docx",
@@ -112,6 +128,102 @@ static class Program
             { Fail("T3-template-gen", "generated template not persisted for reuse"); return 1; }
             Pass("T3-template-gen");
 
+            // T3b — inspect the LLM-generated template (saved next to the shipped ones in the
+            // executable's assets/templates) for conformity with the design rules, and check how
+            // the SVG icons it uses survive the DOCX conversion.
+            var genTpl = Path.Combine(AppContext.BaseDirectory, "assets", "templates", "service-level-agreement.html");
+            if (!File.Exists(genTpl))
+            { Fail("T3-template-inspection", $"generated template not found at {genTpl}"); return 1; }
+            var tplIssues = InspectTemplate(genTpl, "LLM-generated template");
+            var html3 = OfficeSupportTool.ReadStoredHtml(host3);
+            if (html3 == null)
+            { Fail("T3-template-inspection", "stored HTML metadata missing on generated docx"); return 1; }
+            Console.WriteLine($"    converted docx: {Regex.Matches(html3, "src=\"data:image/(?:png|svg\\+xml);base64,").Count} data-URI image(s) in stored HTML, {DocxImageCount(host3)} image part(s) in the DOCX");
+            if (tplIssues > 0) { Fail("T3-template-inspection", $"{tplIssues} conformity issue(s)"); return 1; }
+            Pass("T3-template-inspection");
+
+            // T4 — images: the document requires a logo + a product photo, provided via imageFiles
+            const string t4Context = "Fiori Coffee S.r.l. — via Roma 12, 20121 Milano, Italy. VAT IT01234567890, phone +39 02 12345678, email info@fioricoffee.it, website www.fioricoffee.it. Company tagline: 'Specialty coffee since 1998'. " +
+                "Letter date: 18 August 2026. Letter reference: FI-2026-077. " +
+                "Recipient: Maria Conti, Procurement Director, Nova S.p.A., via Torino 45, 10122 Torino, Italy. " +
+                "Subject: Partnership renewal for 2026. Salutation: 'Dear Ms. Conti'. " +
+                "Body: Nova S.p.A. has been a partner since 2019; the collaboration produced 120 new clients in 2025. We thank you for the partnership and look forward to expanding the cooperation in 2026 with a new product line launch in September. " +
+                "Closing: 'Best regards'. Sender: Luca Bianchi, CEO. Enclosures: product catalogue 2026. CC: Roberto Verdi, Sales Director, Nova S.p.A.";
+            var r4 = tool.CreateDocument(
+                "business letter",
+                "Business letter from Fiori Coffee S.r.l. to Nova S.p.A. thanking them for the partnership. " +
+                "Place the company logo (logo.png) at the top and the product photo (coffee.png) in the body.",
+                contextText: t4Context,
+                imageFiles: new[] { "/images/logo.png", "/images/coffee.png" },
+                saveFullNameFile: "/letter.docx");
+            Console.WriteLine($"  T4 CreateDocument(images) → {r4}");
+            var host4 = Path.Combine(_workspace, "letter.docx");
+            if (!r4.StartsWith("Document created at") || !File.Exists(host4))
+            { Fail("T4-images", $"create failed: {r4}"); return 1; }
+            var html4 = OfficeSupportTool.ReadStoredHtml(host4);
+            var pngUris = html4 == null ? 0 : Regex.Matches(html4, "src=\"data:image/png;base64,").Count;
+            if (html4 == null || pngUris != 2)
+            { Fail("T4-images", $"expected both images embedded once (2 data URIs), found {pngUris}"); return 1; }
+            if (DocxImageCount(host4) < 2)
+            { Fail("T4-images", "converted DOCX has fewer than 2 image parts"); return 1; }
+            Pass("T4-images");
+
+            // T5 — material gate: draft=false with no context → deterministic rejection + draft hint
+            var r5 = tool.CreateDocument("invoice", "Invoice for ACME Corp, March 2026, itemized line items, VAT and total.");
+            Console.WriteLine($"  T5 material gate (no context) → {r5}");
+            if (!r5.StartsWith("Error:") || !r5.Contains("draft", StringComparison.OrdinalIgnoreCase))
+            { Fail("T5-material-gate", $"expected rejection with draft hint: {r5}"); return 1; }
+            Pass("T5-material-gate");
+
+            // T6 — update a document without HTML metadata → deterministic error
+            var foreign = Path.Combine(_workspace, "foreign.docx");
+            File.WriteAllBytes(foreign, OfficeSupportTool.ConvertToDocx("<html><body><p>plain</p></body></html>"));
+            using (var pkg = Package.Open(foreign, FileMode.Open, FileAccess.ReadWrite))
+            {
+                var uri = PackUriHelper.CreatePartUri(new Uri("/customXml/htmlData.xml", UriKind.Relative));
+                if (pkg.PartExists(uri))
+                {
+                    const string relType = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXml";
+                    var rel = pkg.GetRelationshipsByType(relType).FirstOrDefault(r => r.TargetUri == uri);
+                    if (rel != null) pkg.DeleteRelationship(rel.Id);
+                    pkg.DeletePart(uri);
+                }
+            }
+            var r6 = tool.UpdateDocument("/foreign.docx", "change the greeting");
+            Console.WriteLine($"  T6 UpdateDocument(no metadata) → {r6}");
+            if (!r6.StartsWith("Error:") || !r6.Contains("no embedded HTML metadata"))
+            { Fail("T6-foreign-docx", $"expected metadata error: {r6}"); return 1; }
+            Pass("T6-foreign-docx");
+
+            // T7 — full rollback flow at agent level: create → user change → user asks rollback
+            Console.WriteLine("  T7 rollback flow (agent-level, may take several minutes)...");
+            var (res7, trace7) = RunAgent(
+                "TASK 1: Create a business letter from 'Fiori Coffee S.r.l.' to 'Nova S.p.A.' thanking them for the partnership, save it as /rollback.docx. " +
+                "Supporting material to pass as contextText: Fiori Coffee S.r.l. — via Roma 12, 20121 Milano, Italy, VAT IT01234567890, email info@fioricoffee.it. " +
+                "Letter date 18 August 2026, reference FI-2026-077. Recipient: Maria Conti, Procurement Director, Nova S.p.A., via Torino 45, 10122 Torino, Italy. " +
+                "Subject 'Partnership renewal', salutation 'Dear Ms. Conti'. Body: Nova S.p.A. has been a partner since 2019; the collaboration produced 120 new clients in 2025; " +
+                "we thank you for the partnership started in 2019 and look forward to 2026. Closing 'Best regards', sender Luca Bianchi (CEO), enclosures: product catalogue 2026. " +
+                "TASK 2: The user asks to change the letter: replace the sentence about the partnership with 'thank you for the 2025 campaign results' " +
+                "and add the closing 'We look forward to 2026.' " +
+                "TASK 3: The user now wants to UNDO the change of TASK 2 (rollback to the version before the change), using the backup the tool reported. " +
+                "Report what you did in each task.",
+                maxIterations: 50);
+            WriteResult("T7 trace: " + string.Join(" | ", trace7));
+            Console.WriteLine($"  T7 tool calls: {string.Join(" → ", trace7)}");
+            if (res7.Error != null) { Fail("T7-rollback", $"agent error: {res7.Error}"); return 1; }
+            var rollbackFile = Path.Combine(_workspace, "rollback.docx");
+            var html7 = File.Exists(rollbackFile) ? OfficeSupportTool.ReadStoredHtml(rollbackFile) : null;
+            if (html7 == null) { Fail("T7-rollback", "rollback.docx not created or no metadata"); return 1; }
+            if (html7.Contains("2025 campaign results", StringComparison.OrdinalIgnoreCase))
+            { Fail("T7-rollback", "document still contains the TASK 2 change — restore did not revert"); return 1; }
+            if (!html7.Contains("partnership", StringComparison.OrdinalIgnoreCase))
+            { Fail("T7-rollback", "original wording missing after restore"); return 1; }
+            if (!trace7.Any(c => c.Contains("restore", StringComparison.OrdinalIgnoreCase)))
+            { Fail("T7-rollback", $"agent never called Restore — trace: {string.Join(" | ", trace7)}"); return 1; }
+            if (Directory.GetFiles(_workspace, "rollback.*.bak").Length < 2)
+            { Fail("T7-rollback", "backup chain shorter than expected (update + restore swap)"); return 1; }
+            Pass("T7-rollback");
+
             Console.WriteLine();
             Console.WriteLine(_failures == 0 ? "  ALL LLM TESTS PASSED" : $"  {_failures} LLM TEST FAILURES");
             WriteResult(_failures == 0 ? "DONE PASS" : $"DONE FAIL ({_failures})");
@@ -139,6 +251,63 @@ static class Program
         foreach (var c in doc.MainDocumentPart.Document.Descendants<TableCell>())
             text.Append(' ').Append(c.InnerText);
         return text.ToString().Contains(expected, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>Counts the image parts of a DOCX (rendered images from &lt;img&gt; / SVG conversion).</summary>
+    static int DocxImageCount(string path)
+    {
+        using var doc = WordprocessingDocument.Open(path, false);
+        return doc.MainDocumentPart?.ImageParts.Count() ?? 0;
+    }
+
+    /// <summary>Runs a behavioral agent-level test: natural-language prompt, "OfficeSupportTool"
+    /// registered, tool-call trace collected from the AgentProgress events. Returns the agent
+    /// result and the ordered call sequence (what the agent actually did).</summary>
+    static (AgentResult Result, List<string> Trace) RunAgent(string prompt, int maxIterations = 50)
+    {
+        using var orch = new AgentHarness(_providerName);
+        var calls = new List<string>();
+        orch.AgentProgress += (_, e) =>
+        {
+            if (e.State == AgentHarness.AgentState.Iteration && !string.IsNullOrWhiteSpace(e.MethodName))
+                calls.Add($"#{e.Iteration}:{e.MethodName}");
+        };
+        var result = orch.ExecuteAction(prompt, new[] { "OfficeSupportTool" }, maxIterations: maxIterations);
+        return (result, calls);
+    }
+
+    /// <summary>Prints a conformity report for a template (shipped or LLM-generated) against the
+    /// essential design rules and returns the number of hard issues found. Also reports which SVG
+    /// mechanism the template uses (inline svg / icon-name placeholders / data URIs) — that is what
+    /// EmbedSvgIcons + NormalizeSvgSizes must handle when the template becomes a document.</summary>
+    static int InspectTemplate(string path, string label)
+    {
+        var tpl = File.ReadAllText(path, Encoding.UTF8);
+        var issues = 0;
+        Console.WriteLine($"  ── {label}: {path} ({tpl.Length} chars)");
+        void Check(bool ok, string what)
+        {
+            if (ok) Console.WriteLine($"    ✓ {what}");
+            else { issues++; Console.WriteLine($"    ✗ {what}"); }
+        }
+        Check(!OfficeSupportTool.HasNestedComments(tpl), "no nested HTML comments");
+        Check(!OfficeSupportTool.HasTableBackground(tpl), "no background-color/bgcolor on <table> (use tr/td)");
+        Check(!OfficeSupportTool.HasBareSvgSizes(tpl), "svg width/height always with explicit unit (px)");
+        Check(!Regex.IsMatch(tpl, @"<(?:style|script)\b|(?:src|href)\s*=\s*[""']https?://|url\([""']?https?://", RegexOptions.IgnoreCase),
+            "no <style>/<script>/external URLs");
+        Check(!Regex.IsMatch(tpl, @"\b(?:display|position|float)\s*:|\bflex\b", RegexOptions.IgnoreCase),
+            "no flexbox/grid/position/float CSS");
+        Check(!Regex.IsMatch(tpl, @"[A-Za-z]:\\|/home/|/mnt/|AIOrchestrator[\\/]|assets[\\/]icons", RegexOptions.IgnoreCase),
+            "no local/host paths in the template");
+        var inlineSvg = Regex.Matches(tpl, @"<svg\b").Count;
+        var iconPlaceholders = Regex.Matches(tpl, @"<img\b[^>]*src\s*=\s*""([^""]*\.svg)""")
+            .Select(m => m.Groups[1].Value).Where(s => !s.StartsWith("data:", StringComparison.OrdinalIgnoreCase)).ToList();
+        var svgDataUris = Regex.Matches(tpl, @"data:image/svg\+xml;base64,").Count;
+        Console.WriteLine($"    svg mechanism: {inlineSvg} inline <svg>, {iconPlaceholders.Count} icon-name placeholder(s) [{string.Join(", ", iconPlaceholders)}], {svgDataUris} svg data-URI(s)");
+        Console.WriteLine(tpl.Contains("{{")
+            ? "    ✓ placeholders ({{...}}) present"
+            : "    ⚠ no {{ placeholder }} found (the LLM may have filled concrete values)");
+        return issues;
     }
 
     // ---------- deterministic self-test (no LLM, no network) ----------
@@ -224,6 +393,41 @@ static class Program
             return null;
         });
 
+        failures += Test("html: bare svg size detection", () =>
+        {
+            if (!OfficeSupportTool.HasBareSvgSizes("<svg width=\"46\" height=\"46\" viewBox=\"0 0 24 24\"><g/></svg>")) return "bare width not detected";
+            if (OfficeSupportTool.HasBareSvgSizes("<svg width=\"46px\" height=\"46px\" viewBox=\"0 0 24 24\"><g/></svg>")) return "px units wrongly flagged";
+            if (OfficeSupportTool.HasBareSvgSizes("<svg viewBox=\"0 0 24 24\"><g/></svg>")) return "no-size svg wrongly flagged";
+            if (OfficeSupportTool.HasBareSvgSizes("<svg width=\"46.5px\" height=\"46px\"><g/></svg>")) return "decimal px wrongly flagged";
+            return null;
+        });
+
+        failures += Test("inspect: table background style-form detected", () =>
+        {
+            var dir = Path.Combine(Path.GetTempPath(), "ost-inspect-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(dir);
+            try
+            {
+                var f = Path.Combine(dir, "bad.html");
+                File.WriteAllText(f, "<html><body><table style=\"background-color:#FFFFFF;\"><tr><td>x</td></tr></table></body></html>");
+                if (InspectTemplate(f, "selftest") == 0) return "style-form background on <table> not flagged";
+                File.WriteAllText(f, "<html><body><table bgcolor=\"#FFFFFF\"><tr><td>x</td></tr></table></body></html>");
+                if (InspectTemplate(f, "selftest") == 0) return "bgcolor attribute on <table> not flagged";
+                File.WriteAllText(f, "<html><body><table><tr style=\"background-color:#F8FAFC;\"><td>x</td></tr></table></body></html>");
+                if (InspectTemplate(f, "selftest") > 0) return "legit tr background wrongly flagged";
+                return null;
+            }
+            finally { try { Directory.Delete(dir, true); } catch { } }
+        });
+
+        failures += Test("html: table background detection", () =>
+        {
+            if (!OfficeSupportTool.HasTableBackground("<table style=\"background-color:#FFF;\"><tr><td>x</td></tr></table>")) return "style-form not detected";
+            if (!OfficeSupportTool.HasTableBackground("<table bgcolor=\"#FFF\"><tr><td>x</td></tr></table>")) return "bgcolor not detected";
+            if (OfficeSupportTool.HasTableBackground("<table><tr style=\"background-color:#F8FAFC;\"><td>x</td></tr></table>")) return "tr background wrongly flagged";
+            return null;
+        });
+
         failures += Test("html: svg size normalization (bare -> px)", () =>
         {
             var html = "<svg width=\"46\" height=\"46\" viewBox=\"0 0 24 24\"><g/></svg>" +
@@ -260,6 +464,76 @@ static class Program
                 return null;
             }
             finally { try { Directory.Delete(iconsDir, true); } catch { } }
+        });
+
+        failures += Test("restore: named backup + swap (current becomes a backup)", () =>
+        {
+            var dir = Path.Combine(Path.GetTempPath(), "ost-restore-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(dir);
+            var saved = Setup.DocumentsPath;
+            Setup.DocumentsPath = dir;
+            try
+            {
+                var f = Path.Combine(dir, "invoice.docx");
+                File.WriteAllBytes(f, OfficeSupportTool.ConvertToDocx("<html><body><h1>Version 1</h1></body></html>"));
+                File.Copy(f, Path.Combine(dir, "invoice.001.bak"));
+                File.WriteAllBytes(f, OfficeSupportTool.ConvertToDocx("<html><body><h1>Version 2</h1></body></html>"));
+                var r = new OfficeSupportTool().Restore("invoice.001.bak");
+                if (!r.StartsWith("Document restored at") || !r.Contains("invoice.001.bak")) return $"restore result: {r}";
+                if (!DocxTextContains(f, "Version 1")) return "restored content is not Version 1";
+                if (!File.Exists(Path.Combine(dir, "invoice.002.bak"))) return "swap backup invoice.002.bak not created";
+                if (!DocxTextContains(Path.Combine(dir, "invoice.002.bak"), "Version 2")) return "swap backup does not hold Version 2";
+                return null;
+            }
+            finally { Setup.DocumentsPath = saved; try { Directory.Delete(dir, true); } catch { } }
+        });
+
+        failures += Test("restore: no-arg picks the newest backup in the workspace", () =>
+        {
+            var dir = Path.Combine(Path.GetTempPath(), "ost-restore-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(Path.Combine(dir, "sub"));
+            var saved = Setup.DocumentsPath;
+            Setup.DocumentsPath = dir;
+            try
+            {
+                var fa = Path.Combine(dir, "a.docx");
+                File.WriteAllBytes(fa, OfficeSupportTool.ConvertToDocx("<html><body><p>A1</p></body></html>"));
+                File.Copy(fa, Path.Combine(dir, "a.001.bak"));
+                File.SetLastWriteTimeUtc(Path.Combine(dir, "a.001.bak"), new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+                var fb = Path.Combine(dir, "sub", "b.docx");
+                File.WriteAllBytes(fb, OfficeSupportTool.ConvertToDocx("<html><body><p>B1</p></body></html>"));
+                File.Copy(fb, Path.Combine(dir, "sub", "b.001.bak"));
+                File.SetLastWriteTimeUtc(Path.Combine(dir, "sub", "b.001.bak"), new DateTime(2026, 1, 2, 0, 0, 0, DateTimeKind.Utc));
+                File.WriteAllBytes(fb, OfficeSupportTool.ConvertToDocx("<html><body><p>B2</p></body></html>"));
+                var r = new OfficeSupportTool().Restore();
+                if (!r.Contains("b.001.bak")) return $"expected b.001.bak, got: {r}";
+                if (!DocxTextContains(fb, "B1")) return "b.docx not restored to B1";
+                return null;
+            }
+            finally { Setup.DocumentsPath = saved; try { Directory.Delete(dir, true); } catch { } }
+        });
+
+        failures += Test("restore: error paths (no backups, missing file, non-backup name)", () =>
+        {
+            var dir = Path.Combine(Path.GetTempPath(), "ost-restore-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(dir);
+            var saved = Setup.DocumentsPath;
+            Setup.DocumentsPath = dir;
+            try
+            {
+                var t = new OfficeSupportTool();
+                var r1 = t.Restore();
+                if (!r1.StartsWith("Error: no backup file")) return $"r1: {r1}";
+                var f = Path.Combine(dir, "x.docx");
+                File.WriteAllBytes(f, OfficeSupportTool.ConvertToDocx("<html><body><p>x</p></body></html>"));
+                File.Copy(f, Path.Combine(dir, "x.001.bak"));
+                var r2 = t.Restore("zzz.001.bak");
+                if (!r2.StartsWith("Error: backup file 'zzz.001.bak' not found")) return $"r2: {r2}";
+                var r3 = t.Restore("x.docx");
+                if (!r3.StartsWith("Error: cannot derive")) return $"r3: {r3}";
+                return null;
+            }
+            finally { Setup.DocumentsPath = saved; try { Directory.Delete(dir, true); } catch { } }
         });
 
         Console.WriteLine(failures == 0 ? "  ALL SELF-TESTS PASSED" : $"  {failures} SELF-TEST FAILURES");
@@ -320,5 +594,22 @@ static class Program
         };
         foreach (var (name, svg) in icons)
             File.WriteAllText(Path.Combine(iconsDir, name + ".svg"), svg);
+    }
+
+    /// <summary>Stages two small solid-color PNGs in the workspace so the images flow can be
+    /// exercised (CreateDocument with imageFiles: the LLM must place each image once).</summary>
+    static void StageImages()
+    {
+        var dir = Path.Combine(_workspace, "images");
+        Directory.CreateDirectory(dir);
+        WritePng(Path.Combine(dir, "logo.png"), 64, 64, "#8B1A1A");
+        WritePng(Path.Combine(dir, "coffee.png"), 72, 48, "#6F4E37");
+    }
+
+    static void WritePng(string path, int w, int h, string hex)
+    {
+        using var img = new Image<Rgba32>(w, h);
+        img.Mutate(x => x.BackgroundColor(SixLabors.ImageSharp.Color.ParseHex(hex)));
+        img.SaveAsPng(path);
     }
 }
