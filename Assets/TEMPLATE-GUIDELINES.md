@@ -175,6 +175,10 @@ Every template follows the same block order:
   - any color rule the LLM must apply (e.g. risk-level cell colors),
   - where a `page-break` is placed and why,
   - how to move the footer into `converter.ParseFooter()` if repeating on every page is desired.
+  - **Never nest comments:** a `<!-- … -->` must NOT contain another `<!--`/`-->` inside it (invalid
+    HTML — the inner `-->` closes the outer comment and the remaining text becomes visible in the
+    document). Keep the header banner flat; put row markers such as `<!-- SLA-ROW -->` directly above
+    the row, outside the banner.
 - **Money values:** always append the `{{ currency }}` placeholder to amounts.
 - **Keep inline styles:** the LLM must preserve all `style="…"` attributes when filling data.
 

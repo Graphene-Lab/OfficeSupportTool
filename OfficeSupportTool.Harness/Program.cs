@@ -214,6 +214,16 @@ static class Program
             finally { try { File.Delete(file); } catch { } }
         });
 
+        failures += Test("html: nested comment detection", () =>
+        {
+            var nested = "<!-- banner\n# - table: <!-- SLA-ROW --> marks rows\n-->\n<p>x</p>";
+            if (!OfficeSupportTool.HasNestedComments(nested)) return "nested comment not detected";
+            var legit = "<!-- banner -->\n<!-- SLA-ROW -->\n<tr><td>x</td></tr>\n<!-- end -->";
+            if (OfficeSupportTool.HasNestedComments(legit)) return "legit flat comments flagged";
+            if (OfficeSupportTool.HasNestedComments("<p>plain text <!-- a --> only</p>")) return "single comment flagged";
+            return null;
+        });
+
         failures += Test("icons: placeholder embedding (size + color + paths)", () =>
         {
             var iconsDir = Path.Combine(Path.GetTempPath(), "ost-selftest-icons-" + Guid.NewGuid().ToString("N"));

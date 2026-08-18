@@ -372,6 +372,21 @@ namespace AIOrchestrator.API
                 }
                 if (IsValidHtml5(html, out var errors))
                 {
+                    if (HasNestedComments(html))
+                    {
+                        Log.LogStep($"OfficeSupportTool.GenerateHtml: nested HTML comments on attempt {attempt}");
+                        if (attempt == MaxHtmlAttempts) break;
+                        prompt = $"""
+                            The previous HTML code contains NESTED HTML comments: a `<!-- ... -->` comment whose body contains another `<!--` (e.g. a banner comment that embeds a row marker like `<!-- SLA-ROW -->`). In HTML this is invalid — the inner `-->` closes the outer comment and the remaining text becomes visible in the document.
+                            Rewrite the comments as single-level: move every marker comment OUTSIDE the banner, directly above the element it marks.
+                            Here is the code that failed:
+                            ```html
+                            {html}
+                            ```
+                            {OnlyOutputAnswer}
+                            """;
+                        continue;
+                    }
                     Log.LogStep($"OfficeSupportTool.GenerateHtml: valid HTML on attempt {attempt}");
                     return html;
                 }
@@ -436,6 +451,7 @@ namespace AIOrchestrator.API
             sb.AppendLine();
             sb.AppendLine("- Be faithful to the template: keep its structure, CSS classes and inline styles unchanged; do not add styling, graphics or visual elements beyond the template.");
             sb.AppendLine("- Replace every {{ placeholder }} with the real data from the note and the context; follow the template's HTML comments (e.g. duplicate the marked rows once per line item).");
+            sb.AppendLine("- Keep the template's HTML comments single-level: never put a <!-- inside another comment (a nested <!-- makes the text after the inner --> visible in the document).");
             sb.AppendLine("- Only inline CSS is supported: no <style>, no external CSS, no scripts, no flexbox/grid.");
             if (images.Count > 0)
             {
@@ -646,6 +662,12 @@ namespace AIOrchestrator.API
             }
             return errors.Count == 0;
         }
+
+        /// <summary>Detects invalid nested HTML comments: a comment whose body contains another
+        /// "&lt;!--" (e.g. a banner comment embedding a row marker). In HTML the inner "-->" closes
+        /// the outer comment, leaking the remaining text as visible content in the DOCX.</summary>
+        internal static bool HasNestedComments(string html) =>
+            Regex.IsMatch(html, @"<!--(?:(?!-->)[\s\S])*?<!--");
 
         // ---------- DOCX conversion + metadata ----------
 
