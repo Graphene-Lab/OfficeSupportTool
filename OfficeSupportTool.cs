@@ -95,6 +95,7 @@ namespace AIOrchestrator.API
             try
             {
                 var bytes = ConvertToDocx(html);
+                if (File.Exists(hostPath)) CreateBackup(hostPath);
                 File.WriteAllBytes(hostPath, bytes);
             }
             catch (Exception ex) { return $"Error: cannot create the document. {ex.Message}"; }
@@ -408,7 +409,9 @@ namespace AIOrchestrator.API
                 }
                 outputTwoLetterLanguage ??= "en";
             }
-            string languageName = new CultureInfo(outputTwoLetterLanguage).EnglishName;
+            string languageName;
+            try { languageName = new CultureInfo(outputTwoLetterLanguage).EnglishName; }
+            catch (CultureNotFoundException) { languageName = "English"; }
 
             var sb = new StringBuilder();
             sb.AppendLine("Today's date: " + DateTime.Now.ToString("yyyy-MM-dd"));
