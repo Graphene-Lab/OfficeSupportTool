@@ -15,6 +15,7 @@ SOP, …). When a requested type has no template, the LLM generates a new one fo
 |---|---|
 | `create_document` | Creates a new DOCX from the template matching the requested type (optional `draft`, context text/file, image files, output path). |
 | `update_document` | Applies requested changes to an existing DOCX (reads the HTML from the embedded metadata, regenerates the document; numbered backup before overwriting). |
+| `restore` | Reverts a document to a backed-up version (optional backup file name; the current file becomes a backup first, so the restore is reversible). |
 
 ## Usage
 
@@ -46,12 +47,43 @@ create_document(type, note, draft?, contextText?, contextFile?, imageFiles?, sav
 ### update_document
 
 ```
-update_document(filePath, changes, contextText?)
+update_document(filePath, changes, contextText?, imageFiles?)
 ```
 
 Reads the source HTML from the DOCX metadata, has the LLM apply `changes` faithfully to the
 template, converts back to DOCX and re-embeds the new HTML. A numbered `.NNN.bak` backup is
-created before the file is overwritten.
+created before the file is overwritten and its name is returned so the agent can restore it later.
+
+### restore
+
+```
+restore(backupFile?)
+```
+
+Reverts a document to a backed-up version. `backupFile` (optional) is the backup file name
+(e.g. `"invoice.001.bak"`); the original file name is derived from it. When omitted, the most
+recent backup in the workspace is used. The current file is saved as a new numbered backup
+first (the restore itself is reversible), then the chosen backup replaces it.
+
+## Testing / Harness
+
+The `OfficeSupportTool.Harness` console project drives the tool end-to-end against a live
+LLM provider, plus an offline deterministic self-test:
+
+```
+dotnet run --project OfficeSupportTool.Harness -- --selftest        # offline: no LLM needed
+dotnet run --project OfficeSupportTool.Harness -- --provider NAME   # LLM campaign (T1–T7)
+```
+
+- `--selftest`: deterministic checks (type normalization, HTML→DOCX round-trip, metadata,
+  nested-comment/bare-svg/table-background detection, restore semantics).
+- `--provider NAME` (default `DeepSeekBridge`, fallback `Ollama_Qwen`): runs the behavioral
+  LLM campaign — create (incl. overwrite backup), update, template generation + conformity
+  inspection, images, material-gate rejection, foreign DOCX, and the create→update→rollback
+  flow at agent level.
+- Results are appended to `%TEMP%\officesupporttool_test_results.txt` with a final `DONE`
+  marker; the agent's tool-call trace is logged per test. The workspace lives in `%TEMP%`
+  (the repo sits under OneDrive, where test files would be cloud-synced on every write).
 
 ## Packaging
 
