@@ -143,9 +143,10 @@ Every template follows the same block order:
 ## 4. Icons (SVG)
 
 - **Badge recipe (inline SVG):** the header badge is an inline SVG circle with the set pastel
-  fill and the set ink strokes:
+  fill and the set ink strokes. **Always give `width`/`height` an explicit unit (`px`)** —
+  HtmlToOpenXml's `Unit.Parse` rejects bare numbers (`width="46"`) and produces a 0×0 image:
   ```html
-  <svg width="46" height="46" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <svg width="46px" height="46px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <title>{{ Document Title }}</title>
     <circle cx="12" cy="12" r="11.5" fill="{{ pastel }}"/>
     <g stroke="{{ ink }}" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">

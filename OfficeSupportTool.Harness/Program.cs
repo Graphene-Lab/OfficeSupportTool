@@ -224,6 +224,20 @@ static class Program
             return null;
         });
 
+        failures += Test("html: svg size normalization (bare -> px)", () =>
+        {
+            var html = "<svg width=\"46\" height=\"46\" viewBox=\"0 0 24 24\"><g/></svg>" +
+                       "<img src=\"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiLz4=\">" +
+                       "<img src=\"chart.png\">";
+            var outHtml = OfficeSupportTool.NormalizeSvgSizes(html);
+            if (!outHtml.Contains("width=\"46px\" height=\"46px\"")) return "inline svg not normalized";
+            var b64 = Regex.Match(outHtml, "base64,([^\"]+)\"").Groups[1].Value;
+            var svg = Encoding.UTF8.GetString(Convert.FromBase64String(b64));
+            if (!svg.Contains("width=\"24px\" height=\"24px\"")) return $"data-uri svg not normalized: {svg}";
+            if (!outHtml.Contains("src=\"chart.png\"")) return "non-svg img must stay untouched";
+            return null;
+        });
+
         failures += Test("icons: placeholder embedding (size + color + paths)", () =>
         {
             var iconsDir = Path.Combine(Path.GetTempPath(), "ost-selftest-icons-" + Guid.NewGuid().ToString("N"));
@@ -241,7 +255,7 @@ static class Program
                 if (!outHtml.Contains("zzzz.16.123456.svg")) return "unknown icon must stay unresolved";
                 var first = Regex.Match(outHtml, "src=\"data:image/svg\\+xml;base64,([^\"]+)\"");
                 var svg = Encoding.UTF8.GetString(Convert.FromBase64String(first.Groups[1].Value));
-                if (!svg.Contains("width=\"32\"")) return $"size 32 not applied: {svg}";
+                if (!svg.Contains("width=\"32px\"")) return $"size 32 not applied: {svg}";
                 if (!svg.Contains("stroke=\"#aa0000\"")) return $"color aa0000 not applied: {svg}";
                 return null;
             }

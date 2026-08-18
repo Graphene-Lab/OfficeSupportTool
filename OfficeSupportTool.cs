@@ -677,19 +677,44 @@ namespace AIOrchestrator.API
         /// injected via System.IO.Packaging (the OpenXML SDK typed API does not expose CustomXmlPart).</summary>
         internal static byte[] ConvertToDocx(string html)
         {
+            // HtmlToOpenXml's Unit.Parse requires an explicit unit on svg width/height attributes
+            // (bare numbers like width="46" are rejected and produce a 0x0 image): normalize the
+            // render copy, while the metadata keeps the original document HTML.
+            var renderHtml = NormalizeSvgSizes(html);
             using var ms = new MemoryStream();
             using (var doc = WordprocessingDocument.Create(ms, WordprocessingDocumentType.Document, autoSave: true))
             {
                 var mainPart = doc.AddMainDocumentPart();
                 mainPart.Document = new Document(new Body());
                 var converter = new HtmlConverter(mainPart);
-                converter.ParseBody(html).GetAwaiter().GetResult();
+                converter.ParseBody(renderHtml).GetAwaiter().GetResult();
                 mainPart.Document.Save();
             }
             ms.Position = 0;
             using (var pkg = Package.Open(ms, FileMode.Open, FileAccess.ReadWrite))
                 WriteHtmlMetadata(pkg, html);
             return ms.ToArray();
+        }
+
+        /// <summary>HtmlToOpenXml's Unit.Parse requires a unit on the svg width/height attributes:
+        /// bare numbers (width="46") are rejected and produce a 0x0 image. Appends "px" to bare
+        /// numbers on every inline &lt;svg&gt; and inside svg data-URI &lt;img&gt; srcs (icon placeholders).</summary>
+        internal static string NormalizeSvgSizes(string html)
+        {
+            // inline <svg> opening tags (width/height may appear in any order)
+            html = Regex.Replace(html, @"<svg(?=[\s>])[^>]*>",
+                m => Regex.Replace(m.Value, @"(width|height)\s*=\s*""(\d+(?:\.\d+)?)""",
+                    mm => $"{mm.Groups[1].Value}=\"{mm.Groups[2].Value}px\""));
+            // svg data-URI <img> srcs (base64-encoded content)
+            html = Regex.Replace(html, @"src=""data:image/svg\+xml;base64,([^""]+)""",
+                m =>
+                {
+                    var svg = Encoding.UTF8.GetString(Convert.FromBase64String(m.Groups[1].Value));
+                    svg = Regex.Replace(svg, @"(?<![\w-])(width|height)\s*=\s*""(\d+(?:\.\d+)?)""",
+                        mm => $"{mm.Groups[1].Value}=\"{mm.Groups[2].Value}px\"");
+                    return $"src=\"data:image/svg+xml;base64,{Convert.ToBase64String(Encoding.UTF8.GetBytes(svg))}\"";
+                });
+            return html;
         }
 
         /// <summary>Stores the document HTML in the package custom XML part /customXml/htmlData.xml
