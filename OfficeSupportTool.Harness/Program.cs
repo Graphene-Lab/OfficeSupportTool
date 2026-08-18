@@ -8,6 +8,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using UISupportGeneric;
 
 namespace OfficeSupportToolHarness;
 
@@ -381,6 +382,14 @@ static class Program
                 return null;
             }
             finally { try { File.Delete(file); } catch { } }
+        });
+
+        failures += Test("definitions: dynamic template list resolves", () =>
+        {
+            var defs = Analyzer.GeToolDefinitions(typeof(OfficeSupportTool));
+            if (defs.Contains("[[available_templates]]")) return "placeholder not resolved";
+            if (!defs.Contains("balance-sheet", StringComparison.OrdinalIgnoreCase)) return "resolved list missing a shipped template";
+            return null;
         });
 
         failures += Test("html: nested comment detection", () =>
