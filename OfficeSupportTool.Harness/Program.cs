@@ -365,6 +365,24 @@ static class Program
             return null;
         });
 
+        failures += Test("templates: ALL shipped templates conform (svg px, no table bg, flat comments)", () =>
+        {
+            var dir = Path.Combine(AppContext.BaseDirectory, "assets", "templates");
+            if (!Directory.Exists(dir)) return "templates dir missing";
+            var files = Directory.GetFiles(dir, "*.html");
+            if (files.Length < 40) return $"expected ~49 shipped templates, found {files.Length}";
+            var issues = 0;
+            foreach (var f in files)
+            {
+                var tpl = File.ReadAllText(f);
+                if (OfficeSupportTool.HasNestedComments(tpl)) { issues++; Console.WriteLine($"    nested comments: {Path.GetFileName(f)}"); }
+                if (OfficeSupportTool.HasTableBackground(tpl)) { issues++; Console.WriteLine($"    table background: {Path.GetFileName(f)}"); }
+                if (OfficeSupportTool.HasBareSvgSizes(tpl)) { issues++; Console.WriteLine($"    bare svg size: {Path.GetFileName(f)}"); }
+                if (!tpl.Contains("{{")) Console.WriteLine($"    ⚠ no {{placeholder}}: {Path.GetFileName(f)}");
+            }
+            return issues == 0 ? null : $"{issues} shipped template(s) with violations";
+        });
+
         failures += Test("docx: conversion + metadata round-trip", () =>
         {
             var html = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"/></head><body style=\"font-family:'Calibri',sans-serif; font-size:10pt;\">" +
@@ -498,6 +516,31 @@ static class Program
                 if (!svg.Contains("width=\"32px\"")) return $"size 32 not applied: {svg}";
                 if (!svg.Contains("stroke=\"#aa0000\"")) return $"color aa0000 not applied: {svg}";
                 return null;
+            }
+            finally { try { Directory.Delete(iconsDir, true); } catch { } }
+        });
+
+        failures += Test("docx: icon-name placeholder end-to-end (embed + convert to image part)", () =>
+        {
+            var iconsDir = Path.Combine(Path.GetTempPath(), "ost-ico-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(iconsDir);
+            try
+            {
+                File.WriteAllText(Path.Combine(iconsDir, "disc.svg"),
+                    "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/></svg>");
+                var html = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"/></head><body>" +
+                           "<p style=\"font-size:10pt;\">Test <img src=\"disc.32.aa0000.svg\" alt=\"disc\"></p></body></html>";
+                var embedded = Utility.EmbedSvgIcons(html, iconsDir);
+                if (!embedded.Contains("data:image/svg+xml;base64,")) return "icon placeholder not embedded as data URI";
+                var file = Path.Combine(Path.GetTempPath(), "ost-ico-" + Guid.NewGuid().ToString("N") + ".docx");
+                try
+                {
+                    var bytes = OfficeSupportTool.ConvertToDocx(embedded);
+                    File.WriteAllBytes(file, bytes);
+                    if (DocxImageCount(file) < 1) return "embedded icon not converted to an image part in the docx";
+                    return null;
+                }
+                finally { try { File.Delete(file); } catch { } }
             }
             finally { try { Directory.Delete(iconsDir, true); } catch { } }
         });
