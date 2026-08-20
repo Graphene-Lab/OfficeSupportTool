@@ -38,7 +38,10 @@ create_document(type, note, draft?, contextText?, contextFile?, imageFiles?, sav
   incomplete document can be generated even if the context lacks data to fill the template.
 - `contextText` / `contextFile` (optional): essential material for the document (company data,
   parties, values, tables…). One of the two is expected unless `draft` is used.
-- `imageFiles` (optional): workspace images embedded into the document (Unix-style paths).
+- `imageFiles` (optional): workspace images embedded into the document (Unix-style paths). Each
+  image is shown to the LLM via the unified `FileManager.GetFilesInfo` block: path + size +
+  `Classification:` + YOLO `Metadata:` JSON (created and embedded permanently in the image when
+  absent).
 - `saveFullNameFile` (optional): output path/name (`.docx`, Unix-style). Default:
   `/documents/document_yyyyMMdd_HHmmss.docx` in the workspace.
 - `outputTwoLetterLanguage` (optional): two-letter language code; if omitted it is detected
