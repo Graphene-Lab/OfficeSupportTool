@@ -83,9 +83,8 @@ static class Program
                 draft: true, contextText: context,
                 saveFullNameFile: "/balance-sheet.docx");
             Console.WriteLine($"  T1b CreateDocument(overwrite) → {r1b}");
-            if (!r1b.Contains("backed up as", StringComparison.OrdinalIgnoreCase)
-                || !File.Exists(Path.Combine(_workspace, "balance-sheet.001.bak")))
-            { Fail("T1-overwrite-backup", $"expected backup report: {r1b}"); return 1; }
+            if (!r1b.Contains("New version:", StringComparison.OrdinalIgnoreCase))
+            { Fail("T1-overwrite-backup", $"expected version report: {r1b}"); return 1; }
             Pass("T1-overwrite-backup");
 
             // T2 — update the document via the embedded HTML metadata
@@ -94,7 +93,7 @@ static class Program
                 "Change the balance sheet date to 31 March 2026 and increase accounts receivable to 150,000, " +
                 "updating total assets and the accounting identity consistently.");
             Console.WriteLine($"  T2 UpdateDocument → {r2}");
-            if (!r2.StartsWith("Document updated at") || !r2.Contains(".bak"))
+            if (!r2.StartsWith("Document updated at") || !r2.Contains("New version:"))
             { Fail("T2-update", $"update failed: {r2}"); return 1; }
             var html2 = OfficeSupportTool.ReadStoredHtml(host1);
             if (html2 == null || !html2.Contains("150,000"))
@@ -193,7 +192,7 @@ static class Program
                 "we thank you for the partnership started in 2019 and look forward to 2026. Closing 'Best regards', sender Luca Bianchi (CEO), enclosures: product catalogue 2026. " +
                 "TASK 2: The user asks to change the letter: replace the sentence about the partnership with 'thank you for the 2025 campaign results' " +
                 "and add the closing 'We look forward to 2026.' " +
-                "TASK 3: The user now wants to UNDO the change of TASK 2 (rollback to the version before the change), using the backup the tool reported. " +
+                "TASK 3: The user now wants to UNDO the change of TASK 2 (rollback to the version before the change), using GitTool.restore with the version the tool reported (history() lists all versions). " +
                 "Report what you did in each task.",
                 maxIterations: 50);
             WriteResult("T7 trace: " + string.Join(" | ", trace7));
@@ -207,9 +206,9 @@ static class Program
             if (!html7.Contains("partnership", StringComparison.OrdinalIgnoreCase))
             { Fail("T7-rollback", "original wording missing after restore"); return 1; }
             if (!trace7.Any(c => c.Contains("restore", StringComparison.OrdinalIgnoreCase)))
-            { Fail("T7-rollback", $"agent never called Restore — trace: {string.Join(" | ", trace7)}"); return 1; }
-            if (Directory.GetFiles(_workspace, "rollback.*.bak").Length < 2)
-            { Fail("T7-rollback", "backup chain shorter than expected (update + restore swap)"); return 1; }
+            { Fail("T7-rollback", $"agent never called GitTool.restore — trace: {string.Join(" | ", trace7)}"); return 1; }
+            if (GitSupport.History(rollbackFile).Count < 3)
+            { Fail("T7-rollback", "version chain shorter than expected (create + update + restore swap)"); return 1; }
             Pass("T7-rollback");
 
             Console.WriteLine();
@@ -545,7 +544,7 @@ static class Program
             finally { try { Directory.Delete(iconsDir, true); } catch { } }
         });
 
-        failures += Test("restore: named backup + swap (current becomes a backup)", () =>
+        failures += Test("versioning: snapshot + rollback on .docx (swap preserved, unknown version rejected)", () =>
         {
             var dir = Path.Combine(Path.GetTempPath(), "ost-restore-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(dir);
@@ -555,66 +554,22 @@ static class Program
             {
                 var f = Path.Combine(dir, "invoice.docx");
                 File.WriteAllBytes(f, OfficeSupportTool.ConvertToDocx("<html><body><h1>Version 1</h1></body></html>"));
-                File.Copy(f, Path.Combine(dir, "invoice.001.bak"));
+                var v1 = GitSupport.Snapshot(f, "V1");
                 File.WriteAllBytes(f, OfficeSupportTool.ConvertToDocx("<html><body><h1>Version 2</h1></body></html>"));
-                var r = new OfficeSupportTool().Restore("invoice.001.bak");
-                if (!r.StartsWith("Document restored at") || !r.Contains("invoice.001.bak")) return $"restore result: {r}";
+                GitSupport.Snapshot(f, "V2");
+                if (GitSupport.History(f).Count != 2) return $"history count: {GitSupport.History(f).Count}";
+                // Pending edit (NOT yet versioned): the restore swap must capture it before overwriting.
+                File.WriteAllBytes(f, OfficeSupportTool.ConvertToDocx("<html><body><h1>Version 3</h1></body></html>"));
+                var r = GitSupport.Restore(v1, f);
+                if (!r.StartsWith("Restored")) return $"restore result: {r}";
                 if (!DocxTextContains(f, "Version 1")) return "restored content is not Version 1";
-                if (!File.Exists(Path.Combine(dir, "invoice.002.bak"))) return "swap backup invoice.002.bak not created";
-                if (!DocxTextContains(Path.Combine(dir, "invoice.002.bak"), "Version 2")) return "swap backup does not hold Version 2";
-                return null;
-            }
-            finally { Setup.DocumentsPath = saved; try { Directory.Delete(dir, true); } catch { } }
-        });
-
-        failures += Test("restore: no-arg works only with a single workspace backup (ambiguous set rejected)", () =>
-        {
-            var dir = Path.Combine(Path.GetTempPath(), "ost-restore-" + Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(Path.Combine(dir, "sub"));
-            var saved = Setup.DocumentsPath;
-            Setup.DocumentsPath = dir;
-            try
-            {
-                // single backup → no-arg restores it
-                var f1 = Path.Combine(dir, "a.docx");
-                File.WriteAllBytes(f1, OfficeSupportTool.ConvertToDocx("<html><body><p>A1</p></body></html>"));
-                File.Copy(f1, Path.Combine(dir, "a.001.bak"));
-                File.WriteAllBytes(f1, OfficeSupportTool.ConvertToDocx("<html><body><p>A2</p></body></html>"));
-                var r1 = new OfficeSupportTool().Restore();
-                if (!r1.Contains("a.001.bak")) return $"single-backup no-arg: {r1}";
-                if (!DocxTextContains(f1, "A1")) return "a.docx not restored";
-                // second backup in a subfolder → no-arg now ambiguous → must name the backup
-                var f2 = Path.Combine(dir, "sub", "b.docx");
-                File.WriteAllBytes(f2, OfficeSupportTool.ConvertToDocx("<html><body><p>B1</p></body></html>"));
-                File.Copy(f2, Path.Combine(dir, "sub", "b.001.bak"));
-                var r2 = new OfficeSupportTool().Restore();
-                if (!r2.StartsWith("Error: several backups found")) return $"ambiguous no-arg: {r2}";
-                var r3 = new OfficeSupportTool().Restore("sub/b.001.bak");
-                if (!r3.Contains("b.001.bak")) return $"named restore: {r3}";
-                if (!DocxTextContains(f2, "B1")) return "b.docx not restored";
-                return null;
-            }
-            finally { Setup.DocumentsPath = saved; try { Directory.Delete(dir, true); } catch { } }
-        });
-
-        failures += Test("restore: error paths (no backups, missing file, non-backup name)", () =>
-        {
-            var dir = Path.Combine(Path.GetTempPath(), "ost-restore-" + Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(dir);
-            var saved = Setup.DocumentsPath;
-            Setup.DocumentsPath = dir;
-            try
-            {
-                var t = new OfficeSupportTool();
-                var r1 = t.Restore();
-                if (!r1.StartsWith("Error: no backup file")) return $"r1: {r1}";
-                var f = Path.Combine(dir, "x.docx");
-                File.WriteAllBytes(f, OfficeSupportTool.ConvertToDocx("<html><body><p>x</p></body></html>"));
-                File.Copy(f, Path.Combine(dir, "x.001.bak"));
-                var r2 = t.Restore("zzz.001.bak");
-                if (!r2.StartsWith("Error: backup file 'zzz.001.bak' not found")) return $"r2: {r2}";
-                var r3 = t.Restore("x.docx");
-                if (!r3.StartsWith("Error: cannot derive")) return $"r3: {r3}";
+                var v3 = GitSupport.History(f)[0].VersionId;   // the swap snapshot of the pending V3
+                if (GitSupport.History(f).Count != 3) return "swap snapshot missing after restore";
+                GitSupport.Restore(v3, f);                      // rollback of the rollback
+                if (!DocxTextContains(f, "Version 3")) return "swap snapshot not restorable";
+                var failed = false;
+                try { GitSupport.Restore("deadbeef", f); } catch (InvalidOperationException) { failed = true; }
+                if (!failed) return "unknown version not rejected";
                 return null;
             }
             finally { Setup.DocumentsPath = saved; try { Directory.Delete(dir, true); } catch { } }
@@ -702,7 +657,7 @@ static class Program
             var html2 = File.Exists(host2) ? OfficeSupportTool.ReadStoredHtml(host2) : null;
             if (html2 == null) { Fail("U2-update-images", "update-img.docx not created"); return 1; }
             if (Regex.Matches(html2, "src=\"data:image/png;base64,").Count < 1) { Fail("U2-update-images", "logo not embedded after update"); return 1; }
-            if (Directory.GetFiles(_workspace, "update-img.*.bak").Length < 1) { Fail("U2-update-images", "no backup created by the update"); return 1; }
+            if (GitSupport.History(host2).Count < 2) { Fail("U2-update-images", "update did not create a new version"); return 1; }
             Pass("U2-update-images");
 
             // U3 — rollback of a SPECIFIC document among several documents with backups. The setup
@@ -725,7 +680,7 @@ static class Program
             var sB2 = tool.UpdateDocument("/letterB.docx", "Replace '500 kg' with '750 kg'.");
             if (!sB2.StartsWith("Document updated at")) { Fail("U3-setup", $"letterB update: {sB2}"); return 1; }
             var (r3, t3) = RunAgent(
-                "The user asks: undo the change made to /letterA.docx — rollback it to the version before it was modified, using the backup the tool reported. Do NOT touch /letterB.docx.",
+                "The user asks: undo the change made to /letterA.docx — rollback it to the version before it was modified, using GitTool.restore with the version the tool reported (history() lists the versions). Do NOT touch /letterB.docx.",
                 maxIterations: 30);
             WriteResult("U3 trace: " + string.Join(" | ", t3));
             Console.WriteLine($"  U3 tool calls: {string.Join(" → ", t3)}");
@@ -792,7 +747,7 @@ static class Program
             var sM3 = tool.UpdateDocument("/memo.docx", "Change the subject to 'Holiday schedule 2026'.");
             if (!sM3.StartsWith("Document updated at")) { Fail("U6-setup", $"memo update 2: {sM3}"); return 1; }
             var (r6, t6) = RunAgent(
-                "The user asks: go back to the ORIGINAL version of /memo.docx (before the first modification) — restore it using the FIRST backup (memo.001.bak).",
+                "The user asks: go back to the ORIGINAL version of /memo.docx (before the first modification) — restore it using GitTool.restore with the FIRST version of the file (history() lists them oldest last).",
                 maxIterations: 30);
             WriteResult("U6 trace: " + string.Join(" | ", t6));
             Console.WriteLine($"  U6 tool calls: {string.Join(" → ", t6)}");
@@ -802,7 +757,7 @@ static class Program
             if (html6 == null) { Fail("U6-chained-restore", "memo.docx not created"); return 1; }
             if (!html6.Contains("24 December to 2 January")) { Fail("U6-chained-restore", "memo not restored to the original period"); return 1; }
             if (html6.Contains("6 January")) { Fail("U6-chained-restore", "memo still contains the first change"); return 1; }
-            if (Directory.GetFiles(_workspace, "memo.*.bak").Length < 3) { Fail("U6-chained-restore", "backup chain shorter than expected (2 updates + restore swap)"); return 1; }
+            if (GitSupport.History(host6).Count < 4) { Fail("U6-chained-restore", "version chain shorter than expected (create + 2 updates + restore swap)"); return 1; }
             Pass("U6-chained-restore");
 
             // U7 — deterministic error paths (direct calls, no LLM)
