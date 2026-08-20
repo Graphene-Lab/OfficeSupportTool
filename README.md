@@ -14,8 +14,7 @@ SOP, …). When a requested type has no template, the LLM generates a new one fo
 | Method | Purpose |
 |---|---|
 | `create_document` | Creates a new DOCX from the template matching the requested type (optional `draft`, context text/file, image files, output path). |
-| `update_document` | Applies requested changes to an existing DOCX (reads the HTML from the embedded metadata, regenerates the document; numbered backup before overwriting). |
-| `restore` | Reverts a document to a backed-up version (optional backup file name; the current file becomes a backup first, so the restore is reversible). |
+| `update_document` | Applies requested changes to an existing DOCX (reads the HTML from the embedded metadata, regenerates the document; the new content becomes a new version in the workspace git repo). |
 
 ## Usage
 
@@ -54,19 +53,9 @@ update_document(filePath, changes, contextText?, imageFiles?)
 ```
 
 Reads the source HTML from the DOCX metadata, has the LLM apply `changes` faithfully to the
-template, converts back to DOCX and re-embeds the new HTML. A numbered `.NNN.bak` backup is
-created before the file is overwritten and its name is returned so the agent can restore it later.
-
-### restore
-
-```
-restore(backupFile?)
-```
-
-Reverts a document to a backed-up version. `backupFile` (optional) is the backup file name
-(e.g. `"invoice.001.bak"`); the original file name is derived from it. When omitted, the most
-recent backup in the workspace is used. The current file is saved as a new numbered backup
-first (the restore itself is reversible), then the chosen backup replaces it.
+template, converts back to DOCX and re-embeds the new HTML. The new content becomes a new
+version in the workspace git repo — rollback via `GitTool.restore` (the tool does not keep
+the file open).
 
 ## Testing / Harness
 
@@ -79,9 +68,9 @@ dotnet run --project OfficeSupportTool.Harness -- --provider NAME   # LLM campai
 ```
 
 - `--selftest`: deterministic checks (type normalization, HTML→DOCX round-trip, metadata,
-  nested-comment/bare-svg/table-background detection, restore semantics).
+  nested-comment/bare-svg/table-background detection, versioning semantics).
 - `--provider NAME` (default `DeepSeekBridge`, fallback `Ollama_Qwen`): runs the behavioral
-  LLM campaign — create (incl. overwrite backup), update, template generation + conformity
+  LLM campaign — create (incl. overwrite versioning), update, template generation + conformity
   inspection, images, material-gate rejection, foreign DOCX, and the create→update→rollback
   flow at agent level.
 - Results are appended to `%TEMP%\officesupporttool_test_results.txt` with a final `DONE`
