@@ -430,7 +430,7 @@ static class Program
 
         failures += Test("definitions: dynamic template list resolves", () =>
         {
-            var defs = Analyzer.GeToolDefinitions(typeof(OfficeSupportTool));
+            var defs = Analyzer.GetToolDefinitions(typeof(OfficeSupportTool));
             if (defs.Contains("[[available_templates]]")) return "placeholder not resolved";
             if (!defs.Contains("balance-sheet", StringComparison.OrdinalIgnoreCase)) return "resolved list missing a shipped template";
             return null;
