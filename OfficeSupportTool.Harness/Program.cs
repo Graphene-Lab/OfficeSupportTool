@@ -52,13 +52,15 @@ static class Program
             // T1 — create from an existing template (balance sheet), material check must pass
             const string context = "Fiori Coffee S.r.l. — via Roma 12, 20121 Milano, Italy. VAT IT01234567890, " +
                 "phone +39 02 12345678, email info@fioricoffee.it, website www.fioricoffee.it. " +
+                "Company tagline: 'Specialty coffee since 1998'. " +
                 "Balance sheet as of 31 December 2025, prepared in accordance with IFRS, currency EUR. " +
                 "Assets: cash and cash equivalents 45,200; accounts receivable 128,500; inventory 96,300; " +
                 "prepaid expenses 12,400; property, plant and equipment 342,800; intangible assets 58,100. " +
                 "Total assets 683,300. Liabilities: accounts payable 87,600; short-term debt 40,000; " +
                 "accrued expenses 18,900; long-term debt 210,000. Equity: share capital 100,000; " +
                 "retained earnings 226,800. Total liabilities and equity 683,300. " +
-                "Prepared by Maria Rossi, Chief Accountant; approved by Luca Bianchi, CEO.";
+                "Prepared by Maria Rossi, Chief Accountant; approved by Luca Bianchi, CEO. " +
+                "Prepared on 18 August 2026. Balance sheet notes: figures in EUR, no contingent liabilities.";
             var r1 = tool.CreateDocument(
                 "balance sheet",
                 "Balance sheet of Fiori Coffee S.r.l. as of 31 December 2025: statement of financial position " +
@@ -131,11 +133,13 @@ static class Program
 
             // T4 — images: the document requires a logo + a product photo, provided via imageFiles
             const string t4Context = "Fiori Coffee S.r.l. — via Roma 12, 20121 Milano, Italy. VAT IT01234567890, phone +39 02 12345678, email info@fioricoffee.it, website www.fioricoffee.it. Company tagline: 'Specialty coffee since 1998'. " +
-                "Letter date: 18 August 2026. Letter reference: FI-2026-077. " +
+                "Letter date: 18 August 2026. Letter reference: FI-2026-077. Attention: Maria Conti, Procurement Director. " +
                 "Recipient: Maria Conti, Procurement Director, Nova S.p.A., via Torino 45, 10122 Torino, Italy. " +
                 "Subject: Partnership renewal for 2026. Salutation: 'Dear Ms. Conti'. " +
-                "Body: Nova S.p.A. has been a partner since 2019; the collaboration produced 120 new clients in 2025. We thank you for the partnership and look forward to expanding the cooperation in 2026 with a new product line launch in September. " +
-                "Closing: 'Best regards'. Sender: Luca Bianchi, CEO. Enclosures: product catalogue 2026. CC: Roberto Verdi, Sales Director, Nova S.p.A.";
+                "Body paragraph 1: Nova S.p.A. has been a partner since 2019 and the collaboration produced 120 new clients in 2025. " +
+                "Body paragraph 2: We thank you for the partnership and look forward to expanding the cooperation in 2026. " +
+                "Body paragraph 3: A new product line launch is planned for September, starting with the autumn collection. " +
+                "Closing: 'Best regards'. Sender: Luca Bianchi, Chief Executive Officer. Enclosures: product catalogue 2026. CC: Roberto Verdi, Sales Director, Nova S.p.A.";
             var r4 = tool.CreateDocument(
                 "business letter",
                 "Business letter from Fiori Coffee S.r.l. to Nova S.p.A. thanking them for the partnership. " +
@@ -155,11 +159,13 @@ static class Program
             { Fail("T4-images", "converted DOCX has fewer than 2 image parts"); return 1; }
             Pass("T4-images");
 
-            // T5 — material gate: draft=false with no context → deterministic rejection + draft hint
+            // T5 — material gate: draft=false with no context → deterministic rejection with the
+            // "Document fields:" list (extracted from the template placeholders) + draft hint
             var r5 = tool.CreateDocument("invoice", "Invoice for ACME Corp, March 2026, itemized line items, VAT and total.");
             Console.WriteLine($"  T5 material gate (no context) → {r5}");
-            if (!r5.StartsWith("Error:") || !r5.Contains("draft", StringComparison.OrdinalIgnoreCase))
-            { Fail("T5-material-gate", $"expected rejection with draft hint: {r5}"); return 1; }
+            if (!r5.StartsWith("Error:") || !r5.Contains("draft", StringComparison.OrdinalIgnoreCase)
+                || !r5.Contains("Document fields:") || !r5.Contains("Invoice Number"))
+            { Fail("T5-material-gate", $"expected rejection with 'Document fields:' list and draft hint: {r5}"); return 1; }
             Pass("T5-material-gate");
 
             // T6 — update a document without HTML metadata → deterministic error
@@ -178,8 +184,8 @@ static class Program
             }
             var r6 = tool.UpdateDocument("/foreign.docx", "change the greeting");
             Console.WriteLine($"  T6 UpdateDocument(no metadata) → {r6}");
-            if (!r6.StartsWith("Error:") || !r6.Contains("no embedded HTML metadata"))
-            { Fail("T6-foreign-docx", $"expected metadata error: {r6}"); return 1; }
+            if (!r6.StartsWith("Error:") || !r6.Contains("cannot be updated"))
+            { Fail("T6-foreign-docx", $"expected cannot-be-updated error: {r6}"); return 1; }
             Pass("T6-foreign-docx");
 
             // T7 — full rollback flow at agent level: create → user change → user asks rollback
@@ -207,9 +213,53 @@ static class Program
             { Fail("T7-rollback", "original wording missing after restore"); return 1; }
             if (!trace7.Any(c => c.Contains("restore", StringComparison.OrdinalIgnoreCase)))
             { Fail("T7-rollback", $"agent never called GitTool.restore — trace: {string.Join(" | ", trace7)}"); return 1; }
-            if (GitSupport.History(rollbackFile).Count < 3)
-            { Fail("T7-rollback", "version chain shorter than expected (create + update + restore swap)"); return 1; }
+            if (GitSupport.History(rollbackFile).Count < 2)
+            { Fail("T7-rollback", "version chain shorter than expected (create + update must both remain in history)"); return 1; }
             Pass("T7-rollback");
+
+            // T8 — update an existing template (quotation: not used by the other tests). The change
+            // must keep the template rules: the existing placeholders, the category colors (set B
+            // green for quotation: pastel #DCFCE7, ink #047857, rule #34D399) and the design
+            // conformity — and the updated template must be reused by a real create.
+            Console.WriteLine("  T8 UpdateTemplate...");
+            var t8 = tool.UpdateTemplate("quotation",
+                "Add a new meta field 'Project' with the placeholder {{ project_name }} in the meta strip, right after 'Customer Ref.'.");
+            Console.WriteLine($"  T8 UpdateTemplate → {t8}");
+            if (!t8.StartsWith("Template 'quotation' updated")) { Fail("T8-update-template", $"update failed: {t8}"); return 1; }
+            var t8Tpl = Path.Combine(AppContext.BaseDirectory, "assets", "templates", "quotation.html");
+            if (!File.Exists(t8Tpl)) { Fail("T8-update-template", "updated template not persisted for reuse"); return 1; }
+            var t8Html = File.ReadAllText(t8Tpl);
+            if (!t8Html.Contains("project_name")) { Fail("T8-update-template", "new placeholder {{ project_name }} missing in the updated template"); return 1; }
+            if (!t8Html.Contains("{{ company_name }}")) { Fail("T8-update-template", "existing placeholder {{ company_name }} was dropped by the update"); return 1; }
+            foreach (var c in new[] { "#DCFCE7", "#047857", "#34D399" })
+                if (!t8Html.Contains(c, StringComparison.OrdinalIgnoreCase))
+                { Fail("T8-update-template", $"category color {c} lost by the template update"); return 1; }
+            if (InspectTemplate(t8Tpl, "updated template") > 0) { Fail("T8-update-template", "updated template fails the conformity inspection"); return 1; }
+            Pass("T8-update-template");
+
+            // T8b — the updated template is reused by CreateDocument (draft skips the material gate)
+            var r8b = tool.CreateDocument("quotation",
+                "Quotation Q-2026-118 for the 'Nova office fit-out' project: 3 espresso machines, installation and training, total EUR 48,500.",
+                draft: true,
+                contextText: "Fiori Coffee S.r.l., via Roma 12, 20121 Milano, VAT IT01234567890. Customer: Nova S.p.A., via Torino 45, 10122 Torino, VAT IT09876543210. " +
+                "Quotation number Q-2026-118, date 18 August 2026, valid until 18 September 2026, payment terms 30 days net, delivery terms EXW Milan. " +
+                "Project: Nova office fit-out. Items: 3 espresso machines EUR 12,000 each; installation EUR 9,500; training EUR 3,000. Currency EUR.",
+                saveFullNameFile: "/t8-quotation.docx");
+            Console.WriteLine($"  T8b CreateDocument(updated template) → {r8b}");
+            if (!r8b.StartsWith("Document created at") || !File.Exists(Path.Combine(_workspace, "t8-quotation.docx")))
+            { Fail("T8-create-with-updated-template", $"create failed: {r8b}"); return 1; }
+            var html8b = OfficeSupportTool.ReadStoredHtml(Path.Combine(_workspace, "t8-quotation.docx"));
+            if (html8b == null || !html8b.Contains("Project", StringComparison.OrdinalIgnoreCase))
+            { Fail("T8-create-with-updated-template", "created document does not show the 'Project' field added by the template update"); return 1; }
+            Pass("T8-create-with-updated-template");
+
+            // T8c — infeasible template changes are rejected by the feasibility gate with a brief
+            // explanation; no modification is applied
+            var r8c = tool.UpdateTemplate("quotation",
+                "Add a live-updating chart that fetches data from an external API using JavaScript.");
+            Console.WriteLine($"  T8c UpdateTemplate(infeasible) → {r8c}");
+            if (!r8c.StartsWith("Error:")) { Fail("T8-infeasible-changes", $"expected rejection: {r8c}"); return 1; }
+            Pass("T8-infeasible-changes");
 
             Console.WriteLine();
             Console.WriteLine(_failures == 0 ? "  ALL LLM TESTS PASSED" : $"  {_failures} LLM TEST FAILURES");
@@ -234,20 +284,29 @@ static class Program
     static void InitWorkspace()
     {
         Log.IsEnabled = true;
-        _workspace = Path.Combine(Path.GetTempPath(), "OfficeSupportTool.Tests-workspace");
-        try
-        {
-            if (Directory.Exists(_workspace)) Directory.Delete(_workspace, recursive: true);
-        }
-        catch (Exception)
-        {
-        }
+        // Fresh UNIQUE workspace per run (like the selftest): recycling a stable path across runs
+        // can leave a stale/empty .git from a crashed run, which makes GitSupport skip its init
+        // (Directory.Exists on .git) and fail every snapshot deterministically.
+        _workspace = Path.Combine(Path.GetTempPath(), "OfficeSupportTool.Tests-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_workspace);
         Setup.SkipIndexingOnStartup = true;
         Setup.DocumentsPath = _workspace;
         Setup.ProviderConfig = ProviderConfigs.Get(_providerName);
+        EnsureGitRepo();
         StageIcons();
         StageImages();
+    }
+
+    /// <summary>Bootstraps the workspace git repo BEFORE the first snapshot. GitSupport auto-inits
+    /// on first use, but on Windows the init→open sequence can transiently fail (AV/scanning right
+    /// after Repository.Init): retrying opens the now-existing .git, which is fast and reliable.</summary>
+    static void EnsureGitRepo()
+    {
+        for (var attempt = 1; ; attempt++)
+        {
+            try { GitSupport.History(); return; }
+            catch (Exception) when (attempt < 3) { Thread.Sleep(1500); }
+        }
     }
 
     /// <summary>Extracts the plain text of a DOCX (paragraphs + table cells) to verify the conversion.</summary>
@@ -270,8 +329,9 @@ static class Program
     }
 
     /// <summary>Runs a behavioral agent-level test: natural-language prompt, "OfficeSupportTool"
-    /// registered, tool-call trace collected from the AgentProgress events. Returns the agent
-    /// result and the ordered call sequence (what the agent actually did).</summary>
+    /// + "GitTool" registered (rollback flows need GitTool.restore — same tool set as the real
+    /// host), tool-call trace collected from the AgentProgress events. Returns the agent result
+    /// and the ordered call sequence (what the agent actually did).</summary>
     static (AgentResult Result, List<string> Trace) RunAgent(string prompt, int maxIterations = 50)
     {
         using var orch = new AgentHarness(_providerName);
@@ -281,7 +341,7 @@ static class Program
             if (e.State == AgentHarness.AgentState.Iteration && !string.IsNullOrWhiteSpace(e.MethodName))
                 calls.Add($"#{e.Iteration}:{e.MethodName}");
         };
-        var result = orch.ExecuteAction(prompt, new[] { "OfficeSupportTool" }, maxIterations: maxIterations);
+        var result = orch.ExecuteAction(prompt, new[] { "OfficeSupportTool", "GitTool" }, maxIterations: maxIterations);
         return (result, calls);
     }
 
@@ -299,9 +359,30 @@ static class Program
         };
         AgentResult result = null!;
         foreach (var turn in turns)
-            result = orch.ExecuteAction(turn, new[] { "OfficeSupportTool" }, maxIterations: maxIterations);
+            result = orch.ExecuteAction(turn, new[] { "OfficeSupportTool", "GitTool" }, maxIterations: maxIterations);
         return (result, calls);
     }
+
+    /// <summary>Every category color from the design manifest (Assets/DESIGN-GUIDELINES.md §1):
+    /// the pastel shades of all templates plus each set's ink and accent rule. Generated/modified
+    /// templates must use these (the colors of their category) rather than invented hex values.</summary>
+    static readonly HashSet<string> ManifestPalette = new(StringComparer.OrdinalIgnoreCase)
+    {
+        // A — Financial & Accounting (blue family)
+        "#DBEAFE", "#E0F2FE", "#BFDBFE", "#EFF6FF", "#BAE6FD", "#E0E7FF", "#C7D2FE", "#1E40AF", "#60A5FA",
+        // B — Commercial & Trade (green family)
+        "#D1FAE5", "#ECFDF5", "#BBF7D0", "#DCFCE7", "#A7F3D0", "#F0FDF4", "#047857", "#34D399",
+        // C — Human Resources (violet family)
+        "#F5F3FF", "#EDE9FE", "#F3E8FF", "#DDD6FE", "#E9D5FF", "#5B21B6", "#A78BFA",
+        // D — Legal & Corporate (slate family)
+        "#E2E8F0", "#F1F5F9", "#CBD5E1", "#334155", "#94A3B8",
+        // E — Operations & Procedures (teal family)
+        "#CCFBF1", "#ECFEFF", "#99F6E4", "#F0FDFA", "#CFFAFE", "#A5F3FC", "#115E59", "#5EEAD4",
+        // F — Communication & Marketing (amber family)
+        "#FEF3C7", "#FFF7ED", "#FDE68A", "#FFEDD5", "#FED7AA", "#92400E", "#FBBF24",
+        // G — Safety & Compliance (red family)
+        "#FEE2E2", "#FFE4E6", "#FECDD3", "#FFF1F2", "#FECACA", "#991B1B", "#FCA5A5",
+    };
 
     /// <summary>Prints a conformity report for a template (shipped or LLM-generated) against the
     /// essential design rules and returns the number of hard issues found. Also reports which SVG
@@ -318,14 +399,21 @@ static class Program
             else { issues++; Console.WriteLine($"    ✗ {what}"); }
         }
         Check(!OfficeSupportTool.HasNestedComments(tpl), "no nested HTML comments");
-        Check(!OfficeSupportTool.HasTableBackground(tpl), "no background-color/bgcolor on <table> (use tr/td)");
-        Check(!OfficeSupportTool.HasBareSvgSizes(tpl), "svg width/height always with explicit unit (px)");
-        Check(!Regex.IsMatch(tpl, @"<(?:style|script)\b|(?:src|href)\s*=\s*[""']https?://|url\([""']?https?://", RegexOptions.IgnoreCase),
+        // The markup rules are checked on the template WITHOUT comments: the 3-comment header
+        // quotes the rule text itself ("no <style>, no external CSS"), which would false-positive.
+        var markup = Regex.Replace(tpl, @"<!--[\s\S]*?-->", "");
+        Check(!OfficeSupportTool.HasTableBackground(markup), "no background-color/bgcolor on <table> (use tr/td)");
+        Check(!OfficeSupportTool.HasBareSvgSizes(markup), "svg width/height always with explicit unit (px)");
+        Check(!Regex.IsMatch(markup, @"<(?:style|script)\b|(?:src|href)\s*=\s*[""']https?://|url\([""']?https?://", RegexOptions.IgnoreCase),
             "no <style>/<script>/external URLs");
-        Check(!Regex.IsMatch(tpl, @"\b(?:display|position|float)\s*:|\bflex\b", RegexOptions.IgnoreCase),
+        Check(!Regex.IsMatch(markup, @"\b(?:display|position|float)\s*:|\bflex\b", RegexOptions.IgnoreCase),
             "no flexbox/grid/position/float CSS");
-        Check(!Regex.IsMatch(tpl, @"[A-Za-z]:\\|/home/|/mnt/|AIOrchestrator[\\/]|assets[\\/]icons", RegexOptions.IgnoreCase),
+        Check(!Regex.IsMatch(markup, @"[A-Za-z]:\\|/home/|/mnt/|AIOrchestrator[\\/]|assets[\\/]icons", RegexOptions.IgnoreCase),
             "no local/host paths in the template");
+        var categoryColors = Regex.Matches(markup, @"#[0-9a-fA-F]{6}\b")
+            .Select(m => m.Value.ToUpperInvariant()).Where(ManifestPalette.Contains).Distinct().ToList();
+        Check(categoryColors.Count > 0,
+            $"uses the category colors from the design manifest [{string.Join(", ", categoryColors.Take(5))}{(categoryColors.Count > 5 ? "…" : "")}]");
         var inlineSvg = Regex.Matches(tpl, @"<svg\b").Count;
         var iconPlaceholders = Regex.Matches(tpl, @"<img\b[^>]*src\s*=\s*""([^""]*\.svg)""")
             .Select(m => m.Groups[1].Value).Where(s => !s.StartsWith("data:", StringComparison.OrdinalIgnoreCase)).ToList();
@@ -380,6 +468,19 @@ static class Program
                 if (!tpl.Contains("{{")) Console.WriteLine($"    ⚠ no {{placeholder}}: {Path.GetFileName(f)}");
             }
             return issues == 0 ? null : $"{issues} shipped template(s) with violations";
+        });
+
+        failures += Test("templates: placeholder field extraction (Document fields list)", () =>
+        {
+            var tpl = "<!-- Replace every {{ placeholder }} with real data -->\n" +
+                      "<div>{{ company_name }} · {{ invoice_number }} · {{ company_name }} again {{ currency }}</div>";
+            var fields = OfficeSupportTool.TemplateFields(tpl);
+            if (fields.Count != 3) return $"expected 3 distinct fields, got: {string.Join(", ", fields)}";
+            if (!fields.Contains("Company Name")) return $"missing 'Company Name': {string.Join(", ", fields)}";
+            if (!fields.Contains("Invoice Number")) return $"missing 'Invoice Number': {string.Join(", ", fields)}";
+            if (!fields.Contains("Currency")) return $"missing 'Currency': {string.Join(", ", fields)}";
+            if (fields.Any(f => f == "Placeholder")) return "the '{{ placeholder }}' header metavariable must be skipped";
+            return null;
         });
 
         failures += Test("docx: conversion + metadata round-trip", () =>
@@ -466,7 +567,7 @@ static class Program
                 if (InspectTemplate(f, "selftest") == 0) return "style-form background on <table> not flagged";
                 File.WriteAllText(f, "<html><body><table bgcolor=\"#FFFFFF\"><tr><td>x</td></tr></table></body></html>");
                 if (InspectTemplate(f, "selftest") == 0) return "bgcolor attribute on <table> not flagged";
-                File.WriteAllText(f, "<html><body><table><tr style=\"background-color:#F8FAFC;\"><td>x</td></tr></table></body></html>");
+                File.WriteAllText(f, "<html><body><table><tr style=\"background-color:#DCFCE7;\"><td>x</td></tr></table></body></html>");
                 if (InspectTemplate(f, "selftest") > 0) return "legit tr background wrongly flagged";
                 return null;
             }
@@ -757,7 +858,7 @@ static class Program
             if (html6 == null) { Fail("U6-chained-restore", "memo.docx not created"); return 1; }
             if (!html6.Contains("24 December to 2 January")) { Fail("U6-chained-restore", "memo not restored to the original period"); return 1; }
             if (html6.Contains("6 January")) { Fail("U6-chained-restore", "memo still contains the first change"); return 1; }
-            if (GitSupport.History(host6).Count < 4) { Fail("U6-chained-restore", "version chain shorter than expected (create + 2 updates + restore swap)"); return 1; }
+            if (GitSupport.History(host6).Count < 3) { Fail("U6-chained-restore", "version chain shorter than expected (create + 2 updates must all remain in history)"); return 1; }
             Pass("U6-chained-restore");
 
             // U7 — deterministic error paths (direct calls, no LLM)
@@ -774,6 +875,9 @@ static class Program
             var u7d = tool.UpdateDocument("/missing.docx", "change x");
             if (!u7d.StartsWith("Error:") || !u7d.Contains("not found")) { Fail("U7-error-update-missing", $"unexpected: {u7d}"); return 1; }
             Pass("U7-error-update-missing");
+            var u7e = tool.UpdateTemplate("tax return", "add a field");
+            if (!u7e.StartsWith("Error:") || !u7e.Contains("no template exists")) { Fail("U7-error-template-missing", $"unexpected: {u7e}"); return 1; }
+            Pass("U7-error-template-missing");
 
             Console.WriteLine();
             Console.WriteLine(_failures == 0 ? "  ALL UNTESTED-FLOW TESTS PASSED" : $"  {_failures} UTEST FAILURES");

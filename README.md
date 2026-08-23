@@ -7,7 +7,9 @@ inside the DOCX as hidden metadata (custom XML part) so the document can be upda
 
 Templates live in `Assets/*.html` (one per document type: invoice, balance sheet, contract,
 SOP, …). When a requested type has no template, the LLM generates a new one following
-`Assets/TEMPLATE-GUIDELINES.md` and saves it alongside the others for future reuse.
+`Assets/DESIGN-GUIDELINES.md` (layout + category colors) and `Assets/ESSENTIAL-GUIDELINES.md`
+(strict HTML rules), in English and with the same `{{ placeholder_name }}` format, and saves
+it alongside the others for future reuse.
 
 ## Methods
 
@@ -15,6 +17,7 @@ SOP, …). When a requested type has no template, the LLM generates a new one fo
 |---|---|
 | `create_document` | Creates a new DOCX from the template matching the requested type (optional `draft`, context text/file, image files, output path). |
 | `update_document` | Applies requested changes to an existing DOCX (reads the HTML from the embedded metadata, regenerates the document; the new content becomes a new version in the workspace git repo). |
+| `update_template` | Modifies an existing template (feasibility-gated, keeps the template rules: English, category colors, `{{ placeholder_name }}` format, design guidelines); the updated template is reused by `create_document`. |
 
 ## Usage
 
@@ -37,6 +40,10 @@ create_document(type, note, draft?, contextText?, contextFile?, imageFiles?, sav
   incomplete document can be generated even if the context lacks data to fill the template.
 - `contextText` / `contextFile` (optional): essential material for the document (company data,
   parties, values, tables…). One of the two is expected unless `draft` is used.
+  The material check evaluates the context against the template field by field; when it is
+  rejected, the error lists the missing fields deterministically as
+  `Document fields: <comma-separated field names>` (extracted from the template's
+  `{{ placeholder_name }}` placeholders) plus the `draft` hint.
 - `imageFiles` (optional): workspace images embedded into the document (Unix-style paths). Each
   image is shown to the LLM via the unified `FileManager.GetFilesInfo` block: path + size +
   `Classification:` + YOLO `Metadata:` JSON (created and embedded permanently in the image when
@@ -57,6 +64,23 @@ template, converts back to DOCX and re-embeds the new HTML. The new content beco
 version in the workspace git repo — rollback via `GitTool.restore` (the tool does not keep
 the file open).
 
+### update_template
+
+```
+update_template(type, changes)
+```
+
+Modifies the template matching `type` (same case/`-`/space-insensitive matching as
+`create_document`; available types are listed via `[[available_templates]]`). Flow:
+the template existence is checked deterministically (unknown types are rejected with an
+error), then an LLM gate validates whether the requested `changes` are feasible and make
+sense for that template (JSON verdict; infeasible changes return an error with a brief
+explanation), and only then the LLM applies the changes and the result is validated
+(HTML5 + template rules) before being saved for reuse. The updated template keeps the same
+rules as created templates — English language, the category colors (the design set matching
+the document's primary purpose), the `{{ placeholder_name }}` placeholder format and the
+design guidelines.
+
 ## Testing / Harness
 
 The `OfficeSupportTool.Harness` console project drives the tool end-to-end against a live
@@ -64,15 +88,17 @@ LLM provider, plus an offline deterministic self-test:
 
 ```
 dotnet run --project OfficeSupportTool.Harness -- --selftest        # offline: no LLM needed
-dotnet run --project OfficeSupportTool.Harness -- --provider NAME   # LLM campaign (T1–T7)
+dotnet run --project OfficeSupportTool.Harness -- --provider NAME   # LLM campaign (T1–T8)
 ```
 
-- `--selftest`: deterministic checks (type normalization, HTML→DOCX round-trip, metadata,
-  nested-comment/bare-svg/table-background detection, versioning semantics).
+- `--selftest`: deterministic checks (type normalization, placeholder field extraction,
+  HTML→DOCX round-trip, metadata, nested-comment/bare-svg/table-background detection,
+  template category-color conformity, versioning semantics).
 - `--provider NAME` (default `DeepSeekBridge`, fallback `Ollama_Qwen`): runs the behavioral
   LLM campaign — create (incl. overwrite versioning), update, template generation + conformity
-  inspection, images, material-gate rejection, foreign DOCX, and the create→update→rollback
-  flow at agent level.
+  inspection, images, material-gate rejection (with the deterministic `Document fields:` list),
+  foreign DOCX, template update (incl. the feasibility-gate rejection) + reuse, and the
+  create→update→rollback flow at agent level.
 - Results are appended to `%TEMP%\officesupporttool_test_results.txt` with a final `DONE`
   marker; the agent's tool-call trace is logged per test. The workspace lives in `%TEMP%`
   (the repo sits under OneDrive, where test files would be cloud-synced on every write).
