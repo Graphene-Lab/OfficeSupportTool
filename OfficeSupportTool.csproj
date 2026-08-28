@@ -65,6 +65,11 @@
     <PackageReference Include="Graphene.AIOrchestrator" Version="1.*" />
     <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
     <PackageReference Include="HtmlToOpenXml.dll" Version="3.5.0" />
+    <!-- Svg.Skia 3.x: rasterizes the <template id="background"> SVG for the native page picture
+         background. Pinned to the 3.x line so SkiaSharp resolves to the HOST's 3.119.1 (the host
+         contract strips it from the plugin zip and provides the native libSkiaSharp on win/linux);
+         5.x would drag a conflicting SkiaSharp 4.148 native stack into the plugin. -->
+    <PackageReference Include="Svg.Skia" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
     <None Update="LICENSE.md">

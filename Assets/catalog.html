@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<template id="background">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="#ECFDF5"/>
+    <path d="M0,14 C14,4 36,2 55,10 C74,18 89,18 100,10 L100,0 L0,0 Z" fill="#D1FAE5"/>
+    <path d="M0,100 L0,72 C18,66 39,67 56,76 C74,86 88,89 100,83 L100,100 Z" fill="#BBF7D0"/>
+    <circle cx="83" cy="20" r="11" fill="#34D399"/>
+    <circle cx="18" cy="82" r="8" fill="#BBF7D0"/>
+    <path d="M12,26 C29,15 51,15 72,24 C80,27 88,27 95,24" fill="none" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+    <path d="M8,62 C24,54 42,55 58,63 C72,70 86,71 96,66" fill="none" stroke="#047857" stroke-width="1.1" stroke-linecap="round" opacity="0.45"/>
+  </svg>
+</template>
+
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr><td style="padding:14px 16px;"><div style="font-size:20pt; font-weight:bold; color:#047857;">{{ catalog_title }}</div><div style="font-size:9pt; color:#4B5563;">{{ company_name }} Â· {{ catalog_subtitle }}</div></td></tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#34D399; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<p style="padding:10px 14px;">{{ catalog_intro }}</p>
+
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#A7F3D0;">
+    <th width="9%" style="padding:6px 8px; color:#047857; text-align:left;">Code</th>
+    <th width="18%" style="padding:6px 8px; color:#047857; text-align:left;">Name</th>
+    <th width="23%" style="padding:6px 8px; color:#047857; text-align:left;">Description</th>
+    <th width="18%" style="padding:6px 8px; color:#047857; text-align:left;">Specs</th>
+    <th width="16%" style="padding:6px 8px; color:#047857; text-align:left;">Image</th>
+    <th width="16%" style="padding:6px 8px; color:#047857; text-align:right;">Price ({{ currency }})</th>
+  </tr>
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ item_code }}</td>
+    <td style="padding:6px 8px;">{{ item_name }}</td>
+    <td style="padding:6px 8px;">{{ item_description }}</td>
+    <td style="padding:6px 8px;">{{ item_specs }}</td>
+    <td style="padding:6px 8px;">{{ item_image_caption }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ item_price }}</td>
+  </tr>
+  <tr>
+    <td style="padding:6px 8px;">{{ item_code }}</td>
+    <td style="padding:6px 8px;">{{ item_name }}</td>
+    <td style="padding:6px 8px;">{{ item_description }}</td>
+    <td style="padding:6px 8px;">{{ item_specs }}</td>
+    <td style="padding:6px 8px;">{{ item_image_caption }}</td>
+    <td style="padding:6px 8px; text-align:right;">{{ item_price }}</td>
+  </tr>
+</table>
+
+</body>
+</html>
+

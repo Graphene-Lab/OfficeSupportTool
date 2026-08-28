@@ -9,7 +9,9 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using HtmlAgilityPack;
 using HtmlToOpenXml;
+using SkiaSharp;
 using SixLabors.ImageSharp;
+using Svg.Skia;
 using UISupportGeneric;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("OfficeSupportTool.Harness")]
@@ -25,6 +27,13 @@ namespace AIOrchestrator.API
         private const string DraftHint = "If the document is draft, use the draft parameter to generate an incomplete document (it will not be rejected if there is no data to complete it).";
         private const string PlaceholderFormat = "{{ placeholder_name }}";
         private const string HtmlDataRoot = "htmlData";
+        private static readonly string[] BackgroundTemplateKeywords =
+        {
+            "booklet", "pamphlet", "leaflet", "flyer", "folder", "circular", "handout", "prospectus", "catalog", "catalogue", "brochure"
+        };
+        private static readonly Regex BackgroundTemplateRegex = new(
+            @"<template\b[^>]*\bid\s*=\s*[\""']background[\""'][^>]*>([\s\S]*?)</template>",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         /// <summary>Create an office document (DOCX): the template matching the requested type is filled with the provided material and the document is saved. Documents created this way can be updated later with update_document. The new content becomes a new version (rollback via GitTool.restore).</summary>
         /// <param name="type">Type of the document to create, e.g. "balance sheet". Matching is case-insensitive and ignores "-"/space differences. Available template types: [[available_templates]]. Types not in this list are accepted too: a new template is generated and saved for reuse.</param>
@@ -296,6 +305,8 @@ namespace AIOrchestrator.API
         private static string TemplateRulesPrompt => $$"""
             The template MUST be written in English: all labels, text and placeholders in English (English document and field names normalize the behavior across sessions).
             The template belongs to one of the 7 document categories defined in the design guidelines (Financial & Accounting, Commercial & Trade, Human Resources, Legal & Corporate, Operations & Procedures, Communication & Marketing, Safety & Compliance). Determine the category of this document type by its PRIMARY purpose and use ONLY that category's colors — its pastel, ink and accent rule from the manifest — for the badge, section bars, table headers, totals and accent rules; never invent other colors for graphic elements.
+            Every variable field MUST use placeholders in this exact format: {{PlaceholderFormat}} (lowercase snake_case). Never hardcode sample business data in template variable fields.
+            The template MUST include multiple placeholder fields (company/profile data, document metadata, and content rows/sections) so it can be reused across customers.
             In the template you can place SVG icons with dynamic content substitution:
             - Use square SVG icons with a self-explanatory file name that can encode size and color: <icon-name>.<size>.<rrggbb>.svg (these files will be auto-generated based on the name you give them). Usage example: disc.32.aa0000.svg (a disc icon, 32x32 px, hex color #aa0000) → <img src="disc.32.aa0000.svg" alt="disc">
             Follow these rules:
@@ -315,11 +326,13 @@ namespace AIOrchestrator.API
         /// HTML or null when the LLM fails.</summary>
         private static string? GenerateTemplate(string key, string type)
         {
+            var specialBackground = ContainsBackgroundKeyword(key);
             var prompt = $$"""
                 Today's date: {{DateTime.Now:yyyy-MM-dd}}
 
                 Create a template for this document type: {{type}}.
                 The template must be professionally valid.
+                {{(specialBackground ? "This is a SPECIAL background template: add exactly one <template id=\"background\">...</template> block in <body> containing a spectacular full-page inline <svg> (strong composition, layered shapes, clear visual identity for this document purpose). The SVG must include a <rect width=\"100\" height=\"100\" fill=\"#RRGGBB\"/> base color. Keep the normal content WITHOUT html/css page background fills (the final page background is applied natively in OpenXml from that SVG marker). These are marketing/promotional materials: besides the text sections, reserve clearly marked PHOTO SLOT areas (LLM comment + small placeholder frame) for photographic illustrations using the provided images — a hero photo near the title and one next to the main content, sized with explicit px widths." : string.Empty)}}
                 {{TemplateRulesPrompt}}
                 """;
             Log.LogStep($"OfficeSupportTool.GenerateTemplate: type='{type}' key='{key}'");
@@ -331,6 +344,7 @@ namespace AIOrchestrator.API
         /// design guidelines). Returns the updated template HTML or null when the LLM fails.</summary>
         private static string? GenerateModifiedTemplate(string key, string type, string currentTemplate, string changes)
         {
+            var specialBackground = ContainsBackgroundKeyword(key);
             var prompt = $$"""
                 Today's date: {{DateTime.Now:yyyy-MM-dd}}
 
@@ -342,6 +356,7 @@ namespace AIOrchestrator.API
                 - Apply the changes LITERALLY: the exact strings in the changes request must appear verbatim in the template.
                 - Change ONLY what the changes request; keep the rest of the template identical (structure, comments, category colors, existing placeholders).
                 - Keep every {{PlaceholderFormat}} the template already uses; add new placeholders only where the changes need them, in the same {{PlaceholderFormat}} format.
+                {{(specialBackground ? "- Keep exactly one <template id=\"background\">...</template> block with a spectacular full-page inline SVG in <body>; include a <rect width=\"100\" height=\"100\" fill=\"#RRGGBB\"/> base color and keep normal content without html/css page background fills. Keep the PHOTO SLOT areas (LLM comments marking where photographic illustrations go using the provided images)." : string.Empty)}}
                 Current template:
                 ```html
                 {{currentTemplate}}
@@ -387,9 +402,10 @@ namespace AIOrchestrator.API
         /// Assets/ESSENTIAL-GUIDELINES.md and is packed with the package).</summary>
         private const string BuiltInEssential = """
             You are writing HTML code that will be converted into a Word (DOCX) document. Follow these rules strictly.
-            Allowed tags: a abbr acronym b blockquote body br cite del dfn div dl dt dd em figure figcaption font h1 h2 h3 h4 h5 h6 hr i img li ol p pre q s section span strike strong sub sup table caption col colgroup thead tbody tfoot tr th td time u ul svg
+            Allowed tags: a abbr acronym b blockquote body br cite del dfn div dl dt dd em figure figcaption font h1 h2 h3 h4 h5 h6 hr i img li ol p pre q s section span strike strong sub sup table caption col colgroup thead tbody tfoot tr th td time u ul svg template
             - Inline CSS only (style="..." attributes): text-align, color, background-color, text-decoration, font-style, font-weight, font-size, font-family, font-variant, text-indent, line-height, margin, padding, border(-style/-width/-color), page-break-before/after (always), break-before/after (page). Forbidden: <style>, external CSS, <script>, flexbox/grid, display, position, float, external image URLs.
             - Put background-color on td or tr ONLY, never on <table> (it is ignored and the background disappears).
+            - When the template contains <template id="background">...</template>, keep exactly one such block in <body> with an inline SVG and DO NOT add html/css background fills elsewhere: that SVG is used as native OpenXml page background.
             - Every svg needs width/height with an explicit unit (e.g. 46px); bare numbers produce an invisible 0x0 image.
             - Do NOT nest HTML comments (a comment must never contain another <!-- or --> inside it); keep marker comments like <!-- SLA-ROW --> outside any banner comment.
             - Replace every {{ placeholder_name }} with real data; keep all inline styles; money values keep the {{ currency }} placeholder; images must be inline/data-URI.
@@ -830,6 +846,398 @@ namespace AIOrchestrator.API
         /// Backgrounds must live on &lt;td&gt;/&lt;tr&gt;.</summary>
         internal static bool HasTableBackground(string html) =>
             Regex.IsMatch(html, @"<table[^>]*(?:background(?:-color)?\s*[:=]|bgcolor\s*=)", RegexOptions.IgnoreCase);
+        /// <summary>Returns true when the HTML should prefer an A4 landscape conversion based on
+        /// a deterministic width proxy: at least one table or declared grid has 6 or more columns.</summary>
+        internal static bool ShouldPreferLandscape(string html, int columnThreshold = 6)
+        {
+            if (string.IsNullOrWhiteSpace(html) || columnThreshold <= 1) return false;
+
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+
+            foreach (var table in doc.DocumentNode.Descendants("table"))
+                if (GetEffectiveTableColumnCount(table) >= columnThreshold)
+                    return true;
+
+            foreach (var node in doc.DocumentNode.Descendants())
+                if (GetDeclaredGridColumnCount(node) >= columnThreshold)
+                    return true;
+
+            foreach (var img in doc.DocumentNode.Descendants("img"))
+                if (IsVeryWideImage(img))
+                    return true;
+
+            return false;
+        }
+
+        private static bool IsVeryWideImage(HtmlNode image)
+        {
+            if (TryParseWidthValue(image.GetAttributeValue("width", ""), out var width, out var isPercent))
+            {
+                if (isPercent && width >= 85) return true;
+                if (!isPercent && width >= 900) return true;
+            }
+
+            var styleWidth = ExtractCssProperty(image.GetAttributeValue("style", ""), "width");
+            if (TryParseWidthValue(styleWidth, out width, out isPercent))
+            {
+                if (isPercent && width >= 85) return true;
+                if (!isPercent && width >= 900) return true;
+            }
+
+            return false;
+        }
+
+        private static bool TryParseWidthValue(string? raw, out double width, out bool isPercent)
+        {
+            width = 0;
+            isPercent = false;
+            if (string.IsNullOrWhiteSpace(raw)) return false;
+
+            var value = raw.Trim().ToLowerInvariant();
+            if (value.EndsWith("%", StringComparison.Ordinal))
+            {
+                var number = value[..^1].Trim();
+                if (!double.TryParse(number, NumberStyles.Float, CultureInfo.InvariantCulture, out width)) return false;
+                isPercent = true;
+                return true;
+            }
+
+            if (value.EndsWith("px", StringComparison.Ordinal))
+                value = value[..^2].Trim();
+            return double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out width);
+        }
+
+        private static bool ResolveLandscapePreference(string html)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+
+            var body = doc.DocumentNode.SelectSingleNode("//body");
+            var orientation = body == null ? null : ExtractCssProperty(body.GetAttributeValue("style", ""), "page-orientation");
+            if (orientation != null)
+            {
+                if (orientation.Equals("landscape", StringComparison.OrdinalIgnoreCase)) return true;
+                if (orientation.Equals("portrait", StringComparison.OrdinalIgnoreCase)) return false;
+            }
+
+            return ShouldPreferLandscape(html);
+        }
+
+        private static bool ContainsBackgroundKeyword(string key) =>
+            BackgroundTemplateKeywords.Any(k => key.Contains(k, StringComparison.OrdinalIgnoreCase));
+
+        private static bool TryExtractBackgroundTemplate(string html, out string cleanedHtml, out string? svgMarkup)
+        {
+            svgMarkup = null;
+            var match = BackgroundTemplateRegex.Match(html);
+            if (!match.Success)
+            {
+                cleanedHtml = html;
+                return false;
+            }
+
+            var svgMatch = Regex.Match(match.Groups[1].Value, @"<svg\b[\s\S]*?</svg>", RegexOptions.IgnoreCase);
+            if (svgMatch.Success)
+                svgMarkup = svgMatch.Value;
+
+            cleanedHtml = BackgroundTemplateRegex.Replace(html, string.Empty, 1);
+            return svgMarkup != null;
+        }
+
+        private static string? ExtractBackgroundColorFromSvg(string? svgMarkup)
+        {
+            if (string.IsNullOrWhiteSpace(svgMarkup)) return null;
+            var rectMatch = Regex.Match(svgMarkup,
+                @"<rect\b[^>]*\bfill\s*=\s*[\""']([^\""']+)[\""'][^>]*\bwidth\s*=\s*[\""']100%?[\""'][^>]*\bheight\s*=\s*[\""']100%?[\""']|<rect\b[^>]*\bwidth\s*=\s*[\""']100%?[\""'][^>]*\bheight\s*=\s*[\""']100%?[\""'][^>]*\bfill\s*=\s*[\""']([^\""']+)[\""']",
+                RegexOptions.IgnoreCase);
+            var candidate = rectMatch.Success
+                ? (rectMatch.Groups[1].Success ? rectMatch.Groups[1].Value : rectMatch.Groups[2].Value)
+                : null;
+
+            if (TryConvertCssColorToRgbHex(candidate, out var baseColor))
+                return baseColor;
+
+            foreach (Match fillMatch in Regex.Matches(svgMarkup, @"\bfill\s*=\s*[\""']([^\""']+)[\""']", RegexOptions.IgnoreCase))
+                if (TryConvertCssColorToRgbHex(fillMatch.Groups[1].Value, out var parsed))
+                    return parsed;
+
+            return null;
+        }
+
+        private static bool TryConvertCssColorToRgbHex(string? raw, out string hex)
+        {
+            hex = string.Empty;
+            if (string.IsNullOrWhiteSpace(raw)) return false;
+
+            var color = raw.Trim();
+            if (color.Length == 0 || color.Equals("none", StringComparison.OrdinalIgnoreCase) || color.Equals("transparent", StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            if (color.StartsWith("#", StringComparison.Ordinal))
+            {
+                var source = color[1..];
+                if (source.Length == 3)
+                {
+                    hex = string.Concat(source.Select(c => new string(c, 2))).ToUpperInvariant();
+                    return true;
+                }
+                if (source.Length == 6 && source.All(Uri.IsHexDigit))
+                {
+                    hex = source.ToUpperInvariant();
+                    return true;
+                }
+                return false;
+            }
+
+            var rgb = Regex.Match(color, @"rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})(?:\s*,\s*(?:0|0?\.\d+|1(?:\.0+)?)\s*)?\)", RegexOptions.IgnoreCase);
+            if (rgb.Success)
+            {
+                var r = Math.Clamp(int.Parse(rgb.Groups[1].Value, CultureInfo.InvariantCulture), 0, 255);
+                var g = Math.Clamp(int.Parse(rgb.Groups[2].Value, CultureInfo.InvariantCulture), 0, 255);
+                var b = Math.Clamp(int.Parse(rgb.Groups[3].Value, CultureInfo.InvariantCulture), 0, 255);
+                hex = $"{r:X2}{g:X2}{b:X2}";
+                return true;
+            }
+
+            var namedColors = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["white"] = "FFFFFF",
+                ["black"] = "000000",
+                ["blue"] = "2563EB",
+                ["red"] = "DC2626",
+                ["green"] = "16A34A",
+                ["yellow"] = "FACC15",
+                ["orange"] = "F97316",
+                ["purple"] = "7C3AED",
+                ["gray"] = "9CA3AF",
+                ["grey"] = "9CA3AF"
+            };
+            if (namedColors.TryGetValue(color, out var mapped))
+            {
+                hex = mapped;
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>Applies the background to the document: the base color extracted from the
+        /// background SVG always set as <c>w:color</c>; when the SVG rasterizes, the picture is
+        /// embedded as an image part and anchored FULL-PAGE BEHIND THE TEXT in the DEFAULT header
+        /// (headers repeat on every page). This is the mechanism Word itself uses for watermarks
+        /// and behind-text pictures, and — unlike the VML page-background picture — LibreOffice
+        /// renders it too. Rasterization failures degrade to the flat base color.</summary>
+        private static void ApplyNativeDocumentBackground(WordprocessingDocument doc, string? svgMarkup)
+        {
+            var color = ExtractBackgroundColorFromSvg(svgMarkup) ?? "EAF2FF";
+            var mainPart = doc.MainDocumentPart!;
+            var document = mainPart.Document!;
+            document.RemoveAllChildren<DocumentBackground>();
+            document.PrependChild(new DocumentBackground { Color = color });
+
+            var png = RasterizeBackgroundSvg(svgMarkup);
+            if (png == null) return;
+            try
+            {
+                var headerPart = mainPart.AddNewPart<HeaderPart>();
+                var imagePart = headerPart.AddImagePart(ImagePartType.Png);
+                using (var stream = imagePart.GetStream())
+                    stream.Write(png, 0, png.Length);
+                var relId = headerPart.GetIdOfPart(imagePart);
+
+                var body = document.Body!;
+                var sectPr = body.Elements<SectionProperties>().LastOrDefault() ?? body.AppendChild(new SectionProperties());
+                var pageSize = sectPr.GetFirstChild<PageSize>();
+                var widthEmu = (long)(pageSize?.Width?.Value ?? 11906U) * 635L;
+                var heightEmu = (long)(pageSize?.Height?.Value ?? 16838U) * 635L;
+
+                headerPart.Header = new Header(BuildBackgroundHeaderXml(relId, widthEmu, heightEmu));
+                sectPr.RemoveAllChildren<HeaderReference>();
+                sectPr.AppendChild(new HeaderReference { Type = HeaderFooterValues.Default, Id = mainPart.GetIdOfPart(headerPart) });
+            }
+            catch (Exception ex)
+            {
+                Log.LogStep($"OfficeSupportTool.ApplyNativeDocumentBackground: header picture background failed ({ex.Message}); keeping the flat color.");
+            }
+        }
+
+        /// <summary>Header XML with the full-page background picture anchored to the page behind
+        /// the content (<c>behindDoc</c>); the extent matches the section page size in EMU.</summary>
+        private static string BuildBackgroundHeaderXml(string relId, long widthEmu, long heightEmu) => $$"""
+            <w:hdr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                   xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+              <w:p>
+                <w:r>
+                  <w:drawing>
+                    <wp:anchor xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+                               distT="0" distB="0" distL="0" distR="0" simplePos="0"
+                               relativeHeight="251658240" behindDoc="1" locked="0"
+                               layoutInCell="1" allowOverlap="1">
+                      <wp:simplePos x="0" y="0"/>
+                      <wp:positionH relativeFrom="page"><wp:posOffset>0</wp:posOffset></wp:positionH>
+                      <wp:positionV relativeFrom="page"><wp:posOffset>0</wp:posOffset></wp:positionV>
+                      <wp:extent cx="{{widthEmu}}" cy="{{heightEmu}}"/>
+                      <wp:effectExtent l="0" t="0" r="0" b="0"/>
+                      <wp:wrapNone/>
+                      <wp:docPr id="1" name="Background"/>
+                      <wp:cNvGraphicFramePr>
+                        <a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1"/>
+                      </wp:cNvGraphicFramePr>
+                      <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+                        <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                          <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+                            <pic:nvPicPr>
+                              <pic:cNvPr id="0" name="Background"/>
+                              <pic:cNvPicPr/>
+                            </pic:nvPicPr>
+                            <pic:blipFill>
+                              <a:blip r:embed="{{relId}}"/>
+                              <a:stretch><a:fillRect/></a:stretch>
+                            </pic:blipFill>
+                            <pic:spPr>
+                              <a:xfrm><a:off x="0" y="0"/><a:ext cx="{{widthEmu}}" cy="{{heightEmu}}"/></a:xfrm>
+                              <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
+                            </pic:spPr>
+                          </pic:pic>
+                        </a:graphicData>
+                      </a:graphic>
+                    </wp:anchor>
+                  </w:drawing>
+                </w:r>
+              </w:p>
+            </w:hdr>
+            """;
+
+        /// <summary>Rasterizes the background SVG to a PNG sized so its longest side is ~1240 px
+        /// (A4 width at 150 dpi); Word's "frame" fill stretches it across the full page. Returns
+        /// null when the SVG is missing or cannot be rendered.</summary>
+        internal static byte[]? RasterizeBackgroundSvg(string? svgMarkup)
+        {
+            if (string.IsNullOrWhiteSpace(svgMarkup)) return null;
+            try
+            {
+                var svg = new SKSvg();
+                using var picture = svg.FromSvg(svgMarkup);
+                if (picture == null) return null;
+                var bounds = picture.CullRect;
+                if (bounds.Width <= 0 || bounds.Height <= 0) return null;
+
+                const float targetLongSide = 1240f;
+                var scale = targetLongSide / Math.Max(bounds.Width, bounds.Height);
+                using var ms = new MemoryStream();
+                return svg.Save(ms, SKColors.Empty, SKEncodedImageFormat.Png, 90, scale, scale)
+                    ? ms.ToArray()
+                    : null;
+            }
+            catch (Exception ex)
+            {
+                Log.LogStep($"OfficeSupportTool.RasterizeBackgroundSvg: {ex.Message}");
+                return null;
+            }
+        }
+
+        private static void EnsureBackgroundVisibleInWord(WordprocessingDocument doc)
+        {
+            var settingsPart = doc.MainDocumentPart!.DocumentSettingsPart ?? doc.MainDocumentPart.AddNewPart<DocumentSettingsPart>();
+            settingsPart.Settings ??= new Settings();
+            var existing = settingsPart.Settings.Elements<DisplayBackgroundShape>().FirstOrDefault();
+            if (existing == null)
+                settingsPart.Settings.AppendChild(new DisplayBackgroundShape { Val = OnOffValue.FromBoolean(true) });
+            else
+                existing.Val = OnOffValue.FromBoolean(true);
+            settingsPart.Settings.Save();
+        }
+
+        private static int GetEffectiveTableColumnCount(HtmlNode table)
+        {
+            var maxColumns = 0;
+            foreach (var row in table.Descendants("tr"))
+            {
+                if (row.Ancestors("table").FirstOrDefault() != table) continue;
+
+                var columns = 0;
+                foreach (var cell in row.ChildNodes.Where(n => n.Name is "td" or "th"))
+                    columns += ParsePositiveInt(cell.GetAttributeValue("colspan", "1"), fallback: 1);
+                maxColumns = Math.Max(maxColumns, columns);
+            }
+            return maxColumns;
+        }
+
+        private static int GetDeclaredGridColumnCount(HtmlNode node)
+        {
+            var maxColumns = ParsePositiveInt(node.GetAttributeValue("data-columns", ""), fallback: 0);
+
+            var classAttr = node.GetAttributeValue("class", "");
+            foreach (Match match in Regex.Matches(classAttr, @"(?:^|\s)grid-cols-(\d+)(?:\s|$)", RegexOptions.IgnoreCase))
+                maxColumns = Math.Max(maxColumns, ParsePositiveInt(match.Groups[1].Value, fallback: 0));
+
+            var style = node.GetAttributeValue("style", "");
+            if (!Regex.IsMatch(style, @"display\s*:\s*(?:inline-)?grid", RegexOptions.IgnoreCase))
+                return maxColumns;
+
+            var explicitColumns = ExtractCssProperty(style, "grid-template-columns");
+            if (!string.IsNullOrWhiteSpace(explicitColumns))
+                maxColumns = Math.Max(maxColumns, CountGridTracks(explicitColumns));
+
+            return maxColumns;
+        }
+
+        private static string? ExtractCssProperty(string style, string propertyName)
+        {
+            var match = Regex.Match(style, $@"(?:^|;)\s*{Regex.Escape(propertyName)}\s*:\s*([^;]+)", RegexOptions.IgnoreCase);
+            return match.Success ? match.Groups[1].Value.Trim() : null;
+        }
+
+        private static int CountGridTracks(string template)
+        {
+            if (string.IsNullOrWhiteSpace(template) || template.Contains("subgrid", StringComparison.OrdinalIgnoreCase))
+                return 0;
+
+            var repeatMatch = Regex.Match(template, @"repeat\(\s*(\d+)\s*,", RegexOptions.IgnoreCase);
+            if (repeatMatch.Success)
+                return ParsePositiveInt(repeatMatch.Groups[1].Value, fallback: 0);
+
+            var count = 0;
+            var depth = 0;
+            var inToken = false;
+            foreach (var ch in template)
+            {
+                switch (ch)
+                {
+                    case '(':
+                        depth++;
+                        inToken = true;
+                        break;
+                    case ')':
+                        if (depth > 0) depth--;
+                        break;
+                    default:
+                        if (char.IsWhiteSpace(ch) && depth == 0)
+                        {
+                            if (inToken)
+                            {
+                                count++;
+                                inToken = false;
+                            }
+                        }
+                        else
+                        {
+                            inToken = true;
+                        }
+                        break;
+                }
+            }
+            if (inToken) count++;
+            return count;
+        }
+
+        private static int ParsePositiveInt(string? raw, int fallback)
+        {
+            return int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value) && value > 0
+                ? value
+                : fallback;
+        }
 
         // ---------- DOCX conversion + metadata ----------
 
@@ -843,14 +1251,21 @@ namespace AIOrchestrator.API
             // (bare numbers like width="46" are rejected and produce a 0x0 image): normalize the
             // render copy, while the metadata keeps the original document HTML.
             var renderHtml = NormalizeSvgSizes(html);
+            var hasBackgroundTemplate = TryExtractBackgroundTemplate(renderHtml, out var cleanedHtml, out var backgroundSvg);
+            var landscape = ResolveLandscapePreference(cleanedHtml);
             using var ms = new MemoryStream();
             using (var doc = WordprocessingDocument.Create(ms, WordprocessingDocumentType.Document, autoSave: true))
             {
                 var mainPart = doc.AddMainDocumentPart();
                 mainPart.Document = new Document(new Body());
                 var converter = new HtmlConverter(mainPart);
-                converter.ParseBody(renderHtml).GetAwaiter().GetResult();
-                SetPageMargins(mainPart.Document.Body!);
+                converter.ParseBody(cleanedHtml).GetAwaiter().GetResult();
+                SetPageLayout(mainPart.Document.Body!, landscape, hasBackgroundTemplate);
+                if (hasBackgroundTemplate)
+                {
+                    ApplyNativeDocumentBackground(doc, backgroundSvg);
+                    EnsureBackgroundVisibleInWord(doc);
+                }
                 mainPart.Document.Save();
             }
             ms.Position = 0;
@@ -859,14 +1274,26 @@ namespace AIOrchestrator.API
             return ms.ToArray();
         }
 
-        /// <summary>Sets 1 cm page margins (567 twips per side) — the converted documents adapt
-        /// better to further conversions (PDF, print); HtmlToOpenXml leaves the default setup.</summary>
-        private static void SetPageMargins(Body body)
+        /// <summary>Sets an A4 page layout with 1 cm page margins (567 twips per side). The
+        /// converted documents adapt better to further conversions (PDF, print); HtmlToOpenXml
+        /// leaves the default setup.</summary>
+        private static void SetPageLayout(Body body, bool landscape, bool borderless)
         {
             var sectPr = body.Elements<SectionProperties>().LastOrDefault()
                 ?? body.AppendChild(new SectionProperties());
+
+            sectPr.RemoveAllChildren<PageSize>();
+            sectPr.AppendChild(new PageSize
+            {
+                Width = landscape ? (UInt32Value)16838U : 11906U,
+                Height = landscape ? (UInt32Value)11906U : 16838U,
+                Orient = landscape ? PageOrientationValues.Landscape : PageOrientationValues.Portrait
+            });
+
             sectPr.RemoveAllChildren<PageMargin>();
-            sectPr.AppendChild(new PageMargin { Top = 567, Bottom = 567, Left = 567, Right = 567 });
+            sectPr.AppendChild(borderless
+                ? new PageMargin { Top = 0, Bottom = 0, Left = 0, Right = 0, Header = 0, Footer = 0 }
+                : new PageMargin { Top = 567, Bottom = 567, Left = 567, Right = 567 });
         }
 
         /// <summary>HtmlToOpenXml's Unit.Parse requires a unit on the svg width/height attributes:

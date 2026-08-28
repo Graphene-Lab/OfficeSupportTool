@@ -27,11 +27,18 @@ static class Program
     private static string _workspace = "";
     private static string _providerName = "DeepSeekBridge";
     private static readonly string ResultsFile = Path.Combine(Path.GetTempPath(), "officesupporttool_test_results.txt");
+    private static readonly string[] BackgroundTemplateKeys =
+    {
+        "booklet", "pamphlet", "leaflet", "flyer", "folder", "circular", "handout", "prospectus", "catalog", "catalogue", "brochure"
+    };
 
     static int Main(string[] args)
     {
         var idx = Array.IndexOf(args, "--provider");
         if (idx >= 0 && idx + 1 < args.Length) _providerName = args[idx + 1];
+        if (Array.IndexOf(args, "--background-preview") >= 0) return RunBackgroundPreview(args);
+        if (Array.IndexOf(args, "--template-audit") >= 0) return RunTemplateAudit();
+        if (Array.IndexOf(args, "--landscape-check") >= 0) return RunLandscapeCheck();
         if (Array.IndexOf(args, "--selftest") >= 0) return RunSelfTest();
         if (Array.IndexOf(args, "--utests") >= 0) return RunUTests();
         EnsureProvider();
@@ -328,6 +335,43 @@ static class Program
         return doc.MainDocumentPart?.ImageParts.Count() ?? 0;
     }
 
+    /// <summary>Reads the final section orientation from a DOCX. Missing page settings default to portrait.</summary>
+    static bool DocxIsLandscape(string path)
+    {
+        using var doc = WordprocessingDocument.Open(path, false);
+        var pageSize = doc.MainDocumentPart?.Document?.Body?.Elements<SectionProperties>().LastOrDefault()?.GetFirstChild<PageSize>();
+        return pageSize?.Orient?.Value == PageOrientationValues.Landscape;
+    }
+
+    static bool DocxHasZeroMargins(string path)
+    {
+        using var doc = WordprocessingDocument.Open(path, false);
+        var margin = doc.MainDocumentPart?.Document?.Body?.Elements<SectionProperties>().LastOrDefault()?.GetFirstChild<PageMargin>();
+        if (margin == null) return false;
+        return margin.Top?.Value == 0 && margin.Bottom?.Value == 0 && margin.Left?.Value == 0 && margin.Right?.Value == 0;
+    }
+
+    static bool DocxHasNativeBackground(string path)
+    {
+        using var doc = WordprocessingDocument.Open(path, false);
+        return doc.MainDocumentPart?.Document?.GetFirstChild<DocumentBackground>() != null;
+    }
+
+    /// <summary>True when the background is a PICTURE: the default header carries the rasterized
+    /// image part and is wired to the section (the SVG was rasterized and embedded, not reduced
+    /// to the flat w:color).</summary>
+    static bool DocxHasPictureBackground(string path)
+    {
+        using var doc = WordprocessingDocument.Open(path, false);
+        var mainPart = doc.MainDocumentPart;
+        if (mainPart?.Document?.Body == null) return false;
+        var headerRef = mainPart.Document.Body.Elements<SectionProperties>().LastOrDefault()
+            ?.Elements<HeaderReference>().FirstOrDefault(h => h.Type?.Value == HeaderFooterValues.Default);
+        if (headerRef?.Id?.Value == null) return false;
+        var headerPart = mainPart.HeaderParts.FirstOrDefault(h => mainPart.GetIdOfPart(h) == headerRef.Id.Value);
+        return headerPart?.ImageParts.Any() == true;
+    }
+
     /// <summary>Runs a behavioral agent-level test: natural-language prompt, "OfficeSupportTool"
     /// + "GitTool" registered (rollback flows need GitTool.restore — same tool set as the real
     /// host), tool-call trace collected from the AgentProgress events. Returns the agent result
@@ -410,6 +454,11 @@ static class Program
             "no flexbox/grid/position/float CSS");
         Check(!Regex.IsMatch(markup, @"[A-Za-z]:\\|/home/|/mnt/|AIOrchestrator[\\/]|assets[\\/]icons", RegexOptions.IgnoreCase),
             "no local/host paths in the template");
+        var placeholders = Regex.Matches(markup, @"\{\{\s*([a-z0-9_]+)\s*\}\}", RegexOptions.IgnoreCase)
+            .Select(m => m.Groups[1].Value)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        Check(placeholders.Count > 0, "contains reusable placeholders in {{ placeholder_name }} format");
         var categoryColors = Regex.Matches(markup, @"#[0-9a-fA-F]{6}\b")
             .Select(m => m.Value.ToUpperInvariant()).Where(ManifestPalette.Contains).Distinct().ToList();
         Check(categoryColors.Count > 0,
@@ -419,13 +468,158 @@ static class Program
             .Select(m => m.Groups[1].Value).Where(s => !s.StartsWith("data:", StringComparison.OrdinalIgnoreCase)).ToList();
         var svgDataUris = Regex.Matches(tpl, @"data:image/svg\+xml;base64,").Count;
         Console.WriteLine($"    svg mechanism: {inlineSvg} inline <svg>, {iconPlaceholders.Count} icon-name placeholder(s) [{string.Join(", ", iconPlaceholders)}], {svgDataUris} svg data-URI(s)");
-        Console.WriteLine(tpl.Contains("{{")
-            ? "    ✓ placeholders ({{...}}) present"
-            : "    ⚠ no {{ placeholder }} found (the LLM may have filled concrete values)");
         return issues;
     }
 
     // ---------- deterministic self-test (no LLM, no network) ----------
+
+    /// <summary>Converts every template carrying &lt;template id="background"&gt; into DOCX in a
+    /// temporary directory and prints the output path for visual inspection.</summary>
+    static int RunBackgroundPreview(string[] args)
+    {
+        var hydratePlaceholders = Array.IndexOf(args, "--hydrate-placeholders") >= 0;
+        var outArg = Array.IndexOf(args, "--out");
+        var outDir = outArg >= 0 && outArg + 1 < args.Length
+            ? args[outArg + 1]
+            : Path.Combine(Path.GetTempPath(), "ost-bg-preview-" + DateTime.Now.ToString("yyyyMMdd-HHmmss"));
+        Directory.CreateDirectory(outDir);
+
+        var dir = ResolveAssetsDirectory();
+        if (dir == null)
+        {
+            Console.WriteLine("Assets directory not found.");
+            return 1;
+        }
+
+        var files = Directory.GetFiles(dir, "*.html").OrderBy(Path.GetFileName).ToArray();
+        var marker = new Regex(@"<template\b[^>]*\bid\s*=\s*[\""']background[\""'][^>]*>", RegexOptions.IgnoreCase);
+        var svgExtractor = new Regex(@"<template\b[^>]*\bid\s*=\s*[\""']background[\""'][^>]*>([\s\S]*?)</template>", RegexOptions.IgnoreCase);
+        var converted = 0;
+
+        Console.WriteLine("══════════ OfficeSupportTool background preview ══════════");
+        foreach (var file in files)
+        {
+            var html = File.ReadAllText(file, Encoding.UTF8);
+            if (!marker.IsMatch(html)) continue;
+
+            var sourceHtml = hydratePlaceholders ? HydratePlaceholders(html) : html;
+            var docx = OfficeSupportTool.ConvertToDocx(sourceHtml);
+            var target = Path.Combine(outDir, Path.GetFileNameWithoutExtension(file) + ".docx");
+            File.WriteAllBytes(target, docx);
+
+            // export the rasterized background next to the docx for visual inspection
+            var svgMatch = svgExtractor.Match(html);
+            var backgroundPng = OfficeSupportTool.RasterizeBackgroundSvg(svgMatch.Success ? svgMatch.Groups[1].Value : null);
+            if (backgroundPng != null)
+                File.WriteAllBytes(Path.Combine(outDir, Path.GetFileNameWithoutExtension(file) + ".background.png"), backgroundPng);
+
+            converted++;
+            Console.WriteLine($"{Path.GetFileName(file),-30} -> {Path.GetFileName(target)}");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine(hydratePlaceholders
+            ? "Mode: placeholders hydrated with sample values."
+            : "Mode: original template placeholders preserved.");
+        Console.WriteLine($"Converted {converted} background template(s).");
+        Console.WriteLine($"Preview directory: {outDir}");
+        return converted > 0 ? 0 : 1;
+    }
+
+    /// <summary>Audits all templates for supported-markup rules and placeholder naming convention.</summary>
+    static int RunTemplateAudit()
+    {
+        var dir = ResolveAssetsDirectory();
+        if (dir == null)
+        {
+            Console.WriteLine("Assets directory not found.");
+            return 1;
+        }
+
+        var files = Directory.GetFiles(dir, "*.html").OrderBy(Path.GetFileName).ToArray();
+        var failures = 0;
+        var placeholderRegex = new Regex(@"\{\{\s*([a-z0-9_]+)\s*\}\}");
+        var anyPlaceholderRegex = new Regex(@"\{\{\s*([^}]+?)\s*\}\}");
+        var backgroundMarkerRegex = new Regex(@"<template\b[^>]*\bid\s*=\s*[\""']background[\""'][^>]*>", RegexOptions.IgnoreCase);
+        Console.WriteLine("══════════ OfficeSupportTool template audit ══════════");
+
+        foreach (var file in files)
+        {
+            var html = File.ReadAllText(file, Encoding.UTF8);
+            var issues = new List<string>();
+            var markup = Regex.Replace(html, @"<!--[\s\S]*?-->", "");
+
+            if (OfficeSupportTool.HasNestedComments(html)) issues.Add("nested comments");
+            if (OfficeSupportTool.HasTableBackground(html)) issues.Add("table-level background");
+            if (OfficeSupportTool.HasBareSvgSizes(html)) issues.Add("svg width/height without unit");
+            if (Regex.IsMatch(markup, @"<(?:style|script)\b", RegexOptions.IgnoreCase)) issues.Add("style/script tag present");
+            if (Regex.IsMatch(markup, @"(?:src|href)\s*=\s*[\""']https?://", RegexOptions.IgnoreCase)) issues.Add("external URL present");
+
+            var placeholders = anyPlaceholderRegex.Matches(markup).Select(m => m.Groups[1].Value.Trim()).Distinct().ToList();
+            if (placeholders.Count == 0) issues.Add("no placeholders");
+            var invalid = placeholders.Where(p => !placeholderRegex.IsMatch("{{ " + p + " }}") || p.Contains(' ')).ToList();
+            if (invalid.Count > 0) issues.Add("non-standard placeholders: " + string.Join(", ", invalid.Take(5)));
+
+            var key = Path.GetFileNameWithoutExtension(file);
+            var requiresBackground = BackgroundTemplateKeys.Any(k => key.Contains(k, StringComparison.OrdinalIgnoreCase));
+            var markerCount = backgroundMarkerRegex.Matches(html).Count;
+            if (requiresBackground && markerCount != 1) issues.Add($"background marker mismatch (expected exactly 1, found {markerCount})");
+
+            if (issues.Count == 0)
+            {
+                Console.WriteLine($"{Path.GetFileName(file),-30} PASS");
+            }
+            else
+            {
+                failures++;
+                Console.WriteLine($"{Path.GetFileName(file),-30} FAIL: {string.Join("; ", issues)}");
+            }
+        }
+
+        Console.WriteLine();
+        Console.WriteLine(failures == 0 ? "Template audit PASS." : $"Template audit FAIL: {failures} file(s) with issues.");
+        return failures == 0 ? 0 : 1;
+    }
+
+    static string HydratePlaceholders(string html)
+    {
+        return Regex.Replace(html, @"\{\{\s*([a-z0-9_]+)\s*\}\}", m =>
+        {
+            var token = m.Groups[1].Value;
+            return token.Equals("currency", StringComparison.OrdinalIgnoreCase)
+                ? "EUR"
+                : token.Replace('_', ' ');
+        }, RegexOptions.IgnoreCase);
+    }
+
+    /// <summary>Runs the deterministic landscape heuristic over every shipped HTML template and
+    /// prints whether the document should prefer A4 landscape.</summary>
+    static int RunLandscapeCheck()
+    {
+        Console.WriteLine("══════════ OfficeSupportTool landscape check ══════════");
+        var dir = ResolveAssetsDirectory();
+        if (dir == null) return 1;
+
+        var files = Directory.GetFiles(dir, "*.html").OrderBy(Path.GetFileName).ToArray();
+        if (files.Length == 0)
+        {
+            Console.WriteLine($"No HTML files found in {dir}.");
+            return 1;
+        }
+
+        var preferred = 0;
+        foreach (var file in files)
+        {
+            var html = File.ReadAllText(file, Encoding.UTF8);
+            var landscape = OfficeSupportTool.ShouldPreferLandscape(html);
+            if (landscape) preferred++;
+            Console.WriteLine($"{Path.GetFileName(file),-40} landscape={landscape}");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine($"Landscape preferred for {preferred}/{files.Length} template(s).");
+        return 0;
+    }
 
     /// <summary>Runs the offline deterministic checks: type normalization, template resolution,
     /// HTML→DOCX conversion + metadata round-trip, SVG icon embedding. Exit code 0 = all green.</summary>
@@ -470,6 +664,14 @@ static class Program
             return issues == 0 ? null : $"{issues} shipped template(s) with violations";
         });
 
+        failures += Test("templates: brochure carries native background marker", () =>
+        {
+            var tpl = OfficeSupportTool.ResolveTemplate("brochure");
+            if (tpl == null) return "brochure template not found";
+            var count = Regex.Matches(tpl, @"<template\b[^>]*\bid\s*=\s*[\""']background[\""'][^>]*>", RegexOptions.IgnoreCase).Count;
+            return count == 1 ? null : $"brochure background marker count = {count}";
+        });
+
         failures += Test("templates: placeholder field extraction (Document fields list)", () =>
         {
             var tpl = "<!-- Replace every {{ placeholder }} with real data -->\n" +
@@ -499,6 +701,55 @@ static class Program
                 if (back != html) return "metadata round-trip mismatch (length " + back.Length + " vs " + html.Length + ")";
                 if (!DocxTextContains(file, "Round-trip")) return "converted DOCX text missing";
                 if (!DocxTextContains(file, "€")) return "converted DOCX text missing entity character";
+                return null;
+            }
+            finally { try { File.Delete(file); } catch { } }
+        });
+
+        failures += Test("docx: automatic page orientation", () =>
+        {
+            var portraitHtml = "<html><body><p>Portrait document</p></body></html>";
+            var landscapeHtml = "<html><body><table><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr></table></body></html>";
+            var portraitFile = Path.Combine(Path.GetTempPath(), "ost-portrait-" + Guid.NewGuid().ToString("N") + ".docx");
+            var landscapeFile = Path.Combine(Path.GetTempPath(), "ost-landscape-" + Guid.NewGuid().ToString("N") + ".docx");
+            try
+            {
+                File.WriteAllBytes(portraitFile, OfficeSupportTool.ConvertToDocx(portraitHtml));
+                File.WriteAllBytes(landscapeFile, OfficeSupportTool.ConvertToDocx(landscapeHtml));
+
+                if (DocxIsLandscape(portraitFile)) return "portrait html was converted to landscape";
+                if (!DocxIsLandscape(landscapeFile)) return "wide table html did not convert to landscape";
+                return null;
+            }
+            finally
+            {
+                try { File.Delete(portraitFile); } catch { }
+                try { File.Delete(landscapeFile); } catch { }
+            }
+        });
+
+        failures += Test("docx: wide image triggers landscape", () =>
+        {
+            var html = "<html><body><p>Wide visual</p><img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=\" style=\"width:95%;\" /></body></html>";
+            var file = Path.Combine(Path.GetTempPath(), "ost-wide-img-" + Guid.NewGuid().ToString("N") + ".docx");
+            try
+            {
+                File.WriteAllBytes(file, OfficeSupportTool.ConvertToDocx(html));
+                return DocxIsLandscape(file) ? null : "wide image did not trigger landscape";
+            }
+            finally { try { File.Delete(file); } catch { } }
+        });
+
+        failures += Test("docx: background template => SVG rasterized as picture background + zero margins", () =>
+        {
+            var html = "<html><body><template id=\"background\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"#DBEAFE\"/><circle cx=\"80\" cy=\"20\" r=\"10\" fill=\"#93C5FD\"/></svg></template><p>Background marker</p></body></html>";
+            var file = Path.Combine(Path.GetTempPath(), "ost-bg-" + Guid.NewGuid().ToString("N") + ".docx");
+            try
+            {
+                File.WriteAllBytes(file, OfficeSupportTool.ConvertToDocx(html));
+                if (!DocxHasNativeBackground(file)) return "native OpenXml background not set";
+                if (!DocxHasPictureBackground(file)) return "background SVG not rasterized to a picture background (flat color fallback? SkiaSharp missing?)";
+                if (!DocxHasZeroMargins(file)) return "background template did not force zero margins";
                 return null;
             }
             finally { try { File.Delete(file); } catch { } }
@@ -567,7 +818,7 @@ static class Program
                 if (InspectTemplate(f, "selftest") == 0) return "style-form background on <table> not flagged";
                 File.WriteAllText(f, "<html><body><table bgcolor=\"#FFFFFF\"><tr><td>x</td></tr></table></body></html>");
                 if (InspectTemplate(f, "selftest") == 0) return "bgcolor attribute on <table> not flagged";
-                File.WriteAllText(f, "<html><body><table><tr style=\"background-color:#DCFCE7;\"><td>x</td></tr></table></body></html>");
+                File.WriteAllText(f, "<html><body><table><tr style=\"background-color:#DCFCE7;\"><td>{{ row_value }}</td></tr></table></body></html>");
                 if (InspectTemplate(f, "selftest") > 0) return "legit tr background wrongly flagged";
                 return null;
             }
@@ -694,6 +945,17 @@ static class Program
             Console.WriteLine($"  ✗ {id} CRASH: {ex.GetType().Name}: {ex.Message}");
             return 1;
         }
+    }
+
+    static string? ResolveAssetsDirectory()
+    {
+        var candidates = new[]
+        {
+            Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "Assets")),
+            Path.Combine(AppContext.BaseDirectory, "assets", "templates")
+        };
+
+        return candidates.FirstOrDefault(Directory.Exists);
     }
 
     // ---------- untested-flows campaign (--utests) ----------

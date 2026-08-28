@@ -1,9 +1,21 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 </head>
 <body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<template id="background">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="#FFF7ED"/>
+    <path d="M0,14 C14,4 36,2 55,10 C74,18 89,18 100,10 L100,0 L0,0 Z" fill="#FDE68A"/>
+    <path d="M0,100 L0,72 C18,66 39,67 56,76 C74,86 88,89 100,83 L100,100 Z" fill="#FED7AA"/>
+    <circle cx="83" cy="20" r="11" fill="#FBBF24"/>
+    <circle cx="18" cy="82" r="8" fill="#FED7AA"/>
+    <path d="M12,26 C29,15 51,15 72,24 C80,27 88,27 95,24" fill="none" stroke="#92400E" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+    <path d="M8,62 C24,54 42,55 58,63 C72,70 86,71 96,66" fill="none" stroke="#92400E" stroke-width="1.1" stroke-linecap="round" opacity="0.45"/>
+  </svg>
+</template>
 
 <!-- ============================================================
      BROCHURE — HTML template for HtmlToOpenXml (v3.5.0)
@@ -11,6 +23,8 @@
        - Replace every {{ placeholder }} with real data; keep the inline styles.
        - FEATURE ROW and SERVICE ROW: duplicate the marked rows once per item.
        - Testimonial boxes can be duplicated to add more client quotes.
+       - PHOTO SLOT comments mark the areas reserved for photographic
+         illustrations: put there an <img> using one of the provided images.
        - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
          no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
      Design: pastel accents (graphic elements only), neutral office text.
@@ -69,12 +83,22 @@
   </tr>
 </table>
 
-<!-- ============ COVER-STYLE HEADER ============ -->
+<!-- ============ COVER HERO (title + photographic image) ============ -->
 <table width="100%" cellspacing="0" cellpadding="0">
   <tr>
-    <td style="background-color:#FDE68A; padding:24px 24px;">
+    <td width="58%" style="background-color:#FDE68A; padding:24px 20px 24px 24px; vertical-align:middle;">
       <div style="font-size:24pt; font-weight:bold; color:#92400E;">{{ brochure_title }}</div>
       <div style="font-size:12pt; font-style:italic; color:#4B5563; margin-top:4pt;">{{ brochure_tagline }}</div>
+    </td>
+    <td width="42%" style="background-color:#FDE68A; padding:20px 24px 20px 0; vertical-align:middle; text-align:center;">
+      <!-- LLM: PHOTO SLOT — place here a photographic illustration of the product/service/team using one of the provided images, e.g. <img src="photo.png" width="300px" style="border:1px solid #FDE68A;">. Keep this cell otherwise intact. -->
+      <svg width="120px" height="90px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <title>Photo placeholder</title>
+        <rect x="1" y="3" width="22" height="18" rx="2" fill="#FFF7ED" stroke="#92400E" stroke-width="1.4"/>
+        <circle cx="8.5" cy="9" r="2.2" fill="#FBBF24"/>
+        <path d="M3 20 L9 13 L13 17 L16 14 L21 19" fill="none" stroke="#92400E" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <div style="font-size:8pt; font-style:italic; color:#92400E;">Photo placeholder</div>
     </td>
   </tr>
 </table>
@@ -89,9 +113,19 @@
 </table>
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
   <tr style="background-color:#F8FAFC;">
-    <td style="padding:10px 14px; font-size:10pt; color:#1F2937;">
+    <td width="66%" style="padding:10px 12px 10px 14px; font-size:10pt; color:#1F2937; vertical-align:top;">
       {{ about_us_paragraph_1 }}
       <p style="font-size:10pt; margin:6pt 0 0 0; color:#4B5563;">{{ about_us_paragraph_2 }}</p>
+    </td>
+    <td width="34%" style="padding:10px 14px 10px 12px; vertical-align:middle; text-align:center;">
+      <!-- LLM: PHOTO SLOT — place here a photographic illustration related to the About text using one of the provided images, e.g. <img src="photo.png" width="240px" style="border:1px solid #F8FAFC;">. Keep this cell otherwise intact. -->
+      <svg width="110px" height="80px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <title>Photo placeholder</title>
+        <rect x="1" y="3" width="22" height="18" rx="2" fill="#FFF7ED" stroke="#92400E" stroke-width="1.4"/>
+        <circle cx="8.5" cy="9" r="2.2" fill="#FBBF24"/>
+        <path d="M3 20 L9 13 L13 17 L16 14 L21 19" fill="none" stroke="#92400E" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <div style="font-size:8pt; font-style:italic; color:#92400E;">Photo placeholder</div>
     </td>
   </tr>
 </table>
@@ -104,7 +138,7 @@
     </td>
   </tr>
 </table>
-<!-- LLM: FEATURE ROW — duplicate this <tr> once per feature; fill the feature and its benefit. -->
+<!-- LLM: FEATURE ROW â€” duplicate this <tr> once per feature; fill the feature and its benefit. -->
 <table width="100%" cellspacing="0" cellpadding="0" border="1">
   <tr style="background-color:#FDE68A;">
     <th width="34%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:left;">Feature</th>
@@ -132,7 +166,7 @@
     </td>
   </tr>
 </table>
-<!-- LLM: SERVICE ROW — duplicate this <tr> once per service/product; fill the name and description. -->
+<!-- LLM: SERVICE ROW â€” duplicate this <tr> once per service/product; fill the name and description. -->
 <table width="100%" cellspacing="0" cellpadding="0" border="1">
   <tr style="background-color:#FDE68A;">
     <th width="34%" style="padding:6px 8px; color:#92400E; font-size:9pt; text-align:left;">Service / Product</th>
@@ -160,7 +194,7 @@
     </td>
   </tr>
 </table>
-<!-- LLM: TESTIMONIAL BOX — duplicate one <td> per client quote; keep the italic style. -->
+<!-- LLM: TESTIMONIAL BOX â€” duplicate one <td> per client quote; keep the italic style. -->
 <table width="100%" cellspacing="0" cellpadding="0">
   <tr>
     <td width="33%" style="padding:8px 6px 0 0; vertical-align:top;">
@@ -232,3 +266,4 @@
 
 </body>
 </html>
+

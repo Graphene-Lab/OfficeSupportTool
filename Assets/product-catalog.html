@@ -1,12 +1,24 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 </head>
 <body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
 
+<template id="background">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="#EAFBF4"/>
+    <path d="M0,14 C14,4 36,2 55,10 C74,18 89,18 100,10 L100,0 L0,0 Z" fill="#D1FAE5"/>
+    <path d="M0,100 L0,72 C18,66 39,67 56,76 C74,86 88,89 100,83 L100,100 Z" fill="#BBF7D0"/>
+    <circle cx="83" cy="20" r="11" fill="#34D399"/>
+    <circle cx="18" cy="82" r="8" fill="#BBF7D0"/>
+    <path d="M12,26 C29,15 51,15 72,24 C80,27 88,27 95,24" fill="none" stroke="#047857" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+    <path d="M8,62 C24,54 42,55 58,63 C72,70 86,71 96,66" fill="none" stroke="#047857" stroke-width="1.1" stroke-linecap="round" opacity="0.45"/>
+  </svg>
+</template>
+
 <!-- ============================================================
-     PRODUCT CATALOG — HTML template for HtmlToOpenXml (v3.5.0)
+     PRODUCT CATALOG â€” HTML template for HtmlToOpenXml (v3.5.0)
      LLM instructions:
        - Replace every {{ placeholder }} with real data; keep the inline styles.
        - Duplicate the product row marked below once per product.
@@ -67,7 +79,7 @@
 </table>
 
 <!-- ============ CATEGORY BLOCK (1) ============ -->
-<!-- LLM: CATEGORY BLOCK — duplicate the section bar + products table below once per category
+<!-- LLM: CATEGORY BLOCK â€” duplicate the section bar + products table below once per category
      and renumber the section (1., 2., 3., ...). Keep the unit price column with {{ currency }}. -->
 <table width="100%" cellspacing="0" cellpadding="0">
   <tr>
@@ -84,7 +96,7 @@
     <th width="22%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:left;">Specifications</th>
     <th width="16%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:right;">Unit Price ({{ currency }})</th>
   </tr>
-  <!-- LLM: PRODUCT ROW — duplicate this <tr> once per product; update code, name, description, specifications and unit price. -->
+  <!-- LLM: PRODUCT ROW â€” duplicate this <tr> once per product; update code, name, description, specifications and unit price. -->
   <tr style="background-color:#F8FAFC;">
     <td style="padding:6px 8px;">{{ product_code }}</td>
     <td style="padding:6px 8px;">{{ product_name }}</td>
@@ -124,7 +136,7 @@
     <th width="22%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:left;">Specifications</th>
     <th width="16%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:right;">Unit Price ({{ currency }})</th>
   </tr>
-  <!-- PRODUCT ROW — duplicate this <tr> once per product (see category block 1). -->
+  <!-- PRODUCT ROW â€” duplicate this <tr> once per product (see category block 1). -->
   <tr style="background-color:#F8FAFC;">
     <td style="padding:6px 8px;">{{ product_code }}</td>
     <td style="padding:6px 8px;">{{ product_name }}</td>
@@ -210,3 +222,4 @@
 
 </body>
 </html>
+
