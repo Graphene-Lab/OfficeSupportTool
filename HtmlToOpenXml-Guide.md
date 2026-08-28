@@ -210,7 +210,7 @@ Table (`tr`, `td`, `thead`, `tbody`, `tfoot`): `bgcolor`, `valign`, `align` and 
 - Failed downloads / unsupported protocols (`tcp://`, relative without `BaseImageUrl`) → image is skipped without failing the conversion.
 - Image border: `border` attribute and `border-style`/`border-width`/`border-color` styles.
 - **`<figure>`/`<figcaption>`**: caption above or below the image.
-- **SVG**: both inline `<svg>` and `<img src="*.svg">` are embedded as images; the SVG `<title>`/`<desc>` become the Word image description. ⚠️ macOS Pages does not support svg.
+- **SVG**: both inline `<svg>` and `<img src="*.svg">` are embedded as images; the SVG `<title>`/`<desc>` become the Word image description. ⚠️ macOS Pages does not support svg. ⚠️ **Bare-number `width`/`height` attributes are rejected** by the internal `Unit.Parse` (e.g. `width="46"` → a 0x0 image): always emit an explicit unit (`width="46px"`). OfficeSupportTool normalizes this with `NormalizeSvgSizes` (appends `px` to bare numbers on inline `<svg>` and in svg data-URI `<img src>` values) — generators producing SVG must keep the unit.
 - Clickable images inside `<a href>` (link or anchor) supported.
 - `alt` → figure alt text.
 
