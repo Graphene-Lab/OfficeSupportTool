@@ -1004,14 +1004,36 @@ namespace AIOrchestrator.API
             {
                 ["white"] = "FFFFFF",
                 ["black"] = "000000",
+                ["gray"] = "9CA3AF",
+                ["grey"] = "9CA3AF",
+                ["silver"] = "C0C0C0",
+                ["lightgray"] = "D3D3D3",
+                ["lightgrey"] = "D3D3D3",
                 ["blue"] = "2563EB",
+                ["lightblue"] = "ADD8E6",
                 ["red"] = "DC2626",
                 ["green"] = "16A34A",
+                ["lightgreen"] = "90EE90",
                 ["yellow"] = "FACC15",
                 ["orange"] = "F97316",
                 ["purple"] = "7C3AED",
-                ["gray"] = "9CA3AF",
-                ["grey"] = "9CA3AF"
+                ["pink"] = "FFC0CB",
+                ["lavender"] = "E6E6FA",
+                ["brown"] = "A52A2A",
+                ["maroon"] = "800000",
+                ["olive"] = "808000",
+                ["teal"] = "008080",
+                ["navy"] = "000080",
+                ["cyan"] = "00FFFF",
+                ["magenta"] = "FF00FF",
+                ["gold"] = "FFD700",
+                ["coral"] = "FF7F50",
+                ["salmon"] = "FA8072",
+                ["ivory"] = "FFFFF0",
+                ["beige"] = "F5F5DC",
+                ["cream"] = "FFFDD0",
+                ["khaki"] = "F0E68C",
+                ["tan"] = "D2B48C"
             };
             if (namedColors.TryGetValue(color, out var mapped))
             {

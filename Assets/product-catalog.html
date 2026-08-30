@@ -18,7 +18,7 @@
 </template>
 
 <!-- ============================================================
-     PRODUCT CATALOG â€” HTML template for HtmlToOpenXml (v3.5.0)
+     PRODUCT CATALOG — HTML template for HtmlToOpenXml (v3.5.0)
      LLM instructions:
        - Replace every {{ placeholder }} with real data; keep the inline styles.
        - Duplicate the product row marked below once per product.
@@ -79,7 +79,7 @@
 </table>
 
 <!-- ============ CATEGORY BLOCK (1) ============ -->
-<!-- LLM: CATEGORY BLOCK â€” duplicate the section bar + products table below once per category
+<!-- LLM: CATEGORY BLOCK — duplicate the section bar + products table below once per category
      and renumber the section (1., 2., 3., ...). Keep the unit price column with {{ currency }}. -->
 <table width="100%" cellspacing="0" cellpadding="0">
   <tr>
@@ -96,7 +96,7 @@
     <th width="22%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:left;">Specifications</th>
     <th width="16%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:right;">Unit Price ({{ currency }})</th>
   </tr>
-  <!-- LLM: PRODUCT ROW â€” duplicate this <tr> once per product; update code, name, description, specifications and unit price. -->
+  <!-- LLM: PRODUCT ROW — duplicate this <tr> once per product; update code, name, description, specifications and unit price. -->
   <tr style="background-color:#F8FAFC;">
     <td style="padding:6px 8px;">{{ product_code }}</td>
     <td style="padding:6px 8px;">{{ product_name }}</td>
@@ -136,7 +136,7 @@
     <th width="22%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:left;">Specifications</th>
     <th width="16%" style="padding:6px 8px; color:#047857; font-size:9pt; text-align:right;">Unit Price ({{ currency }})</th>
   </tr>
-  <!-- PRODUCT ROW â€” duplicate this <tr> once per product (see category block 1). -->
+  <!-- PRODUCT ROW — duplicate this <tr> once per product (see category block 1). -->
   <tr style="background-color:#F8FAFC;">
     <td style="padding:6px 8px;">{{ product_code }}</td>
     <td style="padding:6px 8px;">{{ product_name }}</td>
