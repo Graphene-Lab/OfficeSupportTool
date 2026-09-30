@@ -18,7 +18,12 @@ using UISupportGeneric;
 
 namespace AIOrchestrator.API
 {
-    /// <summary>Office document (DOCX) operations for agent use: create documents, update existing ones, and create or modify the per-type templates behind them. Types without a template get a new one generated automatically. Every save creates a new version in the workspace git repo (rollback via GitTool.restore). File paths are Unix-style, relative to the workspace root — never escape it.</summary>
+    /// <summary>Generate Word (.docx) documents from named templates.
+    /// Create a document of a given type, update one, or edit the template itself (a missing
+    /// template is generated automatically). Use this for template-driven documents; for free-form
+    /// Word editing use DocumentTool. Every save creates a new version in the workspace
+    /// git repo (rollback via GitTool.restore). File paths are Unix-style, relative to the
+    /// workspace root — never escape it.</summary>
     public class OfficeSupportTool : BaseAgentTool, IFileTool
     {
         private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
