@@ -41,6 +41,7 @@ static class Program
         if (Array.IndexOf(args, "--landscape-check") >= 0) return RunLandscapeCheck();
         if (Array.IndexOf(args, "--selftest") >= 0) return RunSelfTest();
         if (Array.IndexOf(args, "--utests") >= 0) return RunUTests();
+        if (Array.IndexOf(args, "--examples") >= 0) return RunExamples(args);
         EnsureProvider();
 
         InitWorkspace();
@@ -284,6 +285,111 @@ static class Program
     static void Pass(string id) { Console.WriteLine($"  ✓ {id} PASS"); WriteResult($"{id} PASS"); }
     static void Fail(string id, string problem) { _failures++; Console.WriteLine($"  ✗ {id} FAIL: {problem}"); WriteResult($"{id} FAIL: {problem}"); }
     static void WriteResult(string line) => File.AppendAllText(ResultsFile, line + Environment.NewLine);
+
+    /// <summary>Generates the book example documents with the real tool (LLM fills the template),
+    /// then exports the filled HTML (embedded in each DOCX) to an output folder so it can be
+    /// rendered to PNG. Usage: --examples [--out DIR]</summary>
+    static int RunExamples(string[] args)
+    {
+        var outArg = Array.IndexOf(args, "--out");
+        var outDir = outArg >= 0 && outArg + 1 < args.Length
+            ? args[outArg + 1]
+            : Path.Combine(Path.GetTempPath(), "ab_examples_html");
+        Directory.CreateDirectory(outDir);
+        EnsureProvider();
+        InitWorkspace();
+
+        // (templateType, exampleName, note, contextText) — content matches each book example.
+        var specs = new (string type, string name, string note, string ctx)[]
+        {
+            ("invoice", "client-invoice",
+             "Invoice from Acme Bookkeeping to Bright Cafe for July 2026 bookkeeping services, itemized with VAT and total.",
+             "From: Acme Bookkeeping, Via Manzoni 8, 20121 Milano, Italy. VAT IT01234567890. Phone +39 02 5550101, email billing@acmebookkeeping.it. " +
+             "To: Bright Cafe, Via Roma 12, 20121 Milano, Italy. Invoice number 2026-114, date 31 July 2026, due date 14 August 2026, currency EUR. " +
+             "Line items: Monthly bookkeeping services, 12 hours at EUR 45.00 per hour = EUR 540.00. Subtotal EUR 540.00. VAT 22% = EUR 118.80. Total due EUR 658.80. " +
+             "Payment by bank transfer. Thank the client for their business."),
+            ("sales contract", "service-contract",
+             "Service agreement between Acme Studio and a client for a three-month website project with a deposit.",
+             "Provider: Acme Studio, Via Manzoni 8, 20121 Milano, VAT IT01234567890. Client: Bright Cafe, Via Roma 12, 20121 Milano, VAT IT0223344556. " +
+             "Project: design and build of a business website. Duration: 3 months starting 1 October 2026. Total price EUR 6,000. Payment: 50% deposit (EUR 3,000) before work begins, 50% (EUR 3,000) on delivery. " +
+             "Scope: site design, development, content upload, one round of revisions. Termination with 14 days written notice. Governing law: Italian."),
+            ("business letter", "business-letter",
+             "Formal letter from Acme Studio to the landlord requesting a two-year lease renewal on the same terms.",
+             "Sender: Acme Studio, Via Roma 12, 20121 Milano, VAT IT01234567890. Date: 18 September 2026. Reference: AS-2026-042. " +
+             "Recipient: Sig. Marco Bianchi, Landlord, Via Garibaldi 5, 20121 Milano. Subject: Lease renewal request. Salutation: Dear Mr. Bianchi. " +
+             "Body: We have occupied the premises at Via Roma 12 for two years and are very satisfied. We kindly request a renewal of the lease for a further two years on the same terms and conditions. " +
+             "The location continues to serve our business well and we value our positive relationship. Closing: Yours sincerely, Luca Bianchi, Acme Studio."),
+            ("sales proposal", "project-proposal",
+             "Project proposal from Acme Studio to Bright Cafe for an online shop: goals, deliverables, timeline and price.",
+             "From: Acme Studio, Via Manzoni 8, 20121 Milano. To: Bright Cafe. Proposal number P-2026-021, date 18 September 2026, valid until 18 October 2026, currency EUR. " +
+             "Goal: give Bright Cafe a simple online store so customers can order ahead. Deliverables: branded online shop, product catalogue, secure checkout, order email notifications. " +
+             "Timeline: 8 weeks total — Design 2 weeks, Build 4 weeks, Launch 2 weeks. Total price EUR 9,500, payable in two instalments of EUR 4,750."),
+            ("meeting minutes team", "meeting-minutes",
+             "Minutes of the weekly team sync with attendees, discussion summary, decisions and action items.",
+             "Meeting: Weekly Team Sync. Date: 18 September 2026, 09:30. Location: office. Attendees: Anna (team lead), Luca, Sara. " +
+             "Discussion: reviewed the week, the online shop launch and upcoming marketing. " +
+             "Decisions: launch the loyalty card by 30 September; fix the checkout bug by 22 September; order new packaging by 25 September. " +
+             "Action items: Anna owns the loyalty card launch; Luca owns the checkout bug fix; Sara owns the packaging order. Next meeting: 25 September 2026."),
+            ("manual", "employee-handbook",
+             "Employee handbook for a small company covering working hours, holidays, remote work and who to ask for help.",
+             "Company: Acme Studio, a small digital services company. Handbook version 1.0, effective 1 October 2026. " +
+             "Working hours: Monday to Friday, 9:00 to 18:00, with a one-hour lunch break; core hours are 10:00 to 16:00 when everyone should be reachable. " +
+             "Holidays: 26 paid vacation days per year plus national holidays; request time off at least two weeks ahead through your team lead. " +
+             "Remote work: up to two days a week from home, with a stable connection and availability during core hours; equipment is provided by the company. " +
+             "Dress code: smart casual in the office, comfortable at home on video calls. " +
+             "Who to ask: for day-to-day work ask your team lead (Anna); for pay, contracts and time off ask HR (Maria); for IT and equipment ask Luca. " +
+             "Our values: be kind, be clear, and ask early rather than struggle alone."),
+            ("financial report", "financial-report",
+             "Financial summary for 2025: revenue, costs, profit and a year-over-year comparison.",
+             "Company: Acme Studio. Period: fiscal year 2025, currency EUR. Revenue 2025: EUR 152,000 (2024: EUR 118,000). Total costs 2025: EUR 88,000 (2024: EUR 77,000). " +
+             "Net profit 2025: EUR 64,000 (2024: EUR 41,000). Prepared by Maria Rossi, Chief Accountant, on 18 September 2026. " +
+             "Notes: revenue grew 29% year over year while costs stayed controlled, lifting the net margin."),
+            ("report", "market-analysis",
+             "Market analysis of the specialty coffee retail segment: size, trends, competition and outlook.",
+             "Topic: Specialty Coffee Retail market analysis, 2026. Market size: EUR 2.1 billion in 2026 (EUR 1.85B in 2025, EUR 1.6B in 2024). " +
+             "Trends: subscription models, single-origin beans and online ordering are the strongest growth drivers. " +
+             "Competition: a few large chains dominate, but independent shops win on quality and local loyalty. " +
+             "Outlook: favourable for small players who pair quality products with a strong online presence. Prepared with AgentBridge, September 2026."),
+            ("report", "research-report",
+             "Research report on the simplest ways for a small bakery to take orders online, with a recommendation.",
+             "Topic: Taking a small bakery online. Option A — Marketplace: fast to start, but fees are high and you do not own the customer relationship. " +
+             "Option B — Own simple shop: a small branded store, more control, moderate setup, best long-term value. " +
+             "First-year cost estimate: Marketplace EUR 4,200; Own shop EUR 3,100; Full platform EUR 9,800. " +
+             "Recommendation: start with a simple own shop and add click-and-collect for lower fees and a direct customer relationship. Prepared with AgentBridge, September 2026."),
+        };
+
+        Console.WriteLine("══════════ OfficeSupportTool example generation ══════════");
+        Console.WriteLine($"provider: {_providerName}   out: {outDir}");
+        var tool = new OfficeSupportTool();
+        int ok = 0;
+        foreach (var (type, name, note, ctx) in specs)
+        {
+            var htmlOut = Path.Combine(outDir, name + ".html");
+            if (File.Exists(htmlOut) && Array.IndexOf(args, "--force") < 0)
+            { Console.WriteLine($"  = {name} (already exists, skipped)"); ok++; continue; }
+            try
+            {
+                var res = tool.CreateDocument(type, note, draft: true, contextText: ctx, saveFullNameFile: "/" + name + ".docx");
+                var docxPath = Path.Combine(_workspace, name + ".docx");
+                var html = File.Exists(docxPath) ? OfficeSupportTool.ReadStoredHtml(docxPath) : null;
+                if (string.IsNullOrWhiteSpace(html))
+                {
+                    Console.WriteLine($"  ✗ {name}: create/HTML failed → {res}");
+                    continue;
+                }
+                File.WriteAllText(htmlOut, html, new UTF8Encoding(false));
+                Console.WriteLine($"  ✓ {name} ({type}) → {htmlOut}  ({html.Length} chars)");
+                ok++;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"  ✗ {name}: EXCEPTION {ex.GetType().Name}: {ex.Message}");
+            }
+        }
+        Console.WriteLine($"\nGenerated {ok}/{specs.Length} example documents. HTML in: {outDir}");
+        return ok == specs.Length ? 0 : 1;
+    }
+
 
     /// <summary>Fresh %TEMP% workspace + staging (icons, images) for a test run. The repo sits
     /// under OneDrive: test files must never be written under the repo (cloud-synced on every
@@ -1162,8 +1268,27 @@ static class Program
     static void EnsureProvider()
     {
         if (ProviderConfigs.TryGet(_providerName, out _)) return;
+        if (string.Equals(_providerName, "SuperFast_Flash", StringComparison.OrdinalIgnoreCase))
+        {
+            ProviderConfigs.Add(new ProviderConfig
+            {
+                ProviderName = "SuperFast_Flash",
+                Protocol = ProviderProtocol.OpenAI,
+                CacheType = ProviderCacheType.PrefixCache,
+                ModelName = "halogen-qwen3.8-flash-next",
+                ApiKey = "doAICQgycfTVAsYB057KMChBIXI9og",
+                BaseAddress = new Uri("http://192.168.43.253:8741/"),
+                EndPoint = "v1/chat/completions",
+                NoJsonResponseFormat = true,
+                ExtraBody = new Dictionary<string, object> { ["reasoning_effort"] = "low" },
+                Timeout = TimeSpan.FromMinutes(30),
+                PauseBetweenRequests = TimeSpan.Zero,
+                ContextWindow = 262144,
+            }, persist: false);
+            return;
+        }
         if (!string.Equals(_providerName, "Ollama_Qwen", StringComparison.OrdinalIgnoreCase))
-            throw new ArgumentException($"Unknown provider '{_providerName}'. Use --provider with a configured provider or 'Ollama_Qwen'.");
+            throw new ArgumentException($"Unknown provider '{_providerName}'. Use --provider with a configured provider, 'Ollama_Qwen' or 'SuperFast_Flash'.");
         ProviderConfigs.Add(new ProviderConfig
         {
             ProviderName = "Ollama_Qwen",
