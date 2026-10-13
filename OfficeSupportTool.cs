@@ -10,7 +10,6 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using HtmlAgilityPack;
 using HtmlToOpenXml;
 using SkiaSharp;
-using SixLabors.ImageSharp;
 using Svg.Skia;
 using UISupportGeneric;
 
