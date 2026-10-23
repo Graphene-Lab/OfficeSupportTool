@@ -1411,6 +1411,7 @@ namespace AIOrchestrator.API
 
         private static string ReadTextCapped(string path, int maxChars)
         {
+            if (!File.Exists(path)) return string.Empty;
             var text = File.ReadAllText(path);
             return text.Length <= maxChars ? text : text[..maxChars] + "\n…[truncated]";
         }
