@@ -23,6 +23,7 @@ namespace AIOrchestrator.API
     /// Word editing use DocumentTool. Every save creates a new version in the workspace
     /// git repo (rollback via GitTool.restore). File paths are Unix-style, relative to the
     /// workspace root — never escape it.</summary>
+    [ToolPurpose(ToolPurpose.DocumentTemplates)]
     public class OfficeSupportTool : BaseAgentTool, IFileTool
     {
         private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
