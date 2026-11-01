@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+</head>
+<body style="font-family:'Calibri','Carlito',sans-serif; font-size:10pt; color:#1F2937; line-height:1.4;">
+
+<!-- ============================================================
+     LEGAL OPINION — HTML template for HtmlToOpenXml (v3.5.0)
+     LLM instructions:
+       - Replace every {{ placeholder }} with real data; keep the inline styles.
+       - In the "Documents examined" table, duplicate the row marked below once per document.
+       - In "Applicable law", duplicate the row marked below once per article/regulation,
+         copying the article text verbatim from the source (never paraphrase a norm).
+       - In "Relevant case law", duplicate the row marked below once per judgment, keeping the
+         court, the decision number and the date exactly as cited (never invent a reference).
+       - In "Legal analysis", duplicate the block marked below once per argument.
+       - In "Adverse arguments and risks", duplicate the row marked below once per risk.
+       - In "Recommendations", duplicate the row marked below once per action.
+       - Only inline CSS is supported: no <style>, no external CSS, no flexbox,
+         no scripts. See HtmlToOpenXml-Guide.md for the supported tag/CSS list.
+     Design: set D (Legal & Corporate) — pastel #CBD5E1, ink #334155, rule #94A3B8;
+     pastel accents on graphic elements only, neutral office text.
+     ============================================================ -->
+
+<!-- ============ HEADER (white, thin accent rule) ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="62%" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td style="padding-right:12px; vertical-align:middle;">
+            <!-- LLM: badge with the document icon; replace with {{ company_logo }} if a real logo is available -->
+            <svg width="46px" height="46px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <title>Legal Opinion</title>
+              <circle cx="12" cy="12" r="11.5" fill="#CBD5E1"/>
+              <g stroke="#334155" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="4" r="1" />
+                <path d="M12 4v16" />
+                <path d="M8 20h8" />
+                <path d="M4 8h16" />
+                <path d="M4 8 1.5 15h5Z" />
+                <path d="M20 8 17.5 15h5Z" />
+              </g>
+            </svg>
+          </td>
+          <td style="vertical-align:middle;">
+            <div style="font-size:15pt; font-weight:bold; color:#111827;">{{ company_name }}</div>
+            <div style="font-size:8pt; color:#6B7280;">{{ company_tagline }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="38%" align="right" style="padding:16px 20px 12px 20px; vertical-align:middle;">
+      <div style="font-size:18pt; font-weight:bold; color:#334155; font-variant:small-caps;">Legal Opinion</div>
+      <div style="font-size:8pt; color:#6B7280;">{{ practice_area }}</div>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#94A3B8; padding:2px; font-size:1pt;">&nbsp;</td></tr></table>
+
+<!-- ============ META STRIP ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Reference</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ opinion_reference }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Date</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ opinion_date }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Matter</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ matter_type }}</div>
+    </td>
+    <td style="padding:8px 20px;">
+      <div style="font-size:7.5pt; font-variant:small-caps; color:#6B7280;">Prepared by</div>
+      <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ prepared_by }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ PARTIES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:14px 10px 14px 20px; vertical-align:top;">
+      <table width="100%" cellspacing="0" cellpadding="0">
+        <tr style="background-color:#F8FAFC;">
+          <td style="padding:10px 12px;">
+            <div style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">Client</div>
+            <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ client_name }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ client_address }}</div>
+            <div style="font-size:9pt; color:#4B5563;">Tax code / VAT no.: {{ client_tax_code }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td width="50%" style="padding:14px 20px 14px 10px; vertical-align:top;">
+      <table width="100%" cellspacing="0" cellpadding="0">
+        <tr style="background-color:#F8FAFC;">
+          <td style="padding:10px 12px;">
+            <div style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">Counsel</div>
+            <div style="font-size:10pt; font-weight:bold; color:#111827;">{{ firm_name }}</div>
+            <div style="font-size:9pt; color:#4B5563;">{{ firm_address }}</div>
+            <div style="font-size:9pt; color:#4B5563;">Certified e-mail (PEC): {{ firm_pec }}</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ 1. SUBJECT ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">1. Subject of the opinion</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">{{ opinion_subject }}</p>
+
+<!-- ============ 2. FACTS AND DOCUMENTS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">2. Facts and documents examined</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">{{ facts_summary }}</p>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#CBD5E1;">
+    <th width="6%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:center;">#</th>
+    <th width="44%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Document</th>
+    <th width="20%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Date</th>
+    <th width="30%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Reference</th>
+  </tr>
+  <!-- LLM: DOCUMENT ROW — duplicate this <tr> once per document examined. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">1</td>
+    <td style="padding:6px 8px;">{{ document_title }}</td>
+    <td style="padding:6px 8px;">{{ document_date }}</td>
+    <td style="padding:6px 8px;">{{ document_reference }}</td>
+  </tr>
+</table>
+<p style="font-size:9pt; color:#6B7280;">This opinion is based on the documents listed above and on the facts as described by the client. Documents not provided could not be examined.</p>
+
+<!-- LLM: page break before the legal analysis so the operative part starts on a fresh page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ 3. LEGAL QUALIFICATION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">3. Legal qualification of the facts</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">{{ legal_qualification }}</p>
+
+<!-- ============ 4. APPLICABLE LAW ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">4. Applicable law</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#CBD5E1;">
+    <th width="20%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Provision</th>
+    <th width="56%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Text in force</th>
+    <th width="24%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Source</th>
+  </tr>
+  <!-- LLM: NORM ROW — duplicate this <tr> once per provision. Copy the article text verbatim; never paraphrase or invent a provision. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; font-weight:bold;">{{ norm_reference }}</td>
+    <td style="padding:6px 8px;">{{ norm_text }}</td>
+    <td style="padding:6px 8px; font-size:9pt;">{{ norm_source }}</td>
+  </tr>
+</table>
+
+<!-- ============ 5. RELEVANT CASE LAW ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">5. Relevant case law</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#CBD5E1;">
+    <th width="22%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Court and decision</th>
+    <th width="54%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Holding</th>
+    <th width="24%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Reference</th>
+  </tr>
+  <!-- LLM: CASE ROW — duplicate this <tr> once per judgment. Keep court, number and date exactly as cited; never invent a reference. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ court_name }} no. {{ decision_number }} of {{ decision_date }}</td>
+    <td style="padding:6px 8px;">{{ decision_holding }}</td>
+    <td style="padding:6px 8px; font-size:9pt;">{{ decision_reference }}</td>
+  </tr>
+</table>
+
+<!-- ============ 6. LEGAL ANALYSIS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">6. Legal analysis</span>
+    </td>
+  </tr>
+</table>
+
+<!-- LLM: ARGUMENT — duplicate this section bar and the paragraph below it once per argument, renumbering it. -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F8FAFC; padding:5px 12px;">
+      <span style="font-size:10pt; font-weight:bold; color:#334155;">6.1 {{ argument_title }}</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">{{ argument_text }}</p>
+
+<!-- ============ 7. ADVERSE ARGUMENTS AND RISKS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">7. Adverse arguments and risks</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#CBD5E1;">
+    <th width="40%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Risk or adverse argument</th>
+    <th width="16%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:center;">Likelihood</th>
+    <th width="16%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:center;">Impact</th>
+    <th width="28%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Mitigation</th>
+  </tr>
+  <!-- LLM: RISK ROW — duplicate this <tr> once per risk. Likelihood and impact: Low, Medium or High. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px;">{{ risk_description }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ risk_likelihood }}</td>
+    <td style="padding:6px 8px; text-align:center;">{{ risk_impact }}</td>
+    <td style="padding:6px 8px;">{{ risk_mitigation }}</td>
+  </tr>
+</table>
+
+<!-- ============ 8. CONCLUSION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">8. Conclusion</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#F8FAFC; padding:10px 12px;">
+      <div style="font-size:10pt; font-weight:bold; color:#334155;">Opinion</div>
+      <div style="font-size:10pt; color:#1F2937;">{{ conclusion }}</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ 9. RECOMMENDATIONS ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">9. Recommended actions</span>
+    </td>
+  </tr>
+</table>
+<table width="100%" cellspacing="0" cellpadding="0" border="1">
+  <tr style="background-color:#CBD5E1;">
+    <th width="8%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:center;">#</th>
+    <th width="62%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Action</th>
+    <th width="30%" style="padding:6px 8px; color:#334155; font-size:9pt; text-align:left;">Deadline or term</th>
+  </tr>
+  <!-- LLM: RECOMMENDATION ROW — duplicate this <tr> once per action, in priority order. -->
+  <tr style="background-color:#F8FAFC;">
+    <td style="padding:6px 8px; text-align:center;">1</td>
+    <td style="padding:6px 8px;">{{ recommendation_text }}</td>
+    <td style="padding:6px 8px;">{{ recommendation_deadline }}</td>
+  </tr>
+</table>
+
+<!-- ============ 10. LIMITS OF THE OPINION ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">10. Limits of this opinion</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:9pt; color:#4B5563;">This opinion is given on the basis of the documents provided and of the law and case law in force on {{ opinion_date }}; later amendments, repealed provisions or new decisions could change the assessment. It is issued for the client's use in the matter described above and does not constitute a decision on the outcome of any proceedings. {{ opinion_limitations }}</p>
+
+<!-- LLM: page break before the signature block so it starts on a fresh page -->
+<p style="page-break-before:always; font-size:2pt; color:#FFFFFF; margin:0;">&nbsp;</p>
+
+<!-- ============ SIGNATURES ============ -->
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td style="background-color:#CBD5E1; padding:5px 12px;">
+      <span style="font-size:11pt; font-weight:bold; color:#334155; font-variant:small-caps;">Signature</span>
+    </td>
+  </tr>
+</table>
+<p style="font-size:10pt;">Place and date: {{ signature_place }}, {{ opinion_date }}</p>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="50%" style="padding:16px 10px 0 0; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">Counsel</div>
+      <div style="font-size:10pt;">{{ lawyer_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">{{ lawyer_title }} &mdash; {{ bar_admission }}</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+    <td width="50%" style="padding:16px 0 0 10px; vertical-align:bottom;">
+      <div style="font-size:9pt; font-weight:bold; color:#334155; font-variant:small-caps;">Client &mdash; for receipt</div>
+      <div style="font-size:10pt;">{{ client_name }}</div>
+      <div style="font-size:9pt; color:#4B5563;">For acknowledgement of the opinion</div>
+      <hr />
+      <div style="font-size:8pt; color:#6B7280;">Signature &amp; date</div>
+    </td>
+  </tr>
+</table>
+
+<!-- ============ FOOTER BAND ============ -->
+<!-- LLM: to repeat this block on every page instead of once at the end,
+     pass it to converter.ParseFooter() and remove it from the body. -->
+<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="background-color:#94A3B8; padding:1.5px; font-size:1pt;">&nbsp;</td></tr></table>
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr style="background-color:#F3F4F6;">
+    <td align="center" style="padding:12px 20px;">
+      <span style="font-size:8pt; color:#4B5563;">{{ company_name }} &mdash; {{ company_address }}</span><br />
+      <span style="font-size:8pt; color:#4B5563;">{{ company_phone }} &middot; {{ company_email }} &middot; {{ company_website }}</span><br />
+      <span style="font-size:8pt; color:#9CA3AF;">Confidential &mdash; prepared for the addressee only. Provisions and decisions are cited with their reference so that each statement can be verified at the source.</span>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

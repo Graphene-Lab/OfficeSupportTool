@@ -22,7 +22,7 @@ This gives a coherent, instantly recognizable visual system while keeping every 
 | A | Financial & Accounting | Blue | `#DBEAFE` | `#1E40AF` | `#60A5FA` | 10 |
 | B | Commercial & Trade | Green (emerald) | `#D1FAE5` | `#047857` | `#34D399` | 9 |
 | C | Human Resources | Violet (purple) | `#EDE9FE` | `#5B21B6` | `#A78BFA` | 6 |
-| D | Legal & Corporate | Slate (grey-blue) | `#E2E8F0` | `#334155` | `#94A3B8` | 6 |
+| D | Legal & Corporate | Slate (grey-blue) | `#E2E8F0` | `#334155` | `#94A3B8` | 7 |
 | E | Operations & Procedures | Teal (cyan) | `#CCFBF1` | `#115E59` | `#5EEAD4` | 7 |
 | F | Communication & Marketing | Amber (orange) | `#FEF3C7` | `#92400E` | `#FBBF24` | 6 |
 | G | Safety & Compliance | Red (rose) | `#FEE2E2` | `#991B1B` | `#FCA5A5` | 5 |
@@ -69,6 +69,7 @@ any secondary one. Borderline cases are decided as follows:
 | D | Bylaws | `bylaws.html` | `#E2E8F0` (slate-200) |
 | D | Meeting Minutes (board) | `meeting-minutes-board.html` | `#F1F5F9` (slate-100) |
 | D | Business License / Permit | `business-license-permit.html` | `#E2E8F0` (slate-200) |
+| D | Legal Opinion | `legal-opinion.html` | `#CBD5E1` (slate-300) |
 | E | Work Order | `work-order.html` | `#CCFBF1` (teal-100) |
 | E | Meeting Minutes (team) | `meeting-minutes-team.html` | `#ECFEFF` (cyan-50) |
 | E | Standard Operating Procedure (SOP) | `standard-operating-procedure-sop.html` | `#99F6E4` (teal-200) |
